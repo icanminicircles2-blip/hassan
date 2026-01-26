@@ -12,8 +12,9 @@
         body { font-family: 'Cairo', sans-serif; background-color: #f8fafc; }
         .admin-page { background-color: white; min-height: 100vh; width: 100%; position: absolute; top: 0; left: 0; padding: 20px; z-index: 50; }
         .hidden { display: none; }
-        .student-card { transition: all 0.3s ease; cursor: pointer; }
-        .student-card:hover { transform: translateY(-5px); border-color: #3b82f6; }
+        .student-card, .month-card { transition: all 0.2s ease; cursor: pointer; border: 2px solid #f1f5f9; }
+        .student-card:hover, .month-card:hover { transform: scale(1.05); border-color: #3b82f6; background-color: #eff6ff; }
+        .subject-card { background: #fff; padding: 15px; border-radius: 1.5rem; border: 2px solid #e2e8f0; }
     </style>
 </head>
 <body>
@@ -25,8 +26,8 @@
         </div>
     </div>
 
-    <div id="adminLogin" class="min-h-screen flex items-center justify-center p-4 hidden">
-        <div class="w-full max-w-md bg-white p-8 rounded-[2.5rem] shadow-2xl text-center border">
+    <div id="adminLogin" class="min-h-screen flex items-center justify-center p-4 hidden text-center">
+        <div class="w-full max-w-md bg-white p-8 rounded-[2.5rem] shadow-2xl border">
             <h2 class="text-2xl font-bold mb-6">تسجيل دخول</h2>
             <input type="text" id="adminName" placeholder="اسم المستخدم" class="w-full p-4 border rounded-2xl mb-4 text-center outline-none">
             <input type="password" id="adminPass" placeholder="الكود السري" class="w-full p-4 border rounded-2xl mb-4 text-center outline-none">
@@ -37,35 +38,31 @@
     <div id="adminPanel" class="admin-page hidden">
         <div class="max-w-4xl mx-auto">
             <div class="flex justify-between items-center mb-8 border-b pb-4">
-                <h2 id="welcomeMsg" class="text-xl font-black text-slate-800"></h2>
-                <button onclick="location.reload()" class="text-red-500 font-bold text-sm">خروج</button>
+                <h2 id="welcomeMsg" class="text-xl font-black"></h2>
+                <button onclick="location.reload()" class="text-red-500 font-bold">خروج</button>
             </div>
-
-            <div class="bg-blue-50 p-6 rounded-[2rem] border-2 border-blue-100 mb-10">
+            <div class="bg-blue-50 p-6 rounded-[2rem] border-2 border-blue-100 mb-8">
                 <h3 class="font-black text-lg mb-4 text-blue-800">تسجيل طفل جديد</h3>
                 <div class="flex gap-3">
-                    <input type="text" id="studentName" placeholder="اسم الطفل" class="flex-1 p-4 rounded-2xl border-none shadow-sm outline-none">
-                    <button onclick="addStudent()" class="bg-blue-600 text-white px-6 py-4 rounded-2xl font-bold shadow-md">إضافة +</button>
+                    <input type="text" id="studentName" placeholder="اسم الطفل" class="flex-1 p-4 rounded-2xl outline-none">
+                    <button onclick="addStudent()" class="bg-blue-600 text-white px-6 py-4 rounded-2xl font-bold">إضافة +</button>
                 </div>
             </div>
-
-            <h3 class="font-black text-lg mb-4 text-slate-700">اختر طفل للمتابعة:</h3>
-            <div id="studentsList" class="grid grid-cols-2 md:grid-cols-3 gap-4">
-                </div>
+            <h3 class="font-black text-lg mb-4">قائمة الأطفال:</h3>
+            <div id="studentsList" class="grid grid-cols-2 md:grid-cols-3 gap-4"></div>
         </div>
     </div>
 
     <div id="studentOptions" class="admin-page hidden">
-        <div class="max-w-4xl mx-auto">
-            <button onclick="closeOptions()" class="mb-6 text-blue-600 font-bold flex items-center gap-2"> ⬅ رجوع للأطفال </button>
-            <h2 id="selectedStudentName" class="text-3xl font-black text-slate-800 mb-10 border-r-8 border-blue-600 pr-4"></h2>
-            
+        <div class="max-w-4xl mx-auto text-center">
+            <button onclick="closeOptions()" class="mb-6 text-blue-600 font-bold block"> ⬅ رجوع للأطفال </button>
+            <h2 id="selectedStudentName" class="text-3xl font-black text-slate-800 mb-10"></h2>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-                <div onclick="alert('فتح الخطة الشهرية لـ ' + currentStudentName)" class="p-12 bg-white border-4 border-blue-100 rounded-[3rem] text-center student-card shadow-xl">
+                <div onclick="openMonthsGrid()" class="p-12 bg-white border-4 border-blue-100 rounded-[3rem] student-card shadow-xl">
                     <span class="text-6xl block mb-4">📅</span>
                     <h3 class="text-2xl font-black text-blue-700">الخطة الشهرية</h3>
                 </div>
-                <div onclick="alert('فتح البيان اليومي لـ ' + currentStudentName)" class="p-12 bg-white border-4 border-emerald-100 rounded-[3rem] text-center student-card shadow-xl">
+                <div onclick="alert('قريباً: البيان اليومي')" class="p-12 bg-white border-4 border-emerald-100 rounded-[3rem] student-card shadow-xl">
                     <span class="text-6xl block mb-4">📝</span>
                     <h3 class="text-2xl font-black text-emerald-700">البيان اليومي</h3>
                 </div>
@@ -73,26 +70,46 @@
         </div>
     </div>
 
+    <div id="monthsGridScreen" class="admin-page hidden">
+        <div class="max-w-4xl mx-auto">
+            <button onclick="closeMonthsGrid()" class="mb-6 text-blue-600 font-bold"> ⬅ رجوع </button>
+            <h2 class="text-2xl font-black mb-8 text-center text-slate-800">اختر الشهر للخطة التعليمية</h2>
+            <div id="monthsContainer" class="grid grid-cols-3 md:grid-cols-4 gap-4">
+                </div>
+        </div>
+    </div>
+
+    <div id="monthlyPlanScreen" class="admin-page hidden overflow-y-auto">
+        <div class="max-w-3xl mx-auto pb-10">
+            <button onclick="closeMonthlyPlan()" class="mb-6 text-blue-600 font-bold"> ⬅ رجوع للشهور </button>
+            <h2 id="planHeader" class="text-2xl font-black text-blue-600 mb-8 border-r-8 border-blue-600 pr-4"></h2>
+            
+            <div class="space-y-6">
+                <div class="subject-card shadow-sm"><label class="block font-black text-blue-600 mb-2">📖 لغة عربية:</label>
+                    <textarea id="ar_plan" class="w-full p-3 bg-slate-50 border-none rounded-xl min-h-[100px] outline-none"></textarea></div>
+                <div class="subject-card shadow-sm"><label class="block font-black text-emerald-600 mb-2">🔤 انجليزي:</label>
+                    <textarea id="en_plan" class="w-full p-3 bg-slate-50 border-none rounded-xl min-h-[100px] outline-none"></textarea></div>
+                <div class="subject-card shadow-sm"><label class="block font-black text-orange-600 mb-2">🔢 Math:</label>
+                    <textarea id="math_plan" class="w-full p-3 bg-slate-50 border-none rounded-xl min-h-[100px] outline-none"></textarea></div>
+                <div class="subject-card shadow-sm"><label class="block font-black text-green-600 mb-2">🌙 الدين:</label>
+                    <textarea id="religion_plan" class="w-full p-3 bg-slate-50 border-none rounded-xl min-h-[100px] outline-none"></textarea></div>
+                <div class="subject-card shadow-sm"><label class="block font-black text-purple-600 mb-2">🎨 المهارات:</label>
+                    <textarea id="skills_plan" class="w-full p-3 bg-slate-50 border-none rounded-xl min-h-[100px] outline-none"></textarea></div>
+
+                <button onclick="saveMonthlyPlan()" class="w-full p-5 bg-blue-600 text-white rounded-2xl font-black text-lg shadow-lg">حفظ خطة الشهر ✅</button>
+            </div>
+        </div>
+    </div>
+
     <script>
-        const firebaseConfig = {
-            apiKey: "AIzaSyC4K55wOZy3w44cCNX1i_cmk4-g4P-L40",
-            authDomain: "many-circles.firebaseapp.com",
-            databaseURL: "https://many-circles-default-rtdb.firebaseio.com",
-            projectId: "many-circles",
-            storageBucket: "many-circles.firebasestorage.app",
-            messagingSenderId: "905475370717",
-            appId: "1:905475370717:web:587b788750f31a1d26f534"
-        };
+        const firebaseConfig = { apiKey: "AIzaSyC4K55wOZy3w44cCNX1i_cmk4-g4P-L40", authDomain: "many-circles.firebaseapp.com", databaseURL: "https://many-circles-default-rtdb.firebaseio.com", projectId: "many-circles", storageBucket: "many-circles.firebasestorage.app", messagingSenderId: "905475370717", appId: "1:905475370717:web:587b788750f31a1d26f534" };
         firebase.initializeApp(firebaseConfig);
         const db = firebase.database();
 
-        let currentStudentName = "";
+        let currentStudentId = "", currentStudentName = "", currentMonth = "";
+        const months = ["يناير", "فبراير", "مارس", "أبريل", "مايو", "يونيو", "يوليو", "أغسطس", "سبتمبر", "أكتوبر", "نوفمبر", "ديسمبر"];
 
-        function showAdminLogin() {
-            document.getElementById('mainScreen').classList.add('hidden');
-            document.getElementById('adminLogin').classList.remove('hidden');
-        }
-
+        function showAdminLogin() { document.getElementById('mainScreen').classList.add('hidden'); document.getElementById('adminLogin').classList.remove('hidden'); }
         function checkAdmin() {
             const name = document.getElementById('adminName').value.trim();
             const pass = document.getElementById('adminPass').value.trim();
@@ -106,38 +123,78 @@
 
         function addStudent() {
             const name = document.getElementById('studentName').value.trim();
-            if (name) {
-                db.ref('Students').push({ name: name }).then(() => {
-                    document.getElementById('studentName').value = "";
-                });
-            }
+            if (name) { db.ref('Students').push({ name: name }).then(() => { document.getElementById('studentName').value = ""; }); }
         }
 
         function loadStudents() {
             db.ref('Students').on('value', (snap) => {
-                const list = document.getElementById('studentsList');
-                list.innerHTML = "";
+                const list = document.getElementById('studentsList'); list.innerHTML = "";
                 snap.forEach(child => {
-                    const student = child.val();
                     const div = document.createElement('div');
-                    div.className = "bg-white p-6 rounded-2xl border-2 border-slate-100 shadow-sm text-center font-bold student-card";
-                    div.innerText = student.name;
-                    div.onclick = () => openStudentOptions(student.name);
+                    div.className = "bg-white p-6 rounded-2xl shadow-sm text-center font-bold student-card border-2";
+                    div.innerText = child.val().name;
+                    div.onclick = () => openStudentOptions(child.key, child.val().name);
                     list.appendChild(div);
                 });
             });
         }
 
-        function openStudentOptions(name) {
-            currentStudentName = name;
+        function openStudentOptions(id, name) {
+            currentStudentId = id; currentStudentName = name;
             document.getElementById('adminPanel').classList.add('hidden');
             document.getElementById('studentOptions').classList.remove('hidden');
             document.getElementById('selectedStudentName').innerText = "ملف الطفل: " + name;
         }
 
-        function closeOptions() {
+        function closeOptions() { document.getElementById('studentOptions').classList.add('hidden'); document.getElementById('adminPanel').classList.remove('hidden'); }
+
+        function openMonthsGrid() {
             document.getElementById('studentOptions').classList.add('hidden');
-            document.getElementById('adminPanel').classList.remove('hidden');
+            document.getElementById('monthsGridScreen').classList.remove('hidden');
+            const container = document.getElementById('monthsContainer');
+            container.innerHTML = "";
+            months.forEach((m, index) => {
+                const div = document.createElement('div');
+                div.className = "bg-white p-6 rounded-2xl text-center font-bold month-card shadow-sm border-2";
+                div.innerHTML = `<span class="text-blue-500 block text-xs">شهر ${index+1}</span> ${m}`;
+                div.onclick = () => openMonthlyPlan(m);
+                container.appendChild(div);
+            });
+        }
+
+        function closeMonthsGrid() { document.getElementById('monthsGridScreen').classList.add('hidden'); document.getElementById('studentOptions').classList.remove('hidden'); }
+
+        function openMonthlyPlan(monthName) {
+            currentMonth = monthName;
+            document.getElementById('monthsGridScreen').classList.add('hidden');
+            document.getElementById('monthlyPlanScreen').classList.remove('hidden');
+            document.getElementById('planHeader').innerText = `خطة ${monthName} لـ ${currentStudentName}`;
+            
+            // تحميل بيانات الشهر المحدد
+            db.ref(`MonthlyPlans/${currentStudentId}/${currentMonth}`).once('value', (snap) => {
+                const data = snap.val() || {};
+                document.getElementById('ar_plan').value = data.ar || "";
+                document.getElementById('en_plan').value = data.en || "";
+                document.getElementById('math_plan').value = data.math || "";
+                document.getElementById('religion_plan').value = data.religion || "";
+                document.getElementById('skills_plan').value = data.skills || "";
+            });
+        }
+
+        function closeMonthlyPlan() { document.getElementById('monthlyPlanScreen').classList.add('hidden'); document.getElementById('monthsGridScreen').classList.remove('hidden'); }
+
+        function saveMonthlyPlan() {
+            const data = {
+                ar: document.getElementById('ar_plan').value,
+                en: document.getElementById('en_plan').value,
+                math: document.getElementById('math_plan').value,
+                religion: document.getElementById('religion_plan').value,
+                skills: document.getElementById('skills_plan').value
+            };
+            db.ref(`MonthlyPlans/${currentStudentId}/${currentMonth}`).set(data).then(() => {
+                alert(`تم حفظ خطة شهر ${currentMonth} بنجاح ✅`);
+                closeMonthlyPlan();
+            });
         }
     </script>
 </body>
