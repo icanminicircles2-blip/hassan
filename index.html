@@ -3,83 +3,86 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Many Circles | الرئيسية</title>
+    <title>Many Circles | الإدارة</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700;900&display=swap" rel="stylesheet">
     <style>
         body { font-family: 'Cairo', sans-serif; background-color: #f1f5f9; }
         .glass { background: rgba(255, 255, 255, 0.9); backdrop-filter: blur(10px); border: 1px solid #e2e8f0; }
         .hidden { display: none; }
+        /* ستايل الصفحة البيضاء الكبيرة */
+        .admin-page { background-color: white; min-height: 100vh; width: 100%; position: fixed; top: 0; left: 0; padding: 20px; }
     </style>
 </head>
-<body class="min-h-screen flex items-center justify-center p-4">
+<body>
 
-    <div id="mainScreen" class="w-full max-w-md glass p-8 rounded-[2.5rem] shadow-2xl">
-        <div class="text-center mb-10">
+    <div id="mainScreen" class="min-h-screen flex items-center justify-center p-4">
+        <div class="w-full max-w-md glass p-8 rounded-[2.5rem] shadow-2xl text-center">
             <h1 class="text-4xl font-black text-blue-600 mb-2">Many Circles</h1>
-            <p class="text-slate-500 font-bold">اختر الدائرة الخاصة بك</p>
-        </div>
-
-        <div class="space-y-4">
-            <button onclick="showAdminLogin()" class="w-full flex items-center p-6 bg-white hover:bg-blue-600 group rounded-3xl transition-all shadow-sm border border-slate-100">
-                <div class="bg-blue-100 text-blue-600 p-3 rounded-2xl group-hover:bg-blue-400 group-hover:text-white transition-colors text-2xl">👤</div>
-                <div class="mr-4 text-right">
-                    <h2 class="font-bold text-slate-800 group-hover:text-white">دائرة المدير</h2>
-                    <p class="text-[10px] text-slate-400 group-hover:text-blue-100">إدارة النظام والمدرسين</p>
-                </div>
-            </button>
-
-            <button onclick="alert('قريباً سيتم فتح قسم المدرسين')" class="w-full flex items-center p-6 bg-white hover:bg-emerald-600 group rounded-3xl transition-all shadow-sm border border-slate-100">
-                <div class="bg-emerald-100 text-emerald-600 p-3 rounded-2xl group-hover:bg-emerald-400 group-hover:text-white transition-colors text-2xl">👨‍🏫</div>
-                <div class="mr-4 text-right">
-                    <h2 class="font-bold text-slate-800 group-hover:text-white">دائرة المدرسين</h2>
-                    <p class="text-[10px] text-slate-400 group-hover:text-emerald-100">التقارير ومتابعة الطلاب</p>
-                </div>
-            </button>
-
-            <button onclick="alert('قريباً سيتم فتح قسم أولياء الأمور')" class="w-full flex items-center p-6 bg-white hover:bg-amber-500 group rounded-3xl transition-all shadow-sm border border-slate-100">
-                <div class="bg-amber-100 text-amber-600 p-3 rounded-2xl group-hover:bg-amber-400 group-hover:text-white transition-colors text-2xl">🏠</div>
-                <div class="mr-4 text-right">
-                    <h2 class="font-bold text-slate-800 group-hover:text-white">أولياء الأمور</h2>
-                    <p class="text-[10px] text-slate-400 group-hover:text-amber-50">متابعة الأبناء</p>
-                </div>
-            </button>
+            <p class="text-slate-500 font-bold mb-10 italic">نظام إدارة الحضانة</p>
+            <div class="space-y-4">
+                <button onclick="showAdminLogin()" class="w-full flex items-center p-6 bg-white hover:bg-blue-600 group rounded-3xl transition-all shadow-sm border border-slate-100 text-right">
+                    <div class="bg-blue-100 text-blue-600 p-3 rounded-2xl group-hover:bg-blue-400 group-hover:text-white transition-colors text-2xl">👑</div>
+                    <div class="mr-4 text-right"><h2 class="font-bold text-slate-800 group-hover:text-white">ركن الإدارة</h2></div>
+                </button>
+            </div>
         </div>
     </div>
 
-    <div id="adminLogin" class="w-full max-w-md glass p-8 rounded-[2.5rem] shadow-2xl hidden text-center">
-        <h2 class="text-2xl font-bold mb-6">تحقق من الهوية</h2>
-        <input type="password" id="passInput" placeholder="أدخل كود المدير" class="w-full p-4 border rounded-2xl mb-4 text-center outline-none">
-        <button onclick="login()" class="w-full p-4 bg-blue-600 text-white rounded-2xl font-bold">دخول</button>
-        <button onclick="location.reload()" class="mt-4 text-slate-400 text-sm">رجوع للرئيسية</button>
+    <div id="adminLogin" class="min-h-screen flex items-center justify-center p-4 hidden">
+        <div class="w-full max-w-md glass p-8 rounded-[2.5rem] shadow-2xl text-center">
+            <h2 class="text-2xl font-bold mb-6 text-slate-800">تسجيل دخول</h2>
+            <div class="space-y-4">
+                <input type="text" id="adminName" placeholder="اسم المستخدم" class="w-full p-4 border rounded-2xl text-center outline-none focus:ring-2 ring-blue-500">
+                <input type="password" id="adminPass" placeholder="الكود السري" class="w-full p-4 border rounded-2xl text-center outline-none focus:ring-2 ring-blue-500 font-sans">
+                <button onclick="checkAdmin()" class="w-full p-4 bg-blue-600 text-white rounded-2xl font-bold shadow-lg">دخول</button>
+                <button onclick="location.reload()" class="mt-2 text-slate-400 text-sm">إلغاء</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="adminPanel" class="admin-page hidden">
+        <div class="max-w-4xl mx-auto">
+            <div class="flex justify-between items-center mb-10 border-b pb-4">
+                <h2 id="welcomeMsg" class="text-2xl font-black text-slate-800 tracking-tight"></h2>
+                <button onclick="location.reload()" class="bg-red-50 text-red-600 px-4 py-2 rounded-xl font-bold text-sm shadow-sm border border-red-100">تسجيل الخروج</button>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <button onclick="alert('فتحت الخطة الشهرية')" class="p-10 bg-blue-50 border-2 border-blue-200 rounded-[2rem] text-center hover:bg-blue-100 transition-all group shadow-sm">
+                    <div class="text-5xl mb-4 group-hover:scale-110 transition-transform">📅</div>
+                    <h3 class="text-2xl font-black text-blue-700">الخطة الشهرية</h3>
+                    <p class="text-blue-500 mt-2 font-medium">إدارة خطط الدروس والأنشطة</p>
+                </button>
+
+                <button onclick="alert('فتحت البيان اليومي')" class="p-10 bg-emerald-50 border-2 border-emerald-200 rounded-[2rem] text-center hover:bg-emerald-100 transition-all group shadow-sm">
+                    <div class="text-5xl mb-4 group-hover:scale-110 transition-transform">📝</div>
+                    <h3 class="text-2xl font-black text-emerald-700">البيان اليومي</h3>
+                    <p class="text-emerald-500 mt-2 font-medium">متابعة الحضور والتقارير اليومية</p>
+                </button>
+            </div>
+        </div>
     </div>
 
     <script>
-        const firebaseConfig = {
-            apiKey: "AIzaSyC4K55wOZy3w44cCNX1i_cmk4-g4P-L40",
-            authDomain: "many-circles.firebaseapp.com",
-            databaseURL: "https://many-circles-default-rtdb.firebaseio.com",
-            projectId: "many-circles",
-            storageBucket: "many-circles.firebasestorage.app",
-            messagingSenderId: "905475370717",
-            appId: "1:905475370717:web:587b788750f31a1d26f534"
-        };
-        firebase.initializeApp(firebaseConfig);
+        const allowedAdmins = ["حسن", "علياء", "مصطفى", "حنان"];
+        const secretCode = "اداره الحضانه";
 
         function showAdminLogin() {
             document.getElementById('mainScreen').classList.add('hidden');
             document.getElementById('adminLogin').classList.remove('hidden');
         }
 
-        function login() {
-            const pass = document.getElementById('passInput').value;
-            if(pass === "2026") {
-                alert("أهلاً بك يا مدير.. جاري فتح لوحة التحكم.");
-                // هنا سنضع كود لوحة التحكم في الخطوة القادمة
+        function checkAdmin() {
+            const name = document.getElementById('adminName').value.trim();
+            const pass = document.getElementById('adminPass').value.trim();
+
+            if (allowedAdmins.includes(name) && pass === secretCode) {
+                document.getElementById('adminLogin').classList.add('hidden');
+                document.getElementById('adminPanel').classList.remove('hidden');
+                document.getElementById('welcomeMsg').innerText = "لوحة تحكم المدير: " + name;
             } else {
-                alert("الكود غير صحيح");
+                alert("البيانات غير صحيحة!");
             }
         }
     </script>
