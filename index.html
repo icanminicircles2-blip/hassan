@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Many Circles | النظام الكامل 2026</title>
+    <title>Many Circles | النظام الشامل 2026</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
@@ -14,12 +14,13 @@
         .hidden { display: none; }
         .card-hover { transition: 0.3s; cursor: pointer; border-radius: 2rem; border: 2px solid #f1f5f9; position: relative; }
         .card-hover:hover { transform: translateY(-3px); border-color: #3b82f6; }
-        .main-box { transition: 0.3s; cursor: pointer; border-radius: 2.5rem; border: 2px solid white; }
-        .main-box:hover { transform: scale(1.02); box-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.1); }
         .del-btn { position: absolute; top: -10px; left: -10px; background: #ef4444; color: white; width: 25px; height: 25px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 12px; border: 2px solid white; cursor: pointer; z-index: 20; }
-        .subject-btn { padding: 30px; border-radius: 2rem; color: white; text-align: center; font-weight: 900; font-size: 1.4rem; cursor: pointer; transition: 0.3s; }
-        .goal-card { background: #f8fafc; padding: 20px; border-radius: 1.5rem; margin-top: 10px; border: 2px solid #e2e8f0; }
+        .section-title { font-weight: 900; color: #1e293b; border-right: 5px solid #3b82f6; padding-right: 10px; margin-bottom: 15px; margin-top: 20px; }
+        .follow-up-box { background: #fff; border: 2px solid #e2e8f0; border-radius: 1.5rem; padding: 20px; margin-bottom: 20px; }
+        .mood-btn { font-size: 2.5rem; filter: grayscale(1); transition: 0.3s; cursor: pointer; opacity: 0.4; }
+        .mood-btn.active { filter: grayscale(0); transform: scale(1.2); opacity: 1; }
         .input-style { width: 100%; padding: 12px; border-radius: 12px; border: 1px solid #cbd5e1; outline: none; margin-bottom: 8px; font-size: 14px; font-weight: bold; }
+        .check-grid label { display: flex; align-items: center; gap: 8px; font-size: 0.9rem; font-weight: bold; color: #475569; background: #f8fafc; padding: 8px; border-radius: 10px; }
     </style>
 </head>
 <body>
@@ -27,32 +28,29 @@
 <div id="mainScreen" class="min-h-screen flex items-center justify-center p-4">
     <div class="w-full max-w-md bg-white p-10 rounded-[3rem] shadow-2xl text-center border">
         <h1 class="text-4xl font-black text-blue-600 mb-8 italic">Many Circles</h1>
-        <button onclick="showLogin()" class="w-full p-5 bg-blue-600 text-white rounded-2xl font-bold">👑 دخول المديرين</button>
+        <button onclick="showLogin()" class="w-full p-5 bg-blue-600 text-white rounded-2xl font-bold shadow-lg">👑 دخول الإدارة</button>
     </div>
 </div>
 
 <div id="loginScreen" class="min-h-screen flex items-center justify-center p-4 hidden">
     <div class="w-full max-w-md bg-white p-8 rounded-[2.5rem] shadow-2xl text-center border">
-        <input type="text" id="adminName" placeholder="اسم المدير" class="w-full p-4 border rounded-2xl mb-4 text-center outline-none bg-slate-50">
-        <input type="password" id="adminPass" placeholder="الكود السري" class="w-full p-4 border rounded-2xl mb-6 text-center outline-none bg-slate-50">
-        <button onclick="login()" class="w-full p-4 bg-blue-600 text-white rounded-2xl font-bold">دخول</button>
+        <input type="text" id="adminName" placeholder="اسم المستخدم" class="w-full p-4 border rounded-2xl mb-4 text-center outline-none bg-slate-50 font-bold">
+        <input type="password" id="adminPass" placeholder="الكود السري" class="w-full p-4 border rounded-2xl mb-6 text-center outline-none bg-slate-50 font-bold">
+        <button onclick="login()" class="w-full p-4 bg-blue-600 text-white rounded-2xl font-bold shadow-md">دخول</button>
     </div>
 </div>
 
 <div id="dashboard" class="admin-page hidden bg-slate-50">
     <div class="max-w-4xl mx-auto pt-10 px-4">
-        <div class="flex justify-between items-center mb-12">
-            <h2 class="text-2xl font-black text-slate-800">لوحة التحكم</h2>
-            <button onclick="location.reload()" class="bg-red-100 text-red-600 px-4 py-2 rounded-xl font-bold text-sm">خروج</button>
-        </div>
+        <div class="flex justify-between items-center mb-12"><h2 class="text-2xl font-black text-slate-800">لوحة التحكم</h2><button onclick="location.reload()" class="bg-red-50 text-red-500 px-4 py-2 rounded-xl font-bold text-xs border border-red-100">تسجيل خروج</button></div>
         <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-            <div onclick="openStudentsSection()" class="main-box bg-white p-10 shadow-xl text-center border-b-8 border-blue-500">
+            <div onclick="openStudentsSection()" class="bg-white p-10 rounded-[2.5rem] shadow-xl text-center border-b-8 border-blue-500 cursor-pointer hover:scale-105 transition">
                 <div class="text-6xl mb-4">👶</div><h3 class="text-2xl font-black text-blue-600">الأطفال</h3>
             </div>
-            <div onclick="alert('قريباً')" class="main-box bg-white p-10 shadow-xl text-center border-b-8 border-emerald-500">
+            <div class="bg-white p-10 rounded-[2.5rem] shadow-xl text-center border-b-8 border-emerald-500 opacity-50">
                 <div class="text-6xl mb-4">👩‍🏫</div><h3 class="text-2xl font-black text-emerald-600">المدرسين</h3>
             </div>
-            <div onclick="alert('قريباً')" class="main-box bg-white p-10 shadow-xl text-center border-b-8 border-purple-500">
+            <div class="bg-white p-10 rounded-[2.5rem] shadow-xl text-center border-b-8 border-purple-500 opacity-50">
                 <div class="text-6xl mb-4">👨‍👩‍👦</div><h3 class="text-2xl font-black text-purple-600">أولياء الأمور</h3>
             </div>
         </div>
@@ -65,11 +63,11 @@
             <button onclick="backToDashboard()" class="text-blue-600 font-bold bg-blue-50 px-4 py-2 rounded-xl">⬅ العودة</button>
             <button onclick="openTrash()" class="bg-red-50 text-red-500 px-4 py-2 rounded-xl font-bold border border-red-200">🗑️ السلة</button>
         </div>
-        <div class="bg-slate-50 p-6 rounded-[2rem] mb-6 text-center border-2 border-dashed border-slate-300">
-            <input type="text" id="newStudentName" placeholder="اسم الطفل الجديد" class="p-4 rounded-2xl border mb-2 w-full md:w-64 text-center outline-none font-bold">
-            <button onclick="addStudent()" class="bg-blue-600 text-white px-8 py-4 rounded-2xl font-bold shadow-md">إضافة +</button>
+        <div class="bg-slate-50 p-6 rounded-[2.5rem] mb-6 text-center border-2 border-dashed border-slate-300">
+            <input type="text" id="newStudentName" placeholder="اسم الطفل الرباعي" class="p-4 rounded-2xl border mb-2 w-full md:w-64 text-center font-bold outline-none">
+            <button onclick="addStudent()" class="bg-blue-600 text-white px-8 py-4 rounded-2xl font-bold shadow-md hover:bg-blue-700 transition">إضافة +</button>
         </div>
-        <input type="text" id="searchInput" onkeyup="filterStudents()" placeholder="🔍 ابحث عن اسم الطفل..." class="w-full p-4 rounded-2xl border-2 border-blue-50 outline-none mb-8 text-center font-bold">
+        <input type="text" id="searchInput" onkeyup="filterStudents()" placeholder="🔍 ابحث عن اسم طفل..." class="w-full p-4 rounded-2xl border-2 border-blue-50 outline-none mb-8 text-center font-bold text-blue-600">
         <div id="studentsList" class="grid grid-cols-2 md:grid-cols-3 gap-6"></div>
     </div>
 </div>
@@ -81,7 +79,7 @@
             <button onclick="clearTrashFinal()" class="text-red-500 text-xs font-bold underline">تفريغ نهائي</button>
         </div>
         <h2 class="text-3xl font-black text-red-600 mb-8 text-center italic">المحذوفات 🗑️</h2>
-        <div id="trashStudentsList" class="space-y-3 mb-10"></div>
+        <div id="trashStudentsList" class="space-y-3"></div>
     </div>
 </div>
 
@@ -93,59 +91,133 @@
     </div>
 </div>
 
-<div id="choiceScreen" class="admin-page hidden bg-slate-50">
+<div id="choiceScreen" class="admin-page hidden bg-slate-100">
     <div class="max-w-4xl mx-auto pt-20">
         <button onclick="closeChoice()" class="mb-10 text-blue-600 font-bold">⬅ رجوع للشهور</button>
         <div class="grid grid-cols-1 md:grid-cols-2 gap-8 px-4">
-            <div onclick="openPlanOrFollow('PLAN')" class="main-box bg-white p-12 shadow-2xl text-center border-t-8 border-orange-400">
-                <div class="text-7xl mb-4">📋</div>
-                <h3 class="text-3xl font-black text-orange-500">الخطة الشهرية</h3>
-                <p class="text-slate-400 mt-4 font-bold italic">الأهداف والمساعدة والنسب</p>
+            <div onclick="openPlanMenu()" class="bg-white p-12 shadow-2xl rounded-[3rem] text-center border-t-8 border-orange-400 cursor-pointer hover:scale-105 transition">
+                <div class="text-7xl mb-4">📋</div><h3 class="text-3xl font-black text-orange-500">الخطة الشهرية</h3>
+                <p class="text-slate-400 mt-4 font-bold italic text-sm">الأهداف والمساعدة والنسب</p>
             </div>
-            <div onclick="openPlanOrFollow('FOLLOW')" class="main-box bg-white p-12 shadow-2xl text-center border-t-8 border-blue-500">
-                <div class="text-7xl mb-4">🚀</div>
-                <h3 class="text-3xl font-black text-blue-600">Follow Up</h3>
-                <p class="text-slate-400 mt-4 font-bold italic">مساحة المتابعة اليومية (قريباً)</p>
+            <div onclick="openFollowUp()" class="bg-white p-12 shadow-2xl rounded-[3rem] text-center border-t-8 border-blue-500 cursor-pointer hover:scale-105 transition">
+                <div class="text-7xl mb-4">🚀</div><h3 class="text-3xl font-black text-blue-600">Follow Up</h3>
+                <p class="text-slate-400 mt-4 font-bold italic text-sm">التقرير اليومي (مثل الصورة)</p>
             </div>
         </div>
     </div>
 </div>
 
-<div id="followUpScreen" class="admin-page hidden">
-    <div class="max-w-4xl mx-auto text-center pt-20 px-4">
-        <button onclick="closeFollowUp()" class="mb-10 text-blue-600 font-bold block text-right">⬅ رجوع</button>
-        <div class="p-20 bg-blue-50 rounded-[3rem] border-2 border-dashed border-blue-200">
-            <div class="text-8xl mb-6">⏳</div>
-            <h2 class="text-3xl font-black text-blue-700 mb-4">Follow Up</h2>
-            <p class="text-slate-500 font-bold">هذه المنطقة مخصصة للمتابعة، وهي فارغة حالياً كما طلبت.</p>
+<div id="followUpScreen" class="admin-page hidden overflow-y-auto bg-slate-50">
+    <div class="max-w-2xl mx-auto pb-20">
+        <div class="flex justify-between items-center mb-6">
+            <button onclick="closeFollowUp()" class="text-blue-600 font-bold">⬅ رجوع</button>
+            <span class="bg-white px-4 py-2 rounded-xl shadow-sm font-black text-blue-600 border" id="followUpDate"></span>
         </div>
+        <h2 class="text-2xl font-black text-center mb-6 bg-blue-600 text-white p-4 rounded-2xl shadow-lg italic">Student Daily Report</h2>
+        
+        <div class="follow-up-box shadow-md">
+            <h3 class="section-title text-purple-600">Mood | الحالة المزاجية</h3>
+            <div class="flex justify-around items-center">
+                <div onclick="setMood('happy', this)" class="text-center cursor-pointer group">
+                    <div class="mood-btn">🤩</div><p class="text-[10px] font-black group-hover:text-blue-500">Happy</p>
+                </div>
+                <div onclick="setMood('angry', this)" class="text-center cursor-pointer group">
+                    <div class="mood-btn">😡</div><p class="text-[10px] font-black group-hover:text-blue-500">Angry</p>
+                </div>
+                <div onclick="setMood('sad', this)" class="text-center cursor-pointer group">
+                    <div class="mood-btn">😢</div><p class="text-[10px] font-black group-hover:text-blue-500">Sad</p>
+                </div>
+                <div onclick="setMood('naughty', this)" class="text-center cursor-pointer group">
+                    <div class="mood-btn">🤪</div><p class="text-[10px] font-black group-hover:text-blue-500">Naughty</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="follow-up-box shadow-md">
+            <h3 class="section-title text-emerald-600">Meals | الوجبات</h3>
+            <div class="space-y-4">
+                <div class="flex items-center justify-between bg-slate-50 p-3 rounded-xl">
+                    <span class="font-black text-slate-700">Breakfast:</span>
+                    <select id="meal_breakfast" class="bg-white border p-2 rounded-lg font-bold"><option>All</option><option>Some</option><option>None</option><option>More</option></select>
+                </div>
+                <div class="flex items-center justify-between bg-slate-50 p-3 rounded-xl">
+                    <span class="font-black text-slate-700">Lunch:</span>
+                    <select id="meal_lunch" class="bg-white border p-2 rounded-lg font-bold"><option>All</option><option>Some</option><option>None</option><option>More</option></select>
+                </div>
+                <div class="flex items-center justify-between bg-slate-50 p-3 rounded-xl">
+                    <span class="font-black text-slate-700">Snacks:</span>
+                    <select id="meal_snacks" class="bg-white border p-2 rounded-lg font-bold"><option>All</option><option>Some</option><option>None</option><option>More</option></select>
+                </div>
+            </div>
+        </div>
+
+        <div class="grid grid-cols-2 gap-4">
+            <div class="follow-up-box shadow-md">
+                <h3 class="section-title text-blue-500">Nap | النوم</h3>
+                <input type="text" id="nap_from" placeholder="From 00:00" class="input-style">
+                <input type="text" id="nap_to" placeholder="To 00:00" class="input-style">
+            </div>
+            <div class="follow-up-box shadow-md">
+                <h3 class="section-title text-cyan-500">Potty | الحمام</h3>
+                <div class="space-y-2 mt-4 font-bold">
+                    <label class="flex items-center gap-2"><input type="checkbox" id="potty_urine" class="w-5 h-5"> Urine</label>
+                    <label class="flex items-center gap-2"><input type="checkbox" id="potty_stool" class="w-5 h-5"> Stool</label>
+                </div>
+            </div>
+        </div>
+
+        <div class="follow-up-box shadow-md">
+            <h3 class="section-title text-pink-500">Activities | الأنشطة</h3>
+            <div class="grid grid-cols-2 gap-2 check-grid">
+                <label><input type="checkbox" class="act-check" value="Montessori"> Montessori</label>
+                <label><input type="checkbox" class="act-check" value="Garden"> Garden</label>
+                <label><input type="checkbox" class="act-check" value="Colouring"> Colouring</label>
+                <label><input type="checkbox" class="act-check" value="Art"> Art</label>
+                <label><input type="checkbox" class="act-check" value="Swimming"> Swimming</label>
+                <label><input type="checkbox" class="act-check" value="Puzzle"> Puzzle</label>
+                <label><input type="checkbox" class="act-check" value="Moral Values"> Moral Values</label>
+                <label><input type="checkbox" class="act-check" value="Songs"> Songs</label>
+                <label><input type="checkbox" class="act-check" value="Etiquette"> Etiquette</label>
+                <label><input type="checkbox" class="act-check" value="Circle Time"> Circle Time</label>
+                <label><input type="checkbox" class="act-check" value="Dancing"> Dancing</label>
+                <label><input type="checkbox" class="act-check" value="P.E"> P.E</label>
+            </div>
+        </div>
+
+        <div class="follow-up-box shadow-md">
+            <h3 class="section-title text-slate-800">Comments | ملاحظات</h3>
+            <textarea id="teacher_comment" placeholder="Teacher's Comments..." class="input-style h-24 mb-3"></textarea>
+            <textarea id="parent_comment" placeholder="Parent's Comments..." class="input-style h-24"></textarea>
+        </div>
+
+        <button onclick="saveDailyReport()" class="w-full p-6 bg-blue-600 text-white rounded-3xl font-black text-xl shadow-2xl hover:bg-blue-700 transition">حفظ التقرير اليومي ✅</button>
     </div>
 </div>
 
 <div id="subjectsMenu" class="admin-page hidden">
     <div class="max-w-4xl mx-auto text-center">
         <button onclick="closeSubjects()" class="mb-8 text-blue-600 font-bold block text-right">⬅ رجوع</button>
-        <h2 class="text-2xl font-black mb-8 text-orange-500 italic underline">تعديل الخطة التعليمية</h2>
+        <h2 class="text-3xl font-black mb-10 text-orange-500 italic">الخطة التعليمية</h2>
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div onclick="openGoalEntry('اللغة العربية','#ef4444','📖')" class="subject-btn bg-red-500 shadow-lg">📖 اللغة العربية</div>
-            <div onclick="openGoalEntry('English','#3b82f6','🔤')" class="subject-btn bg-blue-500 shadow-lg">🔤 English</div>
-            <div onclick="openGoalEntry('Math','#10b981','🔢')" class="subject-btn bg-emerald-500 shadow-lg">🔢 Math</div>
-            <div onclick="openGoalEntry('التربية الدينية','#f59e0b','🌙')" class="subject-btn bg-amber-500 shadow-lg">🌙 التربية الدينية</div>
-            <div onclick="openGoalEntry('تنمية المهارات','#8b5cf6','🎨')" class="subject-btn bg-purple-500 shadow-lg">🎨 تنمية المهارات</div>
+            <div onclick="openGoalEntry('اللغة العربية','#ef4444','📖')" class="p-8 bg-red-500 text-white rounded-[2rem] font-black text-xl shadow-lg cursor-pointer">📖 اللغة العربية</div>
+            <div onclick="openGoalEntry('English','#3b82f6','🔤')" class="p-8 bg-blue-500 text-white rounded-[2rem] font-black text-xl shadow-lg cursor-pointer">🔤 English</div>
+            <div onclick="openGoalEntry('Math','#10b981','🔢')" class="p-8 bg-emerald-500 text-white rounded-[2rem] font-black text-xl shadow-lg cursor-pointer">🔢 Math</div>
+            <div onclick="openGoalEntry('التربية الدينية','#f59e0b','🌙')" class="p-8 bg-amber-500 text-white rounded-[2rem] font-black text-xl shadow-lg cursor-pointer">🌙 التربية الدينية</div>
+            <div onclick="openGoalEntry('تنمية المهارات','#8b5cf6','🎨')" class="p-8 bg-purple-500 text-white rounded-[2rem] font-black text-xl shadow-lg cursor-pointer">🎨 تنمية المهارات</div>
         </div>
     </div>
 </div>
 
 <div id="goalEntryScreen" class="admin-page hidden overflow-y-auto">
-    <div class="max-w-2xl mx-auto pb-20 px-2">
+    <div class="max-w-2xl mx-auto pb-20">
         <button onclick="closeGoalEntry()" class="mb-6 text-blue-600 font-bold block text-right">⬅ رجوع للمواد</button>
         <div id="entryHeader" class="p-8 rounded-[2rem] text-white text-center mb-8 shadow-xl">
             <h2 id="entryTitle" class="text-3xl font-black"></h2>
             <p class="mt-2 font-bold opacity-90 italic">الخطة الشهرية: أهداف + تقييم</p>
         </div>
-        <div id="goalsListContainer" class="space-y-4"></div>
+        <div id="goalsListContainer" class="space-y-4 px-2"></div>
         <button onclick="addNewGoalRow()" class="w-full mt-4 p-4 bg-slate-100 rounded-2xl font-bold border-2 border-dashed border-slate-300 shadow-sm">+ إضافة هدف جديد</button>
-        <button onclick="saveGoals(event)" class="w-full mt-10 p-6 bg-blue-600 text-white rounded-[2rem] font-black text-xl shadow-2xl">حفظ الخطة ✅</button>
+        <button onclick="saveGoals(event)" class="w-full mt-10 p-6 bg-orange-500 text-white rounded-[2rem] font-black text-xl shadow-2xl">حفظ الخطة ✅</button>
     </div>
 </div>
 
@@ -165,169 +237,144 @@ const db = firebase.database();
 
 const MASTER_CODE = "2012";
 const ADMINS = ["حسن","علياء","مصطفى","حنان"];
-const months = ["يناير","فبراير","مارس","أبريل","مايو","يونيو","يوليو","أغسطس","سبتمبر","أكتوبر","نوفمبر","ديسمبر"];
+const monthsArr = ["يناير","فبراير","مارس","أبريل","مايو","يونيو","يوليو","أغسطس","سبتمبر","أكتوبر","نوفمبر","ديسمبر"];
 
-let sId="", sName="", mName="", currentSub="";
+let sId="", sName="", mName="", currentSub="", selectedMood="";
 
-// Login Logic
+// Login
 function showLogin(){ mainScreen.classList.add('hidden'); loginScreen.classList.remove('hidden'); }
 function login(){
-    const n=adminName.value.trim();
-    const p=adminPass.value.trim();
+    const n=adminName.value.trim(); const p=adminPass.value.trim();
     if(ADMINS.includes(n)&&p===MASTER_CODE){ loginScreen.classList.add('hidden'); dashboard.classList.remove('hidden'); }
     else alert("البيانات غير صحيحة");
 }
 
-// Students Logic
+// Students & Trash
 function openStudentsSection(){ dashboard.classList.add('hidden'); studentsSection.classList.remove('hidden'); loadStudents(); }
-function backToDashboard(){ studentsSection.classList.add('hidden'); dashboard.classList.remove('hidden'); }
-
 function loadStudents(){
     db.ref('Students').on('value',snap=>{
         studentsList.innerHTML="";
         snap.forEach(c=>{
             const d=document.createElement('div');
-            d.className="bg-white p-8 rounded-[2.5rem] shadow-sm font-black card-hover text-center border";
+            d.className="bg-white p-8 rounded-[2.5rem] shadow-sm font-black card-hover text-center border text-slate-700";
             d.innerHTML=`<div class="del-btn" onclick="trashStudent('${c.key}','${c.val().name}')">X</div>${c.val().name}`;
             d.onclick=(e)=>{ if(e.target.className!=='del-btn'){ sId=c.key; sName=c.val().name; openMonths(); } };
             studentsList.appendChild(d);
         });
     });
 }
-
-function addStudent(){
-    const n=newStudentName.value.trim();
-    if(n) { db.ref('Students').push({name:n}); newStudentName.value=""; }
-}
-
-function filterStudents() {
-    const q=searchInput.value.toLowerCase();
-    document.querySelectorAll('#studentsList > div').forEach(c=>{
-        c.style.display=c.innerText.toLowerCase().includes(q)?"block":"none";
-    });
-}
-
-// Trash Logic
 function trashStudent(id, name){
-    if(confirm(`هل متأكد من حذف ${name}؟`)){
+    if(confirm(`نقل ${name} للسلة؟`)){
         db.ref('Students/'+id).once('value', s=>{
             db.ref('TrashBin/Students/'+id).set(s.val()).then(()=> db.ref('Students/'+id).remove());
         });
     }
 }
-
 function openTrash(){
-    studentsSection.classList.add('hidden');
-    trashScreen.classList.remove('hidden');
+    studentsSection.classList.add('hidden'); trashScreen.classList.remove('hidden');
     db.ref('TrashBin/Students').on('value', snap=>{
         trashStudentsList.innerHTML = snap.exists() ? "" : "<p class='text-center text-slate-400'>السلة فارغة</p>";
         snap.forEach(c => {
-            trashStudentsList.innerHTML += `<div class="bg-white p-4 rounded-xl flex justify-between items-center shadow-sm border">
-                <span class="font-bold">${c.val().name}</span>
-                <button onclick="restoreStudent('${c.key}')" class="bg-blue-600 text-white px-4 py-1 rounded-lg text-xs font-bold">استعادة</button>
-            </div>`;
+            trashStudentsList.innerHTML += `<div class="bg-white p-4 rounded-xl flex justify-between items-center shadow-sm border"><span class="font-bold">${c.val().name}</span><button onclick="restoreStudent('${c.key}')" class="bg-blue-600 text-white px-4 py-1 rounded-lg text-xs font-bold">استعادة</button></div>`;
         });
     });
 }
-
 function restoreStudent(id){
     db.ref('TrashBin/Students/'+id).once('value', s=>{
         db.ref('Students/'+id).set(s.val()).then(()=> db.ref('TrashBin/Students/'+id).remove());
     });
 }
-
-function clearTrashFinal(){
-    if(prompt("اكتب كود التفريغ النهائي:")===MASTER_CODE) db.ref('TrashBin').remove();
+function clearTrashFinal(){ if(prompt("كود التفريغ:")===MASTER_CODE) db.ref('TrashBin').remove(); }
+function addStudent(){ const n=newStudentName.value.trim(); if(n){ db.ref('Students').push({name:n}); newStudentName.value=""; } }
+function filterStudents() {
+    const q=searchInput.value.toLowerCase();
+    document.querySelectorAll('#studentsList > div').forEach(c=>{ c.style.display=c.innerText.toLowerCase().includes(q)?"block":"none"; });
 }
 
-// Plan/FollowUp Navigation
+// Navigation
 function openMonths(){
-    studentsSection.classList.add('hidden');
-    monthsScreen.classList.remove('hidden');
-    currentStudentTitle.innerText=sName;
-    monthsGrid.innerHTML="";
-    months.forEach(m=>{
-        const d=document.createElement('div');
-        d.className="bg-white p-5 rounded-2xl border-2 font-bold hover:border-blue-500 hover:text-blue-500 cursor-pointer text-center transition";
-        d.innerText=m;
-        d.onclick=()=>{ mName=m; openChoiceScreen(); };
-        monthsGrid.appendChild(d);
+    studentsSection.classList.add('hidden'); monthsScreen.classList.remove('hidden');
+    currentStudentTitle.innerText=sName; monthsGrid.innerHTML="";
+    monthsArr.forEach(m=>{
+        const d=document.createElement('div'); d.className="bg-white p-5 rounded-2xl border-2 font-bold hover:border-blue-500 hover:text-blue-500 cursor-pointer text-center transition";
+        d.innerText=m; d.onclick=()=>{ mName=m; openChoiceScreen(); }; monthsGrid.appendChild(d);
+    });
+}
+function openChoiceScreen(){ monthsScreen.classList.add('hidden'); choiceScreen.classList.remove('hidden'); }
+
+// Follow Up Logic (The Image Section)
+function openFollowUp(){
+    choiceScreen.classList.add('hidden'); followUpScreen.classList.remove('hidden');
+    const today = new Date().toLocaleDateString('ar-EG', { day:'numeric', month:'long', year:'numeric'});
+    followUpDate.innerText = today;
+    // Reset Form
+    selectedMood = ""; document.querySelectorAll('.mood-btn').forEach(b=>b.classList.remove('active'));
+    document.querySelectorAll('.act-check').forEach(c=>c.checked=false);
+    teacher_comment.value = ""; parent_comment.value = "";
+}
+function setMood(mood, el){
+    selectedMood = mood;
+    document.querySelectorAll('.mood-btn').forEach(btn => btn.parentElement.querySelector('.mood-btn').classList.remove('active'));
+    el.querySelector('.mood-btn').classList.add('active');
+}
+function saveDailyReport(){
+    const acts = []; document.querySelectorAll('.act-check:checked').forEach(i => acts.push(i.value));
+    const report = {
+        mood: selectedMood,
+        meals: { breakfast: meal_breakfast.value, lunch: meal_lunch.value, snacks: meal_snacks.value },
+        nap: { from: nap_from.value, to: nap_to.value },
+        potty: { urine: potty_urine.checked, stool: potty_stool.checked },
+        activities: acts,
+        teacherComment: teacher_comment.value,
+        parentComment: parent_comment.value,
+        timestamp: Date.now()
+    };
+    const dateId = new Date().toISOString().split('T')[0];
+    db.ref(`DailyReports/${sId}/${dateId}`).set(report).then(() => {
+        alert("تم حفظ تقرير اليوم بنجاح! ✅");
+        closeFollowUp();
     });
 }
 
-function openChoiceScreen(){ monthsScreen.classList.add('hidden'); choiceScreen.classList.remove('hidden'); }
-
-function openPlanOrFollow(mode){
-    choiceScreen.classList.add('hidden');
-    if(mode === 'PLAN') subjectsMenu.classList.remove('hidden');
-    else followUpScreen.classList.remove('hidden');
-}
-
-// Goals Entry
+// Plan Logic
+function openPlanMenu(){ choiceScreen.classList.add('hidden'); subjectsMenu.classList.remove('hidden'); }
 function openGoalEntry(sub,col,ico){
-    currentSub=sub;
-    subjectsMenu.classList.add('hidden');
-    goalEntryScreen.classList.remove('hidden');
-    entryHeader.style.backgroundColor=col;
-    entryTitle.innerText=ico+" "+sub;
+    currentSub=sub; subjectsMenu.classList.add('hidden'); goalEntryScreen.classList.remove('hidden');
+    entryHeader.style.backgroundColor=col; entryTitle.innerText=ico+" "+sub;
     goalsListContainer.innerHTML="";
     db.ref(`MonthlyPlans/${sId}/${mName}/${sub}`).once('value',snap=>{
         if(snap.exists()) snap.forEach(g=>addNewGoalRow(g.val()));
     });
 }
-
 function addNewGoalRow(data=null){
-    const d=document.createElement('div');
-    d.className="goal-card shadow-sm";
+    const d=document.createElement('div'); d.className="goal-card shadow-sm";
     d.innerHTML = `
         <input class="input-style goal-name" placeholder="اسم الهدف" value="${data?data.name:''}">
         <div class="grid grid-cols-2 gap-3 mt-2">
-            <div>
-                <label class="text-[10px] font-bold text-slate-400 mr-2">نوع المساعدة</label>
-                <select class="input-style goal-help bg-white">
-                    <option>مساعدة كبيرة</option><option>مساعدة بسيطة</option><option>بدون مساعدة</option>
-                </select>
-            </div>
-            <div>
-                <label class="text-[10px] font-bold text-slate-400 mr-2">نسبة الإنجاز</label>
-                <select class="input-style goal-score bg-white">
-                    <option>0%</option><option>25%</option><option>50%</option><option>75%</option><option>100%</option>
-                </select>
-            </div>
+            <select class="input-style goal-help bg-white"><option>مساعدة كبيرة</option><option>مساعدة بسيطة</option><option>بدون مساعدة</option></select>
+            <select class="input-style goal-score bg-white"><option>0%</option><option>25%</option><option>50%</option><option>75%</option><option>100%</option></select>
         </div>
-        <button class="text-red-500 text-[10px] w-full mt-2 font-bold underline" onclick="this.closest('.goal-card').remove()">حذف من القائمة</button>
+        <button class="text-red-500 text-[10px] w-full mt-2 font-bold underline" onclick="this.closest('.goal-card').remove()">حذف</button>
     `;
-    if(data){
-        d.querySelector('.goal-help').value = data.help || "مساعدة كبيرة";
-        d.querySelector('.goal-score').value = data.score || "0%";
-    }
+    if(data){ d.querySelector('.goal-help').value = data.help; d.querySelector('.goal-score').value = data.score; }
     goalsListContainer.appendChild(d);
 }
-
 function saveGoals(e){
-    const btn=e.target; btn.disabled=true;
     const goals=[];
     document.querySelectorAll('.goal-card').forEach(el=>{
         const n=el.querySelector('.goal-name').value.trim();
-        if(n) goals.push({
-            name:n,
-            help:el.querySelector('.goal-help').value,
-            score:el.querySelector('.goal-score').value
-        });
+        if(n) goals.push({ name:n, help:el.querySelector('.goal-help').value, score:el.querySelector('.goal-score').value });
     });
-    db.ref(`MonthlyPlans/${sId}/${mName}/${currentSub}`).set(goals).then(()=>{
-        alert("تم الحفظ بنجاح ✅");
-        btn.disabled=false;
-        closeGoalEntry();
-    });
+    db.ref(`MonthlyPlans/${sId}/${mName}/${currentSub}`).set(goals).then(()=>{ alert("تم الحفظ ✅"); closeGoalEntry(); });
 }
 
-// UI Closers
+// Closers
+function backToDashboard(){ studentsSection.classList.add('hidden'); dashboard.classList.remove('hidden'); }
 function closeMonths(){ monthsScreen.classList.add('hidden'); studentsSection.classList.remove('hidden'); }
 function closeChoice(){ choiceScreen.classList.add('hidden'); monthsScreen.classList.remove('hidden'); }
+function closeFollowUp(){ followUpScreen.classList.add('hidden'); choiceScreen.classList.remove('hidden'); }
 function closeSubjects(){ subjectsMenu.classList.add('hidden'); choiceScreen.classList.remove('hidden'); }
 function closeGoalEntry(){ goalEntryScreen.classList.add('hidden'); subjectsMenu.classList.remove('hidden'); }
-function closeFollowUp(){ followUpScreen.classList.add('hidden'); choiceScreen.classList.remove('hidden'); }
 function closeTrash(){ trashScreen.classList.add('hidden'); studentsSection.classList.remove('hidden'); }
 
 </script>
