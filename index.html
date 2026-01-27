@@ -23,153 +23,298 @@
 </head>
 <body>
 
-    <div id="mainScreen" class="min-h-screen flex items-center justify-center p-4">
-        <div class="w-full max-w-md bg-white p-10 rounded-[3rem] shadow-2xl text-center border">
-            <h1 class="text-4xl font-black text-blue-600 mb-8">Many Circles</h1>
-            <button onclick="showLogin()" class="w-full p-5 bg-blue-600 text-white rounded-2xl font-bold">👑 دخول المديرين</button>
-        </div>
+<div id="mainScreen" class="min-h-screen flex items-center justify-center p-4">
+    <div class="w-full max-w-md bg-white p-10 rounded-[3rem] shadow-2xl text-center border">
+        <h1 class="text-4xl font-black text-blue-600 mb-8">Many Circles</h1>
+        <button onclick="showLogin()" class="w-full p-5 bg-blue-600 text-white rounded-2xl font-bold">👑 دخول المديرين</button>
     </div>
+</div>
 
-    <div id="loginScreen" class="min-h-screen flex items-center justify-center p-4 hidden">
-        <div class="w-full max-w-md bg-white p-8 rounded-[2.5rem] shadow-2xl text-center">
-            <input type="text" id="adminName" placeholder="اسم المدير" class="w-full p-4 border rounded-2xl mb-4 text-center outline-none">
-            <input type="password" id="adminPass" placeholder="الكود السري" class="w-full p-4 border rounded-2xl mb-6 text-center outline-none">
-            <button onclick="login()" class="w-full p-4 bg-blue-600 text-white rounded-2xl font-bold">دخول</button>
-        </div>
+<div id="loginScreen" class="min-h-screen flex items-center justify-center p-4 hidden">
+    <div class="w-full max-w-md bg-white p-8 rounded-[2.5rem] shadow-2xl text-center">
+        <input type="text" id="adminName" placeholder="اسم المدير" class="w-full p-4 border rounded-2xl mb-4 text-center outline-none">
+        <input type="password" id="adminPass" placeholder="الكود السري" class="w-full p-4 border rounded-2xl mb-6 text-center outline-none">
+        <button onclick="login()" class="w-full p-4 bg-blue-600 text-white rounded-2xl font-bold">دخول</button>
     </div>
+</div>
 
-    <div id="adminPanel" class="admin-page hidden">
-        <div class="max-w-4xl mx-auto">
-            <div class="flex justify-between items-center mb-8 border-b pb-4">
-                <span id="welcomeMsg" class="font-black text-blue-600"></span>
-                <div class="flex gap-2">
-                    <div onclick="openTrash()" class="trash-btn">🗑️ السلة</div>
-                    <button onclick="location.reload()" class="bg-slate-100 px-4 py-2 rounded-xl text-xs font-bold text-slate-500">خروج</button>
-                </div>
+<div id="adminPanel" class="admin-page hidden">
+    <div class="max-w-4xl mx-auto">
+        <div class="flex justify-between items-center mb-8 border-b pb-4">
+            <span id="welcomeMsg" class="font-black text-blue-600"></span>
+            <div class="flex gap-2">
+                <div onclick="openTrash()" class="trash-btn">🗑️ السلة</div>
+                <button onclick="location.reload()" class="bg-slate-100 px-4 py-2 rounded-xl text-xs font-bold text-slate-500">خروج</button>
             </div>
-            <div class="bg-slate-50 p-6 rounded-[2rem] mb-10 text-center border-2 border-dashed border-slate-300">
-                <input type="text" id="newStudentName" placeholder="اسم الطفل" class="p-4 rounded-2xl border mb-2 w-full md:w-64 text-center outline-none">
-                <button onclick="addStudent()" class="bg-blue-600 text-white px-8 py-4 rounded-2xl font-bold shadow-md">إضافة +</button>
-            </div>
-            <div id="studentsList" class="grid grid-cols-2 md:grid-cols-3 gap-6"></div>
         </div>
-    </div>
 
-    <div id="trashScreen" class="admin-page hidden bg-slate-50">
-        <div class="max-w-2xl mx-auto">
-            <div class="flex justify-between mb-8"><button onclick="closeTrash()" class="font-bold text-blue-600">⬅ عودة</button><button onclick="clearTrashFinal()" class="text-red-500 text-xs font-bold underline">تفريغ نهائي</button></div>
-            <h2 class="text-3xl font-black text-red-600 mb-8 text-center">🗑️ السلة</h2>
-            <div id="trashStudentsList" class="space-y-3 mb-8"></div>
-            <div id="trashGoalsList" class="space-y-3"></div>
+        <div class="bg-slate-50 p-6 rounded-[2rem] mb-10 text-center border-2 border-dashed border-slate-300">
+            <input type="text" id="newStudentName" placeholder="اسم الطفل" class="p-4 rounded-2xl border mb-2 w-full md:w-64 text-center outline-none">
+            <button onclick="addStudent()" class="bg-blue-600 text-white px-8 py-4 rounded-2xl font-bold shadow-md">إضافة +</button>
         </div>
-    </div>
 
-    <div id="monthsScreen" class="admin-page hidden"><div class="max-w-4xl mx-auto"><button onclick="closeMonths()" class="mb-8 text-blue-600 font-bold">⬅ رجوع</button><h2 class="text-3xl font-black mb-10 text-center">اختر الشهر لـ <span id="currentStudentTitle"></span></h2><div id="monthsGrid" class="grid grid-cols-3 md:grid-cols-4 gap-4 px-2"></div></div></div>
-    
-    <div id="subjectsMenu" class="admin-page hidden text-center">
-        <div class="max-w-4xl mx-auto"><button onclick="closeSubjects()" class="mb-8 text-blue-600 font-bold block text-right">⬅ رجوع</button>
+        <div id="studentsList" class="grid grid-cols-2 md:grid-cols-3 gap-6"></div>
+    </div>
+</div>
+
+<div id="trashScreen" class="admin-page hidden bg-slate-50">
+    <div class="max-w-2xl mx-auto">
+        <div class="flex justify-between mb-8">
+            <button onclick="closeTrash()" class="font-bold text-blue-600">⬅ عودة</button>
+            <button onclick="clearTrashFinal()" class="text-red-500 text-xs font-bold underline">تفريغ نهائي</button>
+        </div>
+        <h2 class="text-3xl font-black text-red-600 mb-8 text-center">🗑️ السلة</h2>
+        <div id="trashStudentsList" class="space-y-3 mb-8"></div>
+        <div id="trashGoalsList" class="space-y-3"></div>
+    </div>
+</div>
+
+<div id="monthsScreen" class="admin-page hidden">
+    <div class="max-w-4xl mx-auto">
+        <button onclick="closeMonths()" class="mb-8 text-blue-600 font-bold">⬅ رجوع</button>
+        <h2 class="text-3xl font-black mb-10 text-center">اختر الشهر لـ <span id="currentStudentTitle"></span></h2>
+        <div id="monthsGrid" class="grid grid-cols-3 md:grid-cols-4 gap-4 px-2"></div>
+    </div>
+</div>
+
+<div id="subjectsMenu" class="admin-page hidden text-center">
+    <div class="max-w-4xl mx-auto">
+        <button onclick="closeSubjects()" class="mb-8 text-blue-600 font-bold block text-right">⬅ رجوع</button>
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div onclick="openGoalEntry('اللغة العربية', '#ef4444', '📖')" class="subject-btn bg-red-500 shadow-lg">📖 اللغة العربية</div>
-            <div onclick="openGoalEntry('English', '#3b82f6', '🔤')" class="subject-btn bg-blue-500 shadow-lg">🔤 English</div>
-            <div onclick="openGoalEntry('Math', '#10b981', '🔢')" class="subject-btn bg-emerald-500 shadow-lg">🔢 Math</div>
-            <div onclick="openGoalEntry('التربية الدينية', '#f59e0b', '🌙')" class="subject-btn bg-amber-500 shadow-lg">🌙 التربية الدينية</div>
-            <div onclick="openGoalEntry('تنمية المهارات', '#8b5cf6', '🎨')" class="subject-btn bg-purple-500 shadow-lg">🎨 تنمية المهارات</div>
-        </div></div>
+            <div onclick="openGoalEntry('اللغة العربية','#ef4444','📖')" class="subject-btn bg-red-500">📖 اللغة العربية</div>
+            <div onclick="openGoalEntry('English','#3b82f6','🔤')" class="subject-btn bg-blue-500">🔤 English</div>
+            <div onclick="openGoalEntry('Math','#10b981','🔢')" class="subject-btn bg-emerald-500">🔢 Math</div>
+            <div onclick="openGoalEntry('التربية الدينية','#f59e0b','🌙')" class="subject-btn bg-amber-500">🌙 التربية الدينية</div>
+            <div onclick="openGoalEntry('تنمية المهارات','#8b5cf6','🎨')" class="subject-btn bg-purple-500">🎨 تنمية المهارات</div>
+        </div>
     </div>
+</div>
 
-    <div id="goalEntryScreen" class="admin-page hidden overflow-y-auto">
-        <div class="max-w-2xl mx-auto pb-20"><button onclick="closeGoalEntry()" class="mb-6 text-blue-600 font-bold block text-right">⬅ رجوع</button>
-        <div id="entryHeader" class="p-8 rounded-[2rem] text-white text-center mb-8 shadow-lg"><h2 id="entryTitle" class="text-3xl font-black"></h2></div>
+<div id="goalEntryScreen" class="admin-page hidden overflow-y-auto">
+    <div class="max-w-2xl mx-auto pb-20">
+        <button onclick="closeGoalEntry()" class="mb-6 text-blue-600 font-bold block text-right">⬅ رجوع</button>
+        <div id="entryHeader" class="p-8 rounded-[2rem] text-white text-center mb-8">
+            <h2 id="entryTitle" class="text-3xl font-black"></h2>
+        </div>
         <div id="goalsListContainer" class="space-y-4 px-2"></div>
         <button onclick="addNewGoalRow()" class="w-full mt-4 p-4 bg-slate-100 rounded-2xl font-bold">+ إضافة هدف جديد</button>
-        <button onclick="saveGoals()" class="w-full mt-10 p-6 bg-blue-600 text-white rounded-[2rem] font-black text-xl shadow-xl">حفظ كل التغييرات ✅</button></div>
+        <button onclick="saveGoals(event)" class="w-full mt-10 p-6 bg-blue-600 text-white rounded-[2rem] font-black text-xl">حفظ كل التغييرات ✅</button>
     </div>
+</div>
 
-    <script>
-        const firebaseConfig = { apiKey: "AIzaSyC4K55wOZy3w44cCNX1i_cmk4-g4P-L40", authDomain: "many-circles.firebaseapp.com", databaseURL: "https://many-circles-default-rtdb.firebaseio.com", projectId: "many-circles", storageBucket: "many-circles.firebasestorage.app", messagingSenderId: "905475370717", appId: "1:905475370717:web:587b788750f31a1d26f534" };
-        firebase.initializeApp(firebaseConfig); const db = firebase.database();
-        let sId = "", sName = "", mName = "", currentSub = "";
-        let goalsToTrash = []; // قائمة انتظار للحذف
-        const MASTER_CODE = "2012"; const ADMINS = ["حسن", "علياء", "مصطفى", "حنان"];
-        const months = ["يناير", "فبراير", "مارس", "أبريل", "مايو", "يونيو", "يوليو", "أغسطس", "سبتمبر", "أكتوبر", "نوفمبر", "ديسمبر"];
+<script>
+const firebaseConfig = {
+    apiKey: "AIzaSyC4K55wOZy3w44cCNX1i_cmk4-g4P-L40",
+    authDomain: "many-circles.firebaseapp.com",
+    databaseURL: "https://many-circles-default-rtdb.firebaseio.com",
+    projectId: "many-circles",
+    storageBucket: "many-circles.firebasestorage.app",
+    messagingSenderId: "905475370717",
+    appId: "1:905475370717:web:587b788750f31a1d26f534"
+};
+firebase.initializeApp(firebaseConfig);
+const db = firebase.database();
 
-        function showLogin() { document.getElementById('mainScreen').classList.add('hidden'); document.getElementById('loginScreen').classList.remove('hidden'); }
-        function login() { const n = document.getElementById('adminName').value.trim(); const p = document.getElementById('adminPass').value.trim(); if(ADMINS.includes(n) && p === MASTER_CODE) { document.getElementById('loginScreen').classList.add('hidden'); document.getElementById('adminPanel').classList.remove('hidden'); document.getElementById('welcomeMsg').innerText = "المدير: " + n; loadStudents(); } else { alert("خطأ في البيانات"); } }
-        
-        function loadStudents() { db.ref('Students').on('value', snap => { const l = document.getElementById('studentsList'); l.innerHTML = ""; snap.forEach(c => { const d = document.createElement('div'); d.className = "bg-white p-8 rounded-[2.5rem] shadow-sm font-black card-hover text-center"; d.innerHTML = `<div class="del-btn" onclick="moveStudentToTrash(event,'${c.key}','${c.val().name}')">X</div>${c.val().name}`; d.onclick = () => { sId = c.key; sName = c.val().name; openMonths(); }; l.appendChild(d); }); }); }
-        
-        function moveStudentToTrash(e, id, name) { e.stopPropagation(); if(confirm(`حذف ${name}?`)) { db.ref('Students/'+id).once('value', s => { db.ref('TrashBin/Students/'+id).set(s.val()); db.ref('Students/'+id).remove(); }); } }
-        
-        function openTrash() { 
-            document.getElementById('adminPanel').classList.add('hidden'); 
-            document.getElementById('trashScreen').classList.remove('hidden'); 
-            db.ref('TrashBin/Students').on('value', snap => { const l = document.getElementById('trashStudentsList'); l.innerHTML = ""; snap.forEach(c => { l.innerHTML += `<div class="bg-white p-4 rounded-xl flex justify-between items-center border mb-2"><span>${c.val().name}</span><button onclick="restoreStudent('${c.key}')" class="text-blue-600 font-bold">استرداد</button></div>`; }); }); 
-            db.ref('TrashBin/Goals').on('value', snap => { const l = document.getElementById('trashGoalsList'); l.innerHTML = ""; snap.forEach(c => { const v = c.val(); l.innerHTML += `<div class="bg-white p-4 rounded-xl shadow-sm border mb-2 text-xs"> <div class="flex justify-between font-bold text-blue-600 mb-1"><span>${v.sName} - ${v.subject}</span><button onclick="restoreGoal('${c.key}')" class="text-green-600">استرداد ↩️</button></div> <p class="font-bold text-slate-700">${v.name}</p> </div>`; }); }); 
-        }
+const MASTER_CODE = "2012";
+const ADMINS = ["حسن","علياء","مصطفى","حنان"];
+const months = ["يناير","فبراير","مارس","أبريل","مايو","يونيو","يوليو","أغسطس","سبتمبر","أكتوبر","نوفمبر","ديسمبر"];
 
-        function restoreStudent(id) { db.ref('TrashBin/Students/'+id).once('value', s => { db.ref('Students/'+id).set(s.val()); db.ref('TrashBin/Students/'+id).remove(); }); }
-        
-        function restoreGoal(id) {
-            db.ref('TrashBin/Goals/' + id).once('value').then(snap => {
-                if (snap.exists()) {
-                    const v = snap.val();
-                    db.ref('TrashBin/Goals/' + id).remove().then(() => {
-                        db.ref(`MonthlyPlans/${v.sId}/${v.mName}/${v.subject}`).push({ name: v.name, help: v.help, score: v.score });
-                    });
+let sId="", sName="", mName="", currentSub="";
+let goalsToTrash=[];
+
+function showLogin(){
+    mainScreen.classList.add('hidden');
+    loginScreen.classList.remove('hidden');
+}
+
+function login(){
+    const n=adminName.value.trim();
+    const p=adminPass.value.trim();
+    if(ADMINS.includes(n)&&p===MASTER_CODE){
+        loginScreen.classList.add('hidden');
+        adminPanel.classList.remove('hidden');
+        welcomeMsg.innerText="المدير: "+n;
+        loadStudents();
+    } else alert("خطأ في البيانات");
+}
+
+function loadStudents(){
+    db.ref('Students').on('value',snap=>{
+        studentsList.innerHTML="";
+        snap.forEach(c=>{
+            const d=document.createElement('div');
+            d.className="bg-white p-8 rounded-[2.5rem] shadow-sm font-black card-hover text-center";
+            d.innerHTML=`<div class="del-btn">X</div>${c.val().name}`;
+            d.querySelector('.del-btn').onclick=e=>{
+                e.stopPropagation();
+                if(confirm(`حذف ${c.val().name}?`)){
+                    db.ref('TrashBin/Students/'+c.key).set(c.val());
+                    db.ref('Students/'+c.key).remove();
                 }
+            };
+            d.onclick=()=>{
+                sId=c.key; sName=c.val().name;
+                openMonths();
+            };
+            studentsList.appendChild(d);
+        });
+    });
+}
+
+function addStudent(){
+    const n=newStudentName.value.trim();
+    if(!n) return;
+    db.ref('Students').push({name:n});
+    newStudentName.value="";
+}
+
+function openMonths(){
+    adminPanel.classList.add('hidden');
+    monthsScreen.classList.remove('hidden');
+    currentStudentTitle.innerText=sName;
+    monthsGrid.innerHTML="";
+    months.forEach(m=>{
+        const d=document.createElement('div');
+        d.className="bg-white p-4 rounded-xl border text-center cursor-pointer";
+        d.innerText=m;
+        d.onclick=()=>openSubjectsMenu(m);
+        monthsGrid.appendChild(d);
+    });
+}
+
+function openSubjectsMenu(m){
+    mName=m;
+    monthsScreen.classList.add('hidden');
+    subjectsMenu.classList.remove('hidden');
+}
+
+function openGoalEntry(sub,col,ico){
+    currentSub=sub;
+    goalsToTrash=[];
+    subjectsMenu.classList.add('hidden');
+    goalEntryScreen.classList.remove('hidden');
+    entryHeader.style.backgroundColor=col;
+    entryTitle.innerText=ico+" "+sub;
+    goalsListContainer.innerHTML="";
+    db.ref(`MonthlyPlans/${sId}/${mName}/${sub}`).once('value',snap=>{
+        if(snap.exists()) snap.forEach(g=>addNewGoalRow(g.val()));
+    });
+}
+
+function addNewGoalRow(data=null){
+    const d=document.createElement('div');
+    d.className="goal-card";
+    d.innerHTML=`
+        <input class="input-style goal-name" placeholder="الهدف" value="${data?data.name:''}">
+        <div class="grid grid-cols-2 gap-2 text-xs">
+            <select class="input-style goal-help">
+                <option>مساعدة كبيرة</option>
+                <option>مساعدة بسيطة</option>
+                <option>بدون مساعدة</option>
+            </select>
+            <select class="input-style goal-score">
+                <option>0%</option><option>25%</option><option>50%</option><option>75%</option><option>100%</option>
+            </select>
+        </div>
+        <button class="text-red-500 text-[10px] w-full mt-2">🗑️ حذف للسلة</button>
+    `;
+    if(data){
+        d.querySelector('.goal-help').value=data.help;
+        d.querySelector('.goal-score').value=data.score;
+    }
+    d.querySelector('button').onclick=()=>{
+        const name=d.querySelector('.goal-name').value.trim();
+        if(name){
+            goalsToTrash.push({
+                sId,sName,mName,subject:currentSub,
+                name,
+                help:d.querySelector('.goal-help').value,
+                score:d.querySelector('.goal-score').value
             });
         }
+        d.remove();
+    };
+    goalsListContainer.appendChild(d);
+}
 
-        function openMonths() { document.getElementById('adminPanel').classList.add('hidden'); document.getElementById('monthsScreen').classList.remove('hidden'); document.getElementById('currentStudentTitle').innerText = sName; const g = document.getElementById('monthsGrid'); g.innerHTML = ""; months.forEach(m => { const d = document.createElement('div'); d.className = "bg-white p-4 rounded-xl shadow-sm font-bold border cursor-pointer hover:bg-blue-50 text-center"; d.innerText = m; d.onclick = () => openSubjectsMenu(m); g.appendChild(d); }); }
-        function openSubjectsMenu(m) { mName = m; document.getElementById('monthsScreen').classList.add('hidden'); document.getElementById('subjectsMenu').classList.remove('hidden'); }
-        
-        function openGoalEntry(sub, col, ico) { 
-            currentSub = sub; goalsToTrash = []; 
-            document.getElementById('subjectsMenu').classList.add('hidden'); document.getElementById('goalEntryScreen').classList.remove('hidden'); 
-            document.getElementById('entryHeader').style.backgroundColor = col; document.getElementById('entryTitle').innerText = ico + " " + sub; 
-            const c = document.getElementById('goalsListContainer'); c.innerHTML = ""; 
-            db.ref(`MonthlyPlans/${sId}/${mName}/${sub}`).once('value', snap => { if(snap.exists()) snap.forEach(g => addNewGoalRow(g.val())); }); 
-        }
+function saveGoals(e){
+    const btn=e.target;
+    btn.disabled=true;
+    const ref=db.ref(`MonthlyPlans/${sId}/${mName}/${currentSub}`);
+    const goals=[];
+    document.querySelectorAll('.goal-card').forEach(el=>{
+        const n=el.querySelector('.goal-name').value.trim();
+        if(n) goals.push({
+            name:n,
+            help:el.querySelector('.goal-help').value,
+            score:el.querySelector('.goal-score').value
+        });
+    });
+    ref.remove().then(()=>{
+        goals.forEach(g=>ref.push(g));
+        goalsToTrash.forEach(g=>db.ref('TrashBin/Goals').push(g));
+        goalsToTrash=[];
+        alert("تم الحفظ بنجاح ✅");
+        btn.disabled=false;
+        closeGoalEntry();
+    });
+}
 
-        function addNewGoalRow(data = null) {
-            const d = document.createElement('div'); d.className = "goal-card";
-            d.innerHTML = `<input type="text" placeholder="الهدف" class="input-style goal-name" value="${data?data.name:''}">
-            <div class="grid grid-cols-2 gap-2 text-xs">
-                <select class="input-style goal-help"><option value="مساعدة كبيرة" ${data?.help==='مساعدة كبيرة'?'selected':''}>مساعدة كبيرة</option><option value="مساعدة بسيطة" ${data?.help==='مساعدة بسيطة'?'selected':''}>مساعدة بسيطة</option><option value="بدون مساعدة" ${data?.help==='بدون مساعدة'?'selected':''}>بدون مساعدة</option></select>
-                <select class="input-style goal-score"><option value="0%" ${data?.score==='0%'?'selected':''}>0%</option><option value="25%" ${data?.score==='25%'?'selected':''}>25%</option><option value="50%" ${data?.score==='50%'?'selected':''}>50%</option><option value="75%" ${data?.score==='75%'?'selected':''}>75%</option><option value="100%" ${data?.score==='100%'?'selected':''}>100%</option></select>
-            </div><button onclick="queueForTrash(this,'${data?data.name:''}','${data?data.help:''}','${data?data.score:''}')" class="text-red-500 text-[10px] w-full text-center mt-2">🗑️ حذف للسلة</button>`;
-            document.getElementById('goalsListContainer').appendChild(d);
-        }
+function openTrash(){
+    adminPanel.classList.add('hidden');
+    trashScreen.classList.remove('hidden');
+    db.ref('TrashBin/Students').once('value').then(snap=>{
+        trashStudentsList.innerHTML="";
+        snap.forEach(c=>{
+            trashStudentsList.innerHTML+=`
+            <div class="bg-white p-4 rounded-xl flex justify-between">
+                <span>${c.val().name}</span>
+                <button onclick="restoreStudent('${c.key}')" class="text-blue-600 font-bold">استرداد</button>
+            </div>`;
+        });
+    });
+    db.ref('TrashBin/Goals').once('value').then(snap=>{
+        trashGoalsList.innerHTML="";
+        snap.forEach(c=>{
+            const v=c.val();
+            trashGoalsList.innerHTML+=`
+            <div class="bg-white p-4 rounded-xl text-xs">
+                <div class="flex justify-between font-bold text-blue-600">
+                    <span>${v.sName} - ${v.subject}</span>
+                    <button onclick="restoreGoal('${c.key}')" class="text-green-600">↩️</button>
+                </div>
+                <p>${v.name}</p>
+            </div>`;
+        });
+    });
+}
 
-        function queueForTrash(btn, name, help, score) {
-            if(name) goalsToTrash.push({ sId, sName, mName, subject: currentSub, name, help, score });
-            btn.parentElement.remove();
-        }
+function restoreStudent(id){
+    db.ref('TrashBin/Students/'+id).once('value',s=>{
+        db.ref('Students/'+id).set(s.val());
+        db.ref('TrashBin/Students/'+id).remove();
+    });
+}
 
-        function saveGoals() {
-            const goals = [];
-            document.querySelectorAll('.goal-card').forEach(el => {
-                const n = el.querySelector('.goal-name').value;
-                if(n) goals.push({ name: n, help: el.querySelector('.goal-help').value, score: el.querySelector('.goal-score').value });
-            });
-            
-            db.ref(`MonthlyPlans/${sId}/${mName}/${currentSub}`).set(goals).then(() => {
-                if(goalsToTrash.length > 0) {
-                    goalsToTrash.forEach(g => db.ref('TrashBin/Goals').push(g));
-                    goalsToTrash = [];
-                }
-                alert("تم الحفظ بنجاح ✅");
-                closeGoalEntry();
-            });
-        }
+function restoreGoal(id){
+    db.ref('TrashBin/Goals/'+id).once('value',s=>{
+        const v=s.val();
+        db.ref(`MonthlyPlans/${v.sId}/${v.mName}/${v.subject}`).push({
+            name:v.name,help:v.help,score:v.score
+        });
+        db.ref('TrashBin/Goals/'+id).remove();
+    });
+}
 
-        function clearTrashFinal() { if(prompt("كود التفريغ:") === MASTER_CODE) db.ref('TrashBin').remove(); }
-        function addStudent() { const n = document.getElementById('newStudentName').value; if(n) db.ref('Students').push({name:n}).then(()=>document.getElementById('newStudentName').value=""); }
-        function closeMonths() { document.getElementById('monthsScreen').classList.add('hidden'); document.getElementById('adminPanel').classList.remove('hidden'); }
-        function closeSubjects() { document.getElementById('subjectsMenu').classList.add('hidden'); document.getElementById('monthsScreen').classList.remove('hidden'); }
-        function closeGoalEntry() { document.getElementById('goalEntryScreen').classList.add('hidden'); document.getElementById('subjectsMenu').classList.remove('hidden'); }
-        function closeTrash() { document.getElementById('trashScreen').classList.add('hidden'); document.getElementById('adminPanel').classList.remove('hidden'); }
-    </script>
+function clearTrashFinal(){
+    if(prompt("كود التفريغ:")===MASTER_CODE)
+        db.ref('TrashBin').remove();
+}
+
+function closeMonths(){ monthsScreen.classList.add('hidden'); adminPanel.classList.remove('hidden'); }
+function closeSubjects(){ subjectsMenu.classList.add('hidden'); monthsScreen.classList.remove('hidden'); }
+function closeGoalEntry(){ goalEntryScreen.classList.add('hidden'); subjectsMenu.classList.remove('hidden'); }
+function closeTrash(){ trashScreen.classList.add('hidden'); adminPanel.classList.remove('hidden'); }
+</script>
 </body>
 </html>
-
