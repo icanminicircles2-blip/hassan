@@ -70,7 +70,7 @@
     <div class="max-w-4xl mx-auto">
         <div class="flex justify-between items-center mb-8 border-b pb-4">
             <button onclick="backToDashboard()" class="text-blue-600 font-bold">⬅ العودة للرئيسية</button>
-            <div onclick="openTrash()" class="bg-red-50 text-red-500 px-4 py-2 rounded-xl cursor-pointer font-bold">🗑️ السلة</div>
+            <div onclick="openTrash()" class="trash-btn bg-red-50 text-red-500 px-4 py-2 rounded-xl cursor-pointer font-bold border border-red-200">🗑️ السلة</div>
         </div>
 
         <div class="bg-slate-50 p-6 rounded-[2rem] mb-6 text-center border-2 border-dashed border-slate-300">
@@ -89,17 +89,22 @@
 
 <div id="trashScreen" class="admin-page hidden bg-slate-50">
     <div class="max-w-2xl mx-auto">
-        <button onclick="closeTrash()" class="font-bold text-blue-600 mb-8 block">⬅ عودة</button>
-        <h2 class="text-3xl font-black text-red-600 mb-8 text-center">🗑️ السلة</h2>
-        <div id="trashStudentsList" class="space-y-3"></div>
-        <div id="trashGoalsList" class="space-y-3 mt-4"></div>
+        <div class="flex justify-between mb-8">
+            <button onclick="closeTrash()" class="font-bold text-blue-600">⬅ عودة</button>
+            <button onclick="clearTrashFinal()" class="text-red-500 text-xs font-bold underline">تفريغ نهائي</button>
+        </div>
+        <h2 class="text-3xl font-black text-red-600 mb-8 text-center">🗑️ المحذوفات</h2>
+        <h4 class="font-bold mb-4 border-r-4 border-blue-500 pr-2 text-blue-800">الأطفال المحذوفون:</h4>
+        <div id="trashStudentsList" class="space-y-3 mb-10"></div>
+        <h4 class="font-bold mb-4 border-r-4 border-orange-500 pr-2 text-orange-800">الأهداف المحذوفة:</h4>
+        <div id="trashGoalsList" class="space-y-3"></div>
     </div>
 </div>
 
 <div id="monthsScreen" class="admin-page hidden">
-    <div class="max-w-4xl mx-auto">
-        <button onclick="closeMonths()" class="mb-8 text-blue-600 font-bold">⬅ رجوع</button>
-        <h2 class="text-3xl font-black mb-10 text-center uppercase">ملف: <span id="currentStudentTitle" class="text-blue-600"></span></h2>
+    <div class="max-w-4xl mx-auto text-center">
+        <button onclick="closeMonths()" class="mb-8 text-blue-600 font-bold block">⬅ رجوع</button>
+        <h2 class="text-3xl font-black mb-10">ملف: <span id="currentStudentTitle" class="text-blue-600"></span></h2>
         <div id="monthsGrid" class="grid grid-cols-3 md:grid-cols-4 gap-4 px-2"></div>
     </div>
 </div>
@@ -108,11 +113,11 @@
     <div class="max-w-4xl mx-auto">
         <button onclick="closeSubjects()" class="mb-8 text-blue-600 font-bold block text-right">⬅ رجوع</button>
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div onclick="openGoalEntry('اللغة العربية','#ef4444','📖')" class="subject-btn bg-red-500">📖 اللغة العربية</div>
-            <div onclick="openGoalEntry('English','#3b82f6','🔤')" class="subject-btn bg-blue-500">🔤 English</div>
-            <div onclick="openGoalEntry('Math','#10b981','🔢')" class="subject-btn bg-emerald-500">🔢 Math</div>
-            <div onclick="openGoalEntry('التربية الدينية','#f59e0b','🌙')" class="subject-btn bg-amber-500">🌙 التربية الدينية</div>
-            <div onclick="openGoalEntry('تنمية المهارات','#8b5cf6','🎨')" class="subject-btn bg-purple-500">🎨 تنمية المهارات</div>
+            <div onclick="openGoalEntry('اللغة العربية','#ef4444','📖')" class="subject-btn bg-red-500 shadow-lg">📖 اللغة العربية</div>
+            <div onclick="openGoalEntry('English','#3b82f6','🔤')" class="subject-btn bg-blue-500 shadow-lg">🔤 English</div>
+            <div onclick="openGoalEntry('Math','#10b981','🔢')" class="subject-btn bg-emerald-500 shadow-lg">🔢 Math</div>
+            <div onclick="openGoalEntry('التربية الدينية','#f59e0b','🌙')" class="subject-btn bg-amber-500 shadow-lg">🌙 التربية الدينية</div>
+            <div onclick="openGoalEntry('تنمية المهارات','#8b5cf6','🎨')" class="subject-btn bg-purple-500 shadow-lg">🎨 تنمية المهارات</div>
         </div>
     </div>
 </div>
@@ -120,8 +125,8 @@
 <div id="goalEntryScreen" class="admin-page hidden overflow-y-auto">
     <div class="max-w-2xl mx-auto pb-20">
         <button onclick="closeGoalEntry()" class="mb-6 text-blue-600 font-bold block text-right">⬅ رجوع</button>
-        <div id="entryHeader" class="p-8 rounded-[2rem] text-white text-center mb-8 shadow-lg">
-            <h2 id="entryTitle" class="text-3xl font-black"></h2>
+        <div id="entryHeader" class="p-8 rounded-[2rem] text-white text-center mb-8 shadow-xl">
+            <h2 id="entryTitle" class="text-3xl font-black text-white"></h2>
         </div>
         <div id="goalsListContainer" class="space-y-4 px-2"></div>
         <button onclick="addNewGoalRow()" class="w-full mt-4 p-4 bg-slate-100 rounded-2xl font-bold border-2 border-dashed border-slate-300 hover:bg-slate-200">+ إضافة هدف جديد</button>
@@ -130,7 +135,7 @@
 </div>
 
 <script>
-// تكوين Firebase (نفس بياناتك الأصلية)
+// Firebase Config
 const firebaseConfig = {
     apiKey: "AIzaSyC4K55wOZy3w44cCNX1i_cmk4-g4P-L40",
     authDomain: "many-circles.firebaseapp.com",
@@ -150,50 +155,32 @@ const months = ["يناير","فبراير","مارس","أبريل","مايو","
 let sId="", sName="", mName="", currentSub="";
 let goalsToTrash=[];
 
-// وظائف التنقل
-function showLogin(){
-    mainScreen.classList.add('hidden');
-    loginScreen.classList.remove('hidden');
-}
-
+// Navigation
+function showLogin(){ mainScreen.classList.add('hidden'); loginScreen.classList.remove('hidden'); }
 function login(){
     const n=adminName.value.trim();
     const p=adminPass.value.trim();
     if(ADMINS.includes(n) && p===MASTER_CODE){
         loginScreen.classList.add('hidden');
         dashboard.classList.remove('hidden');
-    } else alert("خطأ في بيانات الدخول");
+    } else alert("بيانات خاطئة");
 }
+function openStudentsSection(){ dashboard.classList.add('hidden'); studentsSection.classList.remove('hidden'); loadStudents(); }
+function backToDashboard(){ studentsSection.classList.add('hidden'); dashboard.classList.remove('hidden'); }
 
-function openStudentsSection(){
-    dashboard.classList.add('hidden');
-    studentsSection.classList.remove('hidden');
-    loadStudents();
-}
-
-function backToDashboard(){
-    studentsSection.classList.add('hidden');
-    dashboard.classList.remove('hidden');
-}
-
-// إدارة الطلاب
+// Student Management
 function loadStudents(){
     db.ref('Students').on('value',snap=>{
         studentsList.innerHTML="";
         snap.forEach(c=>{
             const d=document.createElement('div');
             d.className="bg-white p-8 rounded-[2.5rem] shadow-sm font-black card-hover text-center student-card border";
-            d.innerHTML=`<div class="del-btn">X</div><span class="student-name-text">${c.val().name}</span>`;
-            d.querySelector('.del-btn').onclick=e=>{
-                e.stopPropagation();
-                if(confirm(`حذف ${c.val().name}?`)){
-                    db.ref('TrashBin/Students/'+c.key).set(c.val());
-                    db.ref('Students/'+c.key).remove();
+            d.innerHTML=`<div class="del-btn" onclick="trashStudent('${c.key}', '${c.val().name}')">X</div><span class="student-name-text">${c.val().name}</span>`;
+            d.onclick=(e)=>{
+                if(e.target.className!=='del-btn'){
+                    sId=c.key; sName=c.val().name;
+                    openMonths();
                 }
-            };
-            d.onclick=()=>{
-                sId=c.key; sName=c.val().name;
-                openMonths();
             };
             studentsList.appendChild(d);
         });
@@ -201,10 +188,9 @@ function loadStudents(){
 }
 
 function filterStudents() {
-    const query = document.getElementById('searchInput').value.toLowerCase();
-    document.querySelectorAll('.student-card').forEach(card => {
-        const name = card.querySelector('.student-name-text').innerText.toLowerCase();
-        card.style.display = name.includes(query) ? "block" : "none";
+    const q=searchInput.value.toLowerCase();
+    document.querySelectorAll('.student-card').forEach(c=>{
+        c.style.display=c.innerText.toLowerCase().includes(q)?"block":"none";
     });
 }
 
@@ -213,7 +199,79 @@ function addStudent(){
     if(n) { db.ref('Students').push({name:n}); newStudentName.value=""; }
 }
 
-// إدارة الشهور والأهداف
+// Trash Functions
+function trashStudent(id, name){
+    if(confirm(`هل تريد نقل ${name} للسلة؟`)){
+        db.ref('Students/'+id).once('value', s=>{
+            db.ref('TrashBin/Students/'+id).set(s.val()).then(()=>{
+                db.ref('Students/'+id).remove();
+            });
+        });
+    }
+}
+
+function openTrash(){
+    studentsSection.classList.add('hidden');
+    trashScreen.classList.remove('hidden');
+    
+    // تحميل الأطفال المحذوفين
+    db.ref('TrashBin/Students').on('value', snap=>{
+        trashStudentsList.innerHTML="";
+        if(!snap.exists()) trashStudentsList.innerHTML="<p class='text-center text-slate-400'>لا يوجد أطفال في السلة</p>";
+        snap.forEach(c=>{
+            trashStudentsList.innerHTML+=`
+            <div class="bg-white p-4 rounded-xl flex justify-between items-center shadow-sm border">
+                <span class="font-bold">${c.val().name}</span>
+                <button onclick="restoreStudent('${c.key}')" class="bg-blue-100 text-blue-600 px-3 py-1 rounded-lg text-sm font-bold">استرداد ↩️</button>
+            </div>`;
+        });
+    });
+
+    // تحميل الأهداف المحذوفة
+    db.ref('TrashBin/Goals').on('value', snap=>{
+        trashGoalsList.innerHTML="";
+        if(!snap.exists()) trashGoalsList.innerHTML="<p class='text-center text-slate-400'>لا يوجد أهداف محذوفة</p>";
+        snap.forEach(c=>{
+            const v=c.val();
+            trashGoalsList.innerHTML+=`
+            <div class="bg-white p-4 rounded-xl shadow-sm border border-orange-100">
+                <div class="flex justify-between font-bold text-orange-600 mb-2">
+                    <span>${v.sName} | ${v.subject}</span>
+                    <button onclick="restoreGoal('${c.key}')" class="text-green-600">استعادة ↩️</button>
+                </div>
+                <p class="text-sm">${v.name}</p>
+            </div>`;
+        });
+    });
+}
+
+function restoreStudent(id){
+    db.ref('TrashBin/Students/'+id).once('value', s=>{
+        db.ref('Students/'+id).set(s.val()).then(()=>{
+            db.ref('TrashBin/Students/'+id).remove();
+        });
+    });
+}
+
+function restoreGoal(id){
+    db.ref('TrashBin/Goals/'+id).once('value', s=>{
+        const v = s.val();
+        db.ref(`MonthlyPlans/${v.sId}/${v.mName}/${v.subject}`).push({
+            name: v.name, help: v.help, score: v.score
+        }).then(()=> db.ref('TrashBin/Goals/'+id).remove());
+    });
+}
+
+function clearTrashFinal(){
+    if(prompt("كود المسح النهائي:") === MASTER_CODE){
+        db.ref('TrashBin').remove();
+        alert("تم تفريغ السلة تماماً");
+    }
+}
+
+function closeTrash(){ trashScreen.classList.add('hidden'); studentsSection.classList.remove('hidden'); }
+
+// Months & Goals
 function openMonths(){
     studentsSection.classList.add('hidden');
     monthsScreen.classList.remove('hidden');
@@ -221,22 +279,17 @@ function openMonths(){
     monthsGrid.innerHTML="";
     months.forEach(m=>{
         const d=document.createElement('div');
-        d.className="bg-white p-4 rounded-xl border text-center cursor-pointer hover:bg-blue-50 font-bold";
+        d.className="bg-white p-5 rounded-2xl border-2 font-bold hover:border-blue-500 hover:text-blue-500 transition cursor-pointer shadow-sm";
         d.innerText=m;
         d.onclick=()=>openSubjectsMenu(m);
         monthsGrid.appendChild(d);
     });
 }
 
-function openSubjectsMenu(m){
-    mName=m;
-    monthsScreen.classList.add('hidden');
-    subjectsMenu.classList.remove('hidden');
-}
+function openSubjectsMenu(m){ mName=m; monthsScreen.classList.add('hidden'); subjectsMenu.classList.remove('hidden'); }
 
 function openGoalEntry(sub,col,ico){
-    currentSub=sub;
-    goalsToTrash=[];
+    currentSub=sub; goalsToTrash=[];
     subjectsMenu.classList.add('hidden');
     goalEntryScreen.classList.remove('hidden');
     entryHeader.style.backgroundColor=col;
@@ -254,46 +307,52 @@ function addNewGoalRow(data=null){
         <input class="input-style goal-name font-bold" placeholder="اكتب الهدف هنا..." value="${data?data.name:''}">
         <div class="grid grid-cols-2 gap-2 text-xs">
             <select class="input-style goal-help">
-                <option>مساعدة كبيرة</option>
-                <option>مساعدة بسيطة</option>
-                <option>بدون مساعدة</option>
+                <option>مساعدة كبيرة</option><option>مساعدة بسيطة</option><option>بدون مساعدة</option>
             </select>
             <select class="input-style goal-score">
                 <option>0%</option><option>25%</option><option>50%</option><option>75%</option><option>100%</option>
             </select>
         </div>
-        <button class="text-red-500 text-[10px] w-full mt-2 font-bold underline">إرسال للسلة</button>
+        <button class="text-red-500 text-[10px] w-full mt-2 font-bold underline" onclick="prepareGoalForTrash(this)">إرسال للسلة</button>
     `;
     if(data){
         d.querySelector('.goal-help').value=data.help;
         d.querySelector('.goal-score').value=data.score;
     }
-    d.querySelector('button').onclick=()=>d.remove();
     goalsListContainer.appendChild(d);
+}
+
+function prepareGoalForTrash(btn){
+    const card = btn.closest('.goal-card');
+    const name = card.querySelector('.goal-name').value;
+    if(name) {
+        goalsToTrash.push({
+            sId, sName, mName, subject: currentSub,
+            name, help: card.querySelector('.goal-help').value, score: card.querySelector('.goal-score').value
+        });
+    }
+    card.remove();
 }
 
 function saveGoals(e){
     const btn=e.target; btn.disabled=true;
-    const ref=db.ref(`MonthlyPlans/${sId}/${mName}/${currentSub}`);
     const goals=[];
     document.querySelectorAll('.goal-card').forEach(el=>{
         const n=el.querySelector('.goal-name').value.trim();
         if(n) goals.push({ name:n, help:el.querySelector('.goal-help').value, score:el.querySelector('.goal-score').value });
     });
-    ref.set(goals).then(()=>{
-        alert("تم حفظ البيانات بنجاح ✅");
+    db.ref(`MonthlyPlans/${sId}/${mName}/${currentSub}`).set(goals).then(()=>{
+        goalsToTrash.forEach(g=> db.ref('TrashBin/Goals').push(g));
+        goalsToTrash=[];
+        alert("تم الحفظ ✅");
         btn.disabled=false;
         closeGoalEntry();
     });
 }
 
-// الإغلاق والعودة
 function closeMonths(){ monthsScreen.classList.add('hidden'); studentsSection.classList.remove('hidden'); }
 function closeSubjects(){ subjectsMenu.classList.add('hidden'); monthsScreen.classList.remove('hidden'); }
 function closeGoalEntry(){ goalEntryScreen.classList.add('hidden'); subjectsMenu.classList.remove('hidden'); }
-function openTrash(){ studentsSection.classList.add('hidden'); trashScreen.classList.remove('hidden'); }
-function closeTrash(){ trashScreen.classList.add('hidden'); studentsSection.classList.remove('hidden'); }
 </script>
-
 </body>
 </html>
