@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Many Circles | لوحة التحكم 2026</title>
+    <title>Many Circles | النظام الكامل 2026</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
@@ -12,55 +12,48 @@
         body { font-family: 'Cairo', sans-serif; background-color: #f1f5f9; }
         .admin-page { background-color: #ffffff; min-height: 100vh; width: 100%; position: absolute; top: 0; left: 0; padding: 20px; z-index: 50; }
         .hidden { display: none; }
-        .card-hover { transition: 0.3s; border: 2px solid #f1f5f9; cursor: pointer; position: relative; border-radius: 2rem; }
+        .card-hover { transition: 0.3s; cursor: pointer; border-radius: 2rem; border: 2px solid #f1f5f9; position: relative; }
         .card-hover:hover { transform: translateY(-3px); border-color: #3b82f6; }
-        .main-box { transition: 0.3s; cursor: pointer; }
-        .main-box:hover { transform: scale(1.05); }
+        .main-box { transition: 0.3s; cursor: pointer; border-radius: 2.5rem; border: 2px solid white; }
+        .main-box:hover { transform: scale(1.02); box-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.1); }
         .del-btn { position: absolute; top: -10px; left: -10px; background: #ef4444; color: white; width: 25px; height: 25px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 12px; border: 2px solid white; cursor: pointer; z-index: 20; }
         .subject-btn { padding: 30px; border-radius: 2rem; color: white; text-align: center; font-weight: 900; font-size: 1.4rem; cursor: pointer; transition: 0.3s; }
-        .goal-card { background: #f8fafc; padding: 15px; border-radius: 1.5rem; margin-top: 10px; border: 2px solid #e2e8f0; }
-        .input-style { width: 100%; padding: 12px; border-radius: 12px; border: 1px solid #ddd; outline: none; margin-bottom: 8px; font-size: 14px; }
+        .goal-card { background: #f8fafc; padding: 20px; border-radius: 1.5rem; margin-top: 10px; border: 2px solid #e2e8f0; }
+        .input-style { width: 100%; padding: 12px; border-radius: 12px; border: 1px solid #cbd5e1; outline: none; margin-bottom: 8px; font-size: 14px; font-weight: bold; }
     </style>
 </head>
 <body>
 
 <div id="mainScreen" class="min-h-screen flex items-center justify-center p-4">
     <div class="w-full max-w-md bg-white p-10 rounded-[3rem] shadow-2xl text-center border">
-        <h1 class="text-4xl font-black text-blue-600 mb-8">Many Circles</h1>
-        <button onclick="showLogin()" class="w-full p-5 bg-blue-600 text-white rounded-2xl font-bold hover:bg-blue-700 transition">👑 دخول المديرين</button>
+        <h1 class="text-4xl font-black text-blue-600 mb-8 italic">Many Circles</h1>
+        <button onclick="showLogin()" class="w-full p-5 bg-blue-600 text-white rounded-2xl font-bold">👑 دخول المديرين</button>
     </div>
 </div>
 
 <div id="loginScreen" class="min-h-screen flex items-center justify-center p-4 hidden">
-    <div class="w-full max-w-md bg-white p-8 rounded-[2.5rem] shadow-2xl text-center">
-        <input type="text" id="adminName" placeholder="اسم المدير" class="w-full p-4 border rounded-2xl mb-4 text-center outline-none">
-        <input type="password" id="adminPass" placeholder="الكود السري" class="w-full p-4 border rounded-2xl mb-6 text-center outline-none">
+    <div class="w-full max-w-md bg-white p-8 rounded-[2.5rem] shadow-2xl text-center border">
+        <input type="text" id="adminName" placeholder="اسم المدير" class="w-full p-4 border rounded-2xl mb-4 text-center outline-none bg-slate-50">
+        <input type="password" id="adminPass" placeholder="الكود السري" class="w-full p-4 border rounded-2xl mb-6 text-center outline-none bg-slate-50">
         <button onclick="login()" class="w-full p-4 bg-blue-600 text-white rounded-2xl font-bold">دخول</button>
     </div>
 </div>
 
 <div id="dashboard" class="admin-page hidden bg-slate-50">
-    <div class="max-w-4xl mx-auto pt-10">
+    <div class="max-w-4xl mx-auto pt-10 px-4">
         <div class="flex justify-between items-center mb-12">
             <h2 class="text-2xl font-black text-slate-800">لوحة التحكم</h2>
-            <button onclick="location.reload()" class="bg-red-100 text-red-600 px-4 py-2 rounded-xl font-bold text-sm">تسجيل خروج</button>
+            <button onclick="location.reload()" class="bg-red-100 text-red-600 px-4 py-2 rounded-xl font-bold text-sm">خروج</button>
         </div>
-        
         <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-            <div onclick="openStudentsSection()" class="main-box bg-white p-10 rounded-[3rem] shadow-xl text-center border-b-8 border-blue-500">
-                <div class="text-6xl mb-4">👶</div>
-                <h3 class="text-2xl font-black text-blue-600">الأطفال</h3>
-                <p class="text-slate-400 mt-2">إدارة الملفات والأهداف</p>
+            <div onclick="openStudentsSection()" class="main-box bg-white p-10 shadow-xl text-center border-b-8 border-blue-500">
+                <div class="text-6xl mb-4">👶</div><h3 class="text-2xl font-black text-blue-600">الأطفال</h3>
             </div>
-            <div onclick="alert('قسم المدرسين قيد التطوير')" class="main-box bg-white p-10 rounded-[3rem] shadow-xl text-center border-b-8 border-emerald-500">
-                <div class="text-6xl mb-4">👩‍🏫</div>
-                <h3 class="text-2xl font-black text-emerald-600">المدرسين</h3>
-                <p class="text-slate-400 mt-2">تنظيم الحسابات والمهام</p>
+            <div onclick="alert('قريباً')" class="main-box bg-white p-10 shadow-xl text-center border-b-8 border-emerald-500">
+                <div class="text-6xl mb-4">👩‍🏫</div><h3 class="text-2xl font-black text-emerald-600">المدرسين</h3>
             </div>
-            <div onclick="alert('قسم أولياء الأمور قيد التطوير')" class="main-box bg-white p-10 rounded-[3rem] shadow-xl text-center border-b-8 border-purple-500">
-                <div class="text-6xl mb-4">👨‍👩‍👦</div>
-                <h3 class="text-2xl font-black text-purple-600">أولياء الأمور</h3>
-                <p class="text-slate-400 mt-2">التواصل والتقارير</p>
+            <div onclick="alert('قريباً')" class="main-box bg-white p-10 shadow-xl text-center border-b-8 border-purple-500">
+                <div class="text-6xl mb-4">👨‍👩‍👦</div><h3 class="text-2xl font-black text-purple-600">أولياء الأمور</h3>
             </div>
         </div>
     </div>
@@ -69,20 +62,14 @@
 <div id="studentsSection" class="admin-page hidden">
     <div class="max-w-4xl mx-auto">
         <div class="flex justify-between items-center mb-8 border-b pb-4">
-            <button onclick="backToDashboard()" class="text-blue-600 font-bold">⬅ العودة للرئيسية</button>
-            <div onclick="openTrash()" class="trash-btn bg-red-50 text-red-500 px-4 py-2 rounded-xl cursor-pointer font-bold border border-red-200">🗑️ السلة</div>
+            <button onclick="backToDashboard()" class="text-blue-600 font-bold bg-blue-50 px-4 py-2 rounded-xl">⬅ العودة</button>
+            <button onclick="openTrash()" class="bg-red-50 text-red-500 px-4 py-2 rounded-xl font-bold border border-red-200">🗑️ السلة</button>
         </div>
-
         <div class="bg-slate-50 p-6 rounded-[2rem] mb-6 text-center border-2 border-dashed border-slate-300">
-            <input type="text" id="newStudentName" placeholder="اسم الطفل الجديد" class="p-4 rounded-2xl border mb-2 w-full md:w-64 text-center outline-none">
+            <input type="text" id="newStudentName" placeholder="اسم الطفل الجديد" class="p-4 rounded-2xl border mb-2 w-full md:w-64 text-center outline-none font-bold">
             <button onclick="addStudent()" class="bg-blue-600 text-white px-8 py-4 rounded-2xl font-bold shadow-md">إضافة +</button>
         </div>
-
-        <div class="mb-8">
-            <input type="text" id="searchInput" onkeyup="filterStudents()" placeholder="🔍 ابحث عن اسم الطفل..." 
-                   class="w-full p-4 rounded-2xl border-2 border-blue-50 focus:border-blue-400 outline-none text-center font-bold">
-        </div>
-
+        <input type="text" id="searchInput" onkeyup="filterStudents()" placeholder="🔍 ابحث عن اسم الطفل..." class="w-full p-4 rounded-2xl border-2 border-blue-50 outline-none mb-8 text-center font-bold">
         <div id="studentsList" class="grid grid-cols-2 md:grid-cols-3 gap-6"></div>
     </div>
 </div>
@@ -93,25 +80,52 @@
             <button onclick="closeTrash()" class="font-bold text-blue-600">⬅ عودة</button>
             <button onclick="clearTrashFinal()" class="text-red-500 text-xs font-bold underline">تفريغ نهائي</button>
         </div>
-        <h2 class="text-3xl font-black text-red-600 mb-8 text-center">🗑️ المحذوفات</h2>
-        <h4 class="font-bold mb-4 border-r-4 border-blue-500 pr-2 text-blue-800">الأطفال المحذوفون:</h4>
+        <h2 class="text-3xl font-black text-red-600 mb-8 text-center italic">المحذوفات 🗑️</h2>
         <div id="trashStudentsList" class="space-y-3 mb-10"></div>
-        <h4 class="font-bold mb-4 border-r-4 border-orange-500 pr-2 text-orange-800">الأهداف المحذوفة:</h4>
-        <div id="trashGoalsList" class="space-y-3"></div>
     </div>
 </div>
 
 <div id="monthsScreen" class="admin-page hidden">
-    <div class="max-w-4xl mx-auto text-center">
-        <button onclick="closeMonths()" class="mb-8 text-blue-600 font-bold block">⬅ رجوع</button>
-        <h2 class="text-3xl font-black mb-10">ملف: <span id="currentStudentTitle" class="text-blue-600"></span></h2>
+    <div class="max-w-4xl mx-auto">
+        <button onclick="closeMonths()" class="mb-8 text-blue-600 font-bold">⬅ رجوع</button>
+        <h2 class="text-3xl font-black mb-10 text-center text-blue-600" id="currentStudentTitle"></h2>
         <div id="monthsGrid" class="grid grid-cols-3 md:grid-cols-4 gap-4 px-2"></div>
     </div>
 </div>
 
-<div id="subjectsMenu" class="admin-page hidden text-center">
-    <div class="max-w-4xl mx-auto">
+<div id="choiceScreen" class="admin-page hidden bg-slate-50">
+    <div class="max-w-4xl mx-auto pt-20">
+        <button onclick="closeChoice()" class="mb-10 text-blue-600 font-bold">⬅ رجوع للشهور</button>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8 px-4">
+            <div onclick="openPlanOrFollow('PLAN')" class="main-box bg-white p-12 shadow-2xl text-center border-t-8 border-orange-400">
+                <div class="text-7xl mb-4">📋</div>
+                <h3 class="text-3xl font-black text-orange-500">الخطة الشهرية</h3>
+                <p class="text-slate-400 mt-4 font-bold italic">الأهداف والمساعدة والنسب</p>
+            </div>
+            <div onclick="openPlanOrFollow('FOLLOW')" class="main-box bg-white p-12 shadow-2xl text-center border-t-8 border-blue-500">
+                <div class="text-7xl mb-4">🚀</div>
+                <h3 class="text-3xl font-black text-blue-600">Follow Up</h3>
+                <p class="text-slate-400 mt-4 font-bold italic">مساحة المتابعة اليومية (قريباً)</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="followUpScreen" class="admin-page hidden">
+    <div class="max-w-4xl mx-auto text-center pt-20 px-4">
+        <button onclick="closeFollowUp()" class="mb-10 text-blue-600 font-bold block text-right">⬅ رجوع</button>
+        <div class="p-20 bg-blue-50 rounded-[3rem] border-2 border-dashed border-blue-200">
+            <div class="text-8xl mb-6">⏳</div>
+            <h2 class="text-3xl font-black text-blue-700 mb-4">Follow Up</h2>
+            <p class="text-slate-500 font-bold">هذه المنطقة مخصصة للمتابعة، وهي فارغة حالياً كما طلبت.</p>
+        </div>
+    </div>
+</div>
+
+<div id="subjectsMenu" class="admin-page hidden">
+    <div class="max-w-4xl mx-auto text-center">
         <button onclick="closeSubjects()" class="mb-8 text-blue-600 font-bold block text-right">⬅ رجوع</button>
+        <h2 class="text-2xl font-black mb-8 text-orange-500 italic underline">تعديل الخطة التعليمية</h2>
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div onclick="openGoalEntry('اللغة العربية','#ef4444','📖')" class="subject-btn bg-red-500 shadow-lg">📖 اللغة العربية</div>
             <div onclick="openGoalEntry('English','#3b82f6','🔤')" class="subject-btn bg-blue-500 shadow-lg">🔤 English</div>
@@ -123,14 +137,15 @@
 </div>
 
 <div id="goalEntryScreen" class="admin-page hidden overflow-y-auto">
-    <div class="max-w-2xl mx-auto pb-20">
-        <button onclick="closeGoalEntry()" class="mb-6 text-blue-600 font-bold block text-right">⬅ رجوع</button>
+    <div class="max-w-2xl mx-auto pb-20 px-2">
+        <button onclick="closeGoalEntry()" class="mb-6 text-blue-600 font-bold block text-right">⬅ رجوع للمواد</button>
         <div id="entryHeader" class="p-8 rounded-[2rem] text-white text-center mb-8 shadow-xl">
-            <h2 id="entryTitle" class="text-3xl font-black text-white"></h2>
+            <h2 id="entryTitle" class="text-3xl font-black"></h2>
+            <p class="mt-2 font-bold opacity-90 italic">الخطة الشهرية: أهداف + تقييم</p>
         </div>
-        <div id="goalsListContainer" class="space-y-4 px-2"></div>
-        <button onclick="addNewGoalRow()" class="w-full mt-4 p-4 bg-slate-100 rounded-2xl font-bold border-2 border-dashed border-slate-300 hover:bg-slate-200">+ إضافة هدف جديد</button>
-        <button onclick="saveGoals(event)" class="w-full mt-10 p-6 bg-blue-600 text-white rounded-[2rem] font-black text-xl shadow-xl">حفظ كل التغييرات ✅</button>
+        <div id="goalsListContainer" class="space-y-4"></div>
+        <button onclick="addNewGoalRow()" class="w-full mt-4 p-4 bg-slate-100 rounded-2xl font-bold border-2 border-dashed border-slate-300 shadow-sm">+ إضافة هدف جديد</button>
+        <button onclick="saveGoals(event)" class="w-full mt-10 p-6 bg-blue-600 text-white rounded-[2rem] font-black text-xl shadow-2xl">حفظ الخطة ✅</button>
     </div>
 </div>
 
@@ -153,44 +168,30 @@ const ADMINS = ["حسن","علياء","مصطفى","حنان"];
 const months = ["يناير","فبراير","مارس","أبريل","مايو","يونيو","يوليو","أغسطس","سبتمبر","أكتوبر","نوفمبر","ديسمبر"];
 
 let sId="", sName="", mName="", currentSub="";
-let goalsToTrash=[];
 
-// Navigation
+// Login Logic
 function showLogin(){ mainScreen.classList.add('hidden'); loginScreen.classList.remove('hidden'); }
 function login(){
     const n=adminName.value.trim();
     const p=adminPass.value.trim();
-    if(ADMINS.includes(n) && p===MASTER_CODE){
-        loginScreen.classList.add('hidden');
-        dashboard.classList.remove('hidden');
-    } else alert("بيانات خاطئة");
+    if(ADMINS.includes(n)&&p===MASTER_CODE){ loginScreen.classList.add('hidden'); dashboard.classList.remove('hidden'); }
+    else alert("البيانات غير صحيحة");
 }
+
+// Students Logic
 function openStudentsSection(){ dashboard.classList.add('hidden'); studentsSection.classList.remove('hidden'); loadStudents(); }
 function backToDashboard(){ studentsSection.classList.add('hidden'); dashboard.classList.remove('hidden'); }
 
-// Student Management
 function loadStudents(){
     db.ref('Students').on('value',snap=>{
         studentsList.innerHTML="";
         snap.forEach(c=>{
             const d=document.createElement('div');
-            d.className="bg-white p-8 rounded-[2.5rem] shadow-sm font-black card-hover text-center student-card border";
-            d.innerHTML=`<div class="del-btn" onclick="trashStudent('${c.key}', '${c.val().name}')">X</div><span class="student-name-text">${c.val().name}</span>`;
-            d.onclick=(e)=>{
-                if(e.target.className!=='del-btn'){
-                    sId=c.key; sName=c.val().name;
-                    openMonths();
-                }
-            };
+            d.className="bg-white p-8 rounded-[2.5rem] shadow-sm font-black card-hover text-center border";
+            d.innerHTML=`<div class="del-btn" onclick="trashStudent('${c.key}','${c.val().name}')">X</div>${c.val().name}`;
+            d.onclick=(e)=>{ if(e.target.className!=='del-btn'){ sId=c.key; sName=c.val().name; openMonths(); } };
             studentsList.appendChild(d);
         });
-    });
-}
-
-function filterStudents() {
-    const q=searchInput.value.toLowerCase();
-    document.querySelectorAll('.student-card').forEach(c=>{
-        c.style.display=c.innerText.toLowerCase().includes(q)?"block":"none";
     });
 }
 
@@ -199,13 +200,18 @@ function addStudent(){
     if(n) { db.ref('Students').push({name:n}); newStudentName.value=""; }
 }
 
-// Trash Functions
+function filterStudents() {
+    const q=searchInput.value.toLowerCase();
+    document.querySelectorAll('#studentsList > div').forEach(c=>{
+        c.style.display=c.innerText.toLowerCase().includes(q)?"block":"none";
+    });
+}
+
+// Trash Logic
 function trashStudent(id, name){
-    if(confirm(`هل تريد نقل ${name} للسلة؟`)){
+    if(confirm(`هل متأكد من حذف ${name}؟`)){
         db.ref('Students/'+id).once('value', s=>{
-            db.ref('TrashBin/Students/'+id).set(s.val()).then(()=>{
-                db.ref('Students/'+id).remove();
-            });
+            db.ref('TrashBin/Students/'+id).set(s.val()).then(()=> db.ref('Students/'+id).remove());
         });
     }
 }
@@ -213,33 +219,12 @@ function trashStudent(id, name){
 function openTrash(){
     studentsSection.classList.add('hidden');
     trashScreen.classList.remove('hidden');
-    
-    // تحميل الأطفال المحذوفين
     db.ref('TrashBin/Students').on('value', snap=>{
-        trashStudentsList.innerHTML="";
-        if(!snap.exists()) trashStudentsList.innerHTML="<p class='text-center text-slate-400'>لا يوجد أطفال في السلة</p>";
-        snap.forEach(c=>{
-            trashStudentsList.innerHTML+=`
-            <div class="bg-white p-4 rounded-xl flex justify-between items-center shadow-sm border">
+        trashStudentsList.innerHTML = snap.exists() ? "" : "<p class='text-center text-slate-400'>السلة فارغة</p>";
+        snap.forEach(c => {
+            trashStudentsList.innerHTML += `<div class="bg-white p-4 rounded-xl flex justify-between items-center shadow-sm border">
                 <span class="font-bold">${c.val().name}</span>
-                <button onclick="restoreStudent('${c.key}')" class="bg-blue-100 text-blue-600 px-3 py-1 rounded-lg text-sm font-bold">استرداد ↩️</button>
-            </div>`;
-        });
-    });
-
-    // تحميل الأهداف المحذوفة
-    db.ref('TrashBin/Goals').on('value', snap=>{
-        trashGoalsList.innerHTML="";
-        if(!snap.exists()) trashGoalsList.innerHTML="<p class='text-center text-slate-400'>لا يوجد أهداف محذوفة</p>";
-        snap.forEach(c=>{
-            const v=c.val();
-            trashGoalsList.innerHTML+=`
-            <div class="bg-white p-4 rounded-xl shadow-sm border border-orange-100">
-                <div class="flex justify-between font-bold text-orange-600 mb-2">
-                    <span>${v.sName} | ${v.subject}</span>
-                    <button onclick="restoreGoal('${c.key}')" class="text-green-600">استعادة ↩️</button>
-                </div>
-                <p class="text-sm">${v.name}</p>
+                <button onclick="restoreStudent('${c.key}')" class="bg-blue-600 text-white px-4 py-1 rounded-lg text-xs font-bold">استعادة</button>
             </div>`;
         });
     });
@@ -247,31 +232,15 @@ function openTrash(){
 
 function restoreStudent(id){
     db.ref('TrashBin/Students/'+id).once('value', s=>{
-        db.ref('Students/'+id).set(s.val()).then(()=>{
-            db.ref('TrashBin/Students/'+id).remove();
-        });
-    });
-}
-
-function restoreGoal(id){
-    db.ref('TrashBin/Goals/'+id).once('value', s=>{
-        const v = s.val();
-        db.ref(`MonthlyPlans/${v.sId}/${v.mName}/${v.subject}`).push({
-            name: v.name, help: v.help, score: v.score
-        }).then(()=> db.ref('TrashBin/Goals/'+id).remove());
+        db.ref('Students/'+id).set(s.val()).then(()=> db.ref('TrashBin/Students/'+id).remove());
     });
 }
 
 function clearTrashFinal(){
-    if(prompt("كود المسح النهائي:") === MASTER_CODE){
-        db.ref('TrashBin').remove();
-        alert("تم تفريغ السلة تماماً");
-    }
+    if(prompt("اكتب كود التفريغ النهائي:")===MASTER_CODE) db.ref('TrashBin').remove();
 }
 
-function closeTrash(){ trashScreen.classList.add('hidden'); studentsSection.classList.remove('hidden'); }
-
-// Months & Goals
+// Plan/FollowUp Navigation
 function openMonths(){
     studentsSection.classList.add('hidden');
     monthsScreen.classList.remove('hidden');
@@ -279,17 +248,24 @@ function openMonths(){
     monthsGrid.innerHTML="";
     months.forEach(m=>{
         const d=document.createElement('div');
-        d.className="bg-white p-5 rounded-2xl border-2 font-bold hover:border-blue-500 hover:text-blue-500 transition cursor-pointer shadow-sm";
+        d.className="bg-white p-5 rounded-2xl border-2 font-bold hover:border-blue-500 hover:text-blue-500 cursor-pointer text-center transition";
         d.innerText=m;
-        d.onclick=()=>openSubjectsMenu(m);
+        d.onclick=()=>{ mName=m; openChoiceScreen(); };
         monthsGrid.appendChild(d);
     });
 }
 
-function openSubjectsMenu(m){ mName=m; monthsScreen.classList.add('hidden'); subjectsMenu.classList.remove('hidden'); }
+function openChoiceScreen(){ monthsScreen.classList.add('hidden'); choiceScreen.classList.remove('hidden'); }
 
+function openPlanOrFollow(mode){
+    choiceScreen.classList.add('hidden');
+    if(mode === 'PLAN') subjectsMenu.classList.remove('hidden');
+    else followUpScreen.classList.remove('hidden');
+}
+
+// Goals Entry
 function openGoalEntry(sub,col,ico){
-    currentSub=sub; goalsToTrash=[];
+    currentSub=sub;
     subjectsMenu.classList.add('hidden');
     goalEntryScreen.classList.remove('hidden');
     entryHeader.style.backgroundColor=col;
@@ -302,36 +278,30 @@ function openGoalEntry(sub,col,ico){
 
 function addNewGoalRow(data=null){
     const d=document.createElement('div');
-    d.className="goal-card";
-    d.innerHTML=`
-        <input class="input-style goal-name font-bold" placeholder="اكتب الهدف هنا..." value="${data?data.name:''}">
-        <div class="grid grid-cols-2 gap-2 text-xs">
-            <select class="input-style goal-help">
-                <option>مساعدة كبيرة</option><option>مساعدة بسيطة</option><option>بدون مساعدة</option>
-            </select>
-            <select class="input-style goal-score">
-                <option>0%</option><option>25%</option><option>50%</option><option>75%</option><option>100%</option>
-            </select>
+    d.className="goal-card shadow-sm";
+    d.innerHTML = `
+        <input class="input-style goal-name" placeholder="اسم الهدف" value="${data?data.name:''}">
+        <div class="grid grid-cols-2 gap-3 mt-2">
+            <div>
+                <label class="text-[10px] font-bold text-slate-400 mr-2">نوع المساعدة</label>
+                <select class="input-style goal-help bg-white">
+                    <option>مساعدة كبيرة</option><option>مساعدة بسيطة</option><option>بدون مساعدة</option>
+                </select>
+            </div>
+            <div>
+                <label class="text-[10px] font-bold text-slate-400 mr-2">نسبة الإنجاز</label>
+                <select class="input-style goal-score bg-white">
+                    <option>0%</option><option>25%</option><option>50%</option><option>75%</option><option>100%</option>
+                </select>
+            </div>
         </div>
-        <button class="text-red-500 text-[10px] w-full mt-2 font-bold underline" onclick="prepareGoalForTrash(this)">إرسال للسلة</button>
+        <button class="text-red-500 text-[10px] w-full mt-2 font-bold underline" onclick="this.closest('.goal-card').remove()">حذف من القائمة</button>
     `;
     if(data){
-        d.querySelector('.goal-help').value=data.help;
-        d.querySelector('.goal-score').value=data.score;
+        d.querySelector('.goal-help').value = data.help || "مساعدة كبيرة";
+        d.querySelector('.goal-score').value = data.score || "0%";
     }
     goalsListContainer.appendChild(d);
-}
-
-function prepareGoalForTrash(btn){
-    const card = btn.closest('.goal-card');
-    const name = card.querySelector('.goal-name').value;
-    if(name) {
-        goalsToTrash.push({
-            sId, sName, mName, subject: currentSub,
-            name, help: card.querySelector('.goal-help').value, score: card.querySelector('.goal-score').value
-        });
-    }
-    card.remove();
 }
 
 function saveGoals(e){
@@ -339,20 +309,27 @@ function saveGoals(e){
     const goals=[];
     document.querySelectorAll('.goal-card').forEach(el=>{
         const n=el.querySelector('.goal-name').value.trim();
-        if(n) goals.push({ name:n, help:el.querySelector('.goal-help').value, score:el.querySelector('.goal-score').value });
+        if(n) goals.push({
+            name:n,
+            help:el.querySelector('.goal-help').value,
+            score:el.querySelector('.goal-score').value
+        });
     });
     db.ref(`MonthlyPlans/${sId}/${mName}/${currentSub}`).set(goals).then(()=>{
-        goalsToTrash.forEach(g=> db.ref('TrashBin/Goals').push(g));
-        goalsToTrash=[];
-        alert("تم الحفظ ✅");
+        alert("تم الحفظ بنجاح ✅");
         btn.disabled=false;
         closeGoalEntry();
     });
 }
 
+// UI Closers
 function closeMonths(){ monthsScreen.classList.add('hidden'); studentsSection.classList.remove('hidden'); }
-function closeSubjects(){ subjectsMenu.classList.add('hidden'); monthsScreen.classList.remove('hidden'); }
+function closeChoice(){ choiceScreen.classList.add('hidden'); monthsScreen.classList.remove('hidden'); }
+function closeSubjects(){ subjectsMenu.classList.add('hidden'); choiceScreen.classList.remove('hidden'); }
 function closeGoalEntry(){ goalEntryScreen.classList.add('hidden'); subjectsMenu.classList.remove('hidden'); }
+function closeFollowUp(){ followUpScreen.classList.add('hidden'); choiceScreen.classList.remove('hidden'); }
+function closeTrash(){ trashScreen.classList.add('hidden'); studentsSection.classList.remove('hidden'); }
+
 </script>
 </body>
 </html>
