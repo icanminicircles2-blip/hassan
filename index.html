@@ -399,11 +399,27 @@ function trashStudent(id, name){
     }
 }
 function openTrash(){
-    studentsSection.classList.add('hidden'); trashScreen.classList.remove('hidden');
-    db.ref('TrashBin/Students').on('value', snap=>{
-        trashStudentsList.innerHTML = snap.exists() ? "" : "<p class='text-center text-slate-400'>السلة فارغة</p>";
+    studentsSection.classList.add('hidden'); 
+    trashScreen.classList.remove('hidden');
+    
+    // عرض الأطفال المحذوفين
+    db.ref('TrashBin/Students').on('value', snap => {
+        trashStudentsList.innerHTML = "<h3 class='font-bold mb-2 text-blue-600'>الأطفال:</h3>";
         snap.forEach(c => {
             trashStudentsList.innerHTML += `<div class="bg-white p-4 rounded-xl flex justify-between border mb-2"><span>${c.val().name}</span><button onclick="restoreStudent('${c.key}')" class="text-blue-600 font-bold">استعادة</button></div>`;
+        });
+    });
+
+    // عرض الأهداف المحذوفة (الجديد)
+    db.ref('TrashBin/Goals/' + sId).on('value', snap => {
+        trashStudentsList.innerHTML += "<h3 class='font-bold mt-4 mb-2 text-orange-600'>الأهداف:</h3>";
+        snap.forEach(gSnap => {
+            const g = gSnap.val();
+            trashStudentsList.innerHTML += `
+                <div class="bg-orange-50 p-3 rounded-lg flex justify-between items-center border border-orange-200 mb-2 text-xs">
+                    <span>${g.name} (${g.subject})</span>
+                    <button onclick="db.ref('TrashBin/Goals/${sId}/${gSnap.key}').remove()" class="text-red-500">حذف نهائي</button>
+                </div>`;
         });
     });
 }
@@ -497,16 +513,46 @@ function openGoalEntry(sub,col,ico){
     });
 }
 function addNewGoalRow(data=null){
-    const msg = document.getElementById('emptyMsg'); if(msg) msg.remove();
-    const d = document.createElement('div'); d.className = "goal-card shadow-sm";
+    const msg = document.getElementById('emptyMsg'); 
+    if(msg) msg.remove();
+    const d = document.createElement('div'); 
+    d.className = "goal-card shadow-sm";
     d.innerHTML = `
         <input class="input-style goal-name mb-3" placeholder="اسم الهدف" value="${data?data.name:''}">
         <div class="grid grid-cols-2 gap-2">
-            <select class="input-style goal-help bg-white text-xs"><option ${data?.help=='بدون مساعدة'?'selected':''}>بدون مساعدة</option><option ${data?.help=='مساعدة بسيطة'?'selected':''}>مساعدة بسيطة</option><option ${data?.help=='مساعدة كبيرة'?'selected':''}>مساعدة كبيرة</option></select>
-            <select class="input-style goal-score bg-white text-xs"><option ${data?.score=='0%'?'selected':''}>0%</option><option ${data?.score=='50%'?'selected':''}>50%</option><option ${data?.score=='100%'?'selected':''}>100%</option></select>
+            <select class="input-style goal-help bg-white text-xs">
+                <option ${data?.help=='بدون مساعدة'?'selected':''}>بدون مساعدة</option>
+                <option ${data?.help=='مساعدة بسيطة'?'selected':''}>مساعدة بسيطة</option>
+                <option ${data?.help=='مساعدة كبيرة'?'selected':''}>مساعدة كبيرة</option>
+            </select>
+            <select class="input-style goal-score bg-white text-xs">
+                <option ${data?.score=='0%'?'selected':''}>0%</option>
+                <option ${data?.score=='25%'?'selected':''}>25%</option>
+                <option ${data?.score=='50%'?'selected':''}>50%</option>
+                <option ${data?.score=='75%'?'selected':''}>75%</option>
+                <option ${data?.score=='100%'?'selected':''}>100%</option>
+            </select>
         </div>
-        <button class="text-red-500 text-[10px] font-bold underline w-full mt-3" onclick="this.closest('.goal-card').remove()">حذف الهدف 🗑️</button>`;
+        <button class="text-red-500 text-[10px] font-bold underline w-full mt-3" 
+        onclick="this.closest('.goal-card').remove()">حذف الهدف 🗑️</button>`;
     goalsListContainer.appendChild(d);
+}
+function trashGoal(btn) {
+    const goalCard = btn.closest('.goal-card');
+    const goalName = goalCard.querySelector('.goal-name').value;
+
+    if(confirm(`هل تريد نقل الهدف "${goalName}" إلى السلة؟`)) {
+        // إرسال الهدف للسلة في قاعدة البيانات
+        db.ref(`TrashBin/Goals/${sId}`).push({
+            name: goalName,
+            studentName: sName,
+            subject: currentSub,
+            month: mName,
+            date: new Date().toLocaleDateString()
+        }).then(() => {
+            goalCard.remove(); // مسحه من الشاشة بعد الحفظ في السلة
+        });
+    }
 }
 function saveGoals(){
     const goals=[];
@@ -620,6 +666,7 @@ function loadParents() {
         });
     });
 }
+
 </script>
 </body>
 </html>
