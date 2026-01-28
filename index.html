@@ -19,8 +19,7 @@
         .follow-up-box { background: #fff; border: 2px solid #e2e8f0; border-radius: 1.5rem; padding: 20px; margin-bottom: 20px; }
         .mood-btn { font-size: 2.5rem; filter: grayscale(1); transition: 0.3s; cursor: pointer; opacity: 0.4; }
         .mood-btn.active { filter: grayscale(0); transform: scale(1.2); opacity: 1; }
-        .input-style { width: 100%; padding: 12px; border-radius: 12px; border: 1px solid #cbd5e1; outline: none; margin-bottom: 8px; font-size: 14px; font-weight: bold; }
-        .check-grid label { display: flex; align-items: center; gap: 8px; font-size: 0.9rem; font-weight: bold; color: #475569; background: #f8fafc; padding: 8px; border-radius: 10px; }
+        .input-style { width: 100%; padding: 12px; border-radius: 12px; border: 1px solid #cbd5e1; outline: none; margin-bottom: 8px; font-size: 14px; font-weight: bold; text-align: center; }
         .goal-card { background: #fff; padding: 15px; border-radius: 1.5rem; border: 1px solid #e2e8f0; margin-bottom: 10px; border-right: 5px solid #f97316; }
     </style>
 </head>
@@ -29,86 +28,126 @@
 <div id="mainScreen" class="min-h-screen flex items-center justify-center p-4">
     <div class="w-full max-w-md bg-white p-10 rounded-[3rem] shadow-2xl text-center border">
         <h1 class="text-4xl font-black text-blue-600 mb-8 italic">Many Circles</h1>
-        <button onclick="showLogin()" class="w-full p-5 bg-blue-600 text-white rounded-2xl font-bold shadow-lg">👑 دخول الإدارة</button>
+        <button onclick="showLogin()" class="w-full p-5 bg-blue-600 text-white rounded-2xl font-bold">👑 دخول الإدارة</button>
     </div>
 </div>
 
 <div id="loginScreen" class="min-h-screen flex items-center justify-center p-4 hidden">
     <div class="w-full max-w-md bg-white p-8 rounded-[2.5rem] shadow-2xl text-center border">
-        <input type="text" id="adminName" placeholder="اسم المستخدم" class="w-full p-4 border rounded-2xl mb-4 text-center outline-none bg-slate-50 font-bold">
-        <input type="password" id="adminPass" placeholder="الكود السري" class="w-full p-4 border rounded-2xl mb-6 text-center outline-none bg-slate-50 font-bold">
-        <button onclick="login()" class="w-full p-4 bg-blue-600 text-white rounded-2xl font-bold shadow-md">دخول</button>
+        <input type="text" id="adminName" placeholder="اسم المستخدم" class="input-style bg-slate-50 mb-4">
+        <input type="password" id="adminPass" placeholder="الكود السري" class="input-style bg-slate-50 mb-6">
+        <button onclick="login()" class="w-full p-4 bg-blue-600 text-white rounded-2xl font-bold">دخول</button>
     </div>
 </div>
 
-<div id="dashboard" class="admin-page hidden bg-slate-50">
-    <div class="max-w-4xl mx-auto pt-10 px-4">
-        <div class="flex justify-between items-center mb-12"><h2 class="text-2xl font-black text-slate-800">لوحة التحكم</h2><button onclick="location.reload()" class="bg-red-50 text-red-500 px-4 py-2 rounded-xl font-bold">خروج</button></div>
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-            <div onclick="openStudentsSection()" class="bg-white p-10 rounded-[2.5rem] shadow-xl text-center border-b-8 border-blue-500 cursor-pointer hover:scale-105 transition">
-                <div class="text-6xl mb-4">👶</div><h3 class="text-2xl font-black text-blue-600">الأطفال</h3>
-            </div>
+<div id="dashboard" class="admin-page hidden bg-slate-50 text-center">
+    <h2 class="text-3xl font-black mb-10 text-slate-800">لوحة التحكم</h2>
+    <div class="max-w-4xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-8 px-4">
+        <div onclick="openStudentsSection()" class="bg-white p-10 rounded-[2.5rem] shadow-xl border-b-8 border-blue-500 cursor-pointer hover:scale-105 transition">
+            <div class="text-6xl mb-4">👶</div><h3 class="text-2xl font-black text-blue-600">الأطفال</h3>
         </div>
+        <div onclick="openTeachersSection()" class="bg-white p-10 rounded-[2.5rem] shadow-xl border-b-8 border-emerald-500 cursor-pointer hover:scale-105 transition">
+            <div class="text-6xl mb-4">👩‍🏫</div><h3 class="text-2xl font-black text-emerald-600">مدرس جديد</h3>
+        </div>
+    </div>
+    <button onclick="location.reload()" class="mt-12 text-red-500 font-bold underline">تسجيل خروج</button>
+</div>
+
+<div id="teachersSection" class="admin-page hidden text-center">
+    <button onclick="teachersSection.classList.add('hidden'); dashboard.classList.remove('hidden')" class="mb-6 font-bold text-emerald-600 float-right">⬅ عودة</button>
+    <div class="max-w-2xl mx-auto pt-10">
+        <h2 class="text-2xl font-black mb-8 text-emerald-600">إضافة مدرس جديد</h2>
+        <div class="bg-slate-50 p-6 rounded-3xl border-2 border-dashed border-emerald-300">
+            <input type="text" id="newTeacherName" placeholder="اسم المدرس" class="input-style">
+            <input type="text" id="teacherSubject" placeholder="المادة المستلمة" class="input-style">
+            <input type="text" id="teacherPass" placeholder="كود دخول المدرس (Password)" class="input-style bg-emerald-50">
+            <button onclick="addTeacher()" class="w-full bg-emerald-600 text-white p-4 rounded-xl font-bold mt-2">إضافة +</button>
+        </div>
+        <div id="teachersList" class="mt-10 space-y-4"></div>
     </div>
 </div>
 
 <div id="studentsSection" class="admin-page hidden">
     <div class="max-w-4xl mx-auto">
-        <div class="flex justify-between items-center mb-8 pb-4 border-b">
+        <div class="flex justify-between items-center mb-8 border-b pb-4">
             <button onclick="dashboard.classList.remove('hidden'); studentsSection.classList.add('hidden')" class="text-blue-600 font-bold bg-blue-50 px-4 py-2 rounded-xl">⬅ العودة</button>
             <button onclick="openTrash()" class="bg-red-50 text-red-500 px-4 py-2 rounded-xl font-bold border border-red-200">🗑️ السلة</button>
         </div>
         <div class="bg-slate-50 p-6 rounded-[2.5rem] mb-6 text-center border-2 border-dashed border-slate-300">
-            <input type="text" id="newStudentName" placeholder="اسم الطفل الرباعي" class="p-4 rounded-2xl border mb-2 w-full md:w-64 text-center font-bold outline-none">
-            <button onclick="addStudent()" class="bg-blue-600 text-white px-8 py-4 rounded-2xl font-bold shadow-md">إضافة +</button>
+            <input type="text" id="newStudentName" placeholder="اسم الطفل الرباعي" class="input-style mb-2 md:w-64">
+            <button onclick="addStudent()" class="bg-blue-600 text-white px-8 py-3 rounded-xl font-bold">إضافة +</button>
         </div>
-        <input type="text" id="searchInput" onkeyup="filterStudents()" placeholder="🔍 ابحث عن اسم طفل..." class="w-full p-4 rounded-2xl border-2 border-blue-50 outline-none mb-8 text-center font-bold">
+        <div class="max-w-md mx-auto mb-6 px-4">
+    <input type="text" id="studentSearchInput" onkeyup="searchStudent()" placeholder="🔍 ابحث عن اسم الطفل..." class="w-full p-3 rounded-2xl border-2 border-blue-100 outline-none text-center font-bold focus:border-blue-400 transition-all">
+</div>
         <div id="studentsList" class="grid grid-cols-2 md:grid-cols-3 gap-6"></div>
     </div>
 </div>
 
-<div id="trashScreen" class="admin-page hidden bg-slate-50">
+<div id="trashScreen" class="admin-page hidden bg-slate-50 text-center">
     <div class="max-w-2xl mx-auto">
-        <button onclick="trashScreen.classList.add('hidden'); studentsSection.classList.remove('hidden')" class="font-bold text-blue-600 mb-8 block">⬅ عودة</button>
-        <h2 class="text-3xl font-black text-red-600 mb-8 text-center italic">المحذوفات 🗑️</h2>
+        <button onclick="trashScreen.classList.add('hidden'); studentsSection.classList.remove('hidden')" class="font-bold text-blue-600 mb-8 block text-right">⬅ عودة</button>
+        <h2 class="text-3xl font-black text-red-600 mb-8">المحذوفات 🗑️</h2>
         <div id="trashStudentsList" class="space-y-3"></div>
     </div>
 </div>
 
-<div id="monthsScreen" class="admin-page hidden">
-    <div class="max-w-4xl mx-auto">
-        <button onclick="monthsScreen.classList.add('hidden'); studentsSection.classList.remove('hidden')" class="mb-8 text-blue-600 font-bold">⬅ رجوع</button>
-        <h2 class="text-3xl font-black mb-10 text-center text-blue-600" id="currentStudentTitle"></h2>
-        <div id="monthsGrid" class="grid grid-cols-3 md:grid-cols-4 gap-4 px-2"></div>
+<div id="monthsScreen" class="admin-page hidden text-center">
+    <button onclick="monthsScreen.classList.add('hidden'); studentsSection.classList.remove('hidden')" class="mb-8 text-blue-600 font-bold float-right">⬅ رجوع</button>
+    <div class="max-w-4xl mx-auto pt-10">
+        <h2 class="text-3xl font-black mb-10 text-blue-600" id="currentStudentTitle"></h2>
+        <div id="monthsGrid" class="grid grid-cols-3 md:grid-cols-4 gap-4"></div>
     </div>
 </div>
 
-<div id="choiceScreen" class="admin-page hidden bg-slate-100">
+<div id="choiceScreen" class="admin-page hidden bg-slate-100 text-center">
     <div class="max-w-4xl mx-auto pt-20">
-        <button onclick="choiceScreen.classList.add('hidden'); monthsScreen.classList.remove('hidden')" class="mb-10 text-blue-600 font-bold">⬅ رجوع للشهور</button>
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-8 px-4">
-            <div onclick="openPlanMenu()" class="bg-white p-12 shadow-2xl rounded-[3rem] text-center border-t-8 border-orange-400 cursor-pointer hover:scale-105 transition">
-                <div class="text-7xl mb-4">📋</div><h3 class="text-3xl font-black text-orange-500">الخطة الشهرية</h3>
+        <button onclick="choiceScreen.classList.add('hidden'); monthsScreen.classList.remove('hidden')" class="mb-10 text-blue-600 font-bold float-right">⬅ رجوع</button>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8 px-4 w-full">
+            <div onclick="openPlanMenu()" class="bg-white p-12 shadow-2xl rounded-[3rem] border-t-8 border-orange-400 cursor-pointer hover:scale-105 transition">
+                <div class="text-6xl mb-4">📋</div><h3 class="text-2xl font-black text-orange-500">الخطة الشهرية</h3>
             </div>
-            <div onclick="openFollowUp()" class="bg-white p-12 shadow-2xl rounded-[3rem] text-center border-t-8 border-blue-500 cursor-pointer hover:scale-105 transition">
-                <div class="text-7xl mb-4">🚀</div><h3 class="text-3xl font-black text-blue-600">Follow Up</h3>
+            <div onclick="openFollowUp()" class="bg-white p-12 shadow-2xl rounded-[3rem] border-t-8 border-blue-500 cursor-pointer hover:scale-105 transition">
+                <div class="text-6xl mb-4">🚀</div><h3 class="text-2xl font-black text-blue-600">Follow Up</h3>
             </div>
         </div>
+    </div>
+</div>
+
+<div id="subjectsMenu" class="admin-page hidden text-center">
+    <button onclick="subjectsMenu.classList.add('hidden'); choiceScreen.classList.remove('hidden')" class="mb-8 text-blue-600 font-bold float-right">⬅ رجوع</button>
+    <h2 class="text-3xl font-black mb-10 text-orange-500">المواد التعليمية</h2>
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-2xl mx-auto">
+        <div onclick="openGoalEntry('اللغة العربية','#ef4444','📖')" class="p-8 bg-red-500 text-white rounded-[2rem] font-black text-xl shadow-lg cursor-pointer">📖 اللغة العربية</div>
+        <div onclick="openGoalEntry('English','#3b82f6','🔤')" class="p-8 bg-blue-500 text-white rounded-[2rem] font-black text-xl shadow-lg cursor-pointer">🔤 English</div>
+        <div onclick="openGoalEntry('Math','#10b981','🔢')" class="p-8 bg-emerald-500 text-white rounded-[2rem] font-black text-xl shadow-lg cursor-pointer">🔢 Math</div>
+        <div onclick="openGoalEntry('التربية الدينية','#f59e0b','🌙')" class="p-8 bg-amber-500 text-white rounded-[2rem] font-black text-xl shadow-lg cursor-pointer">🌙 التربية الدينية</div>
+        <div onclick="openGoalEntry('تنمية المهارات','#8b5cf6','🎨')" class="p-8 bg-purple-500 text-white rounded-[2rem] font-black text-xl shadow-lg cursor-pointer">🎨 تنمية المهارات</div>
+    </div>
+</div>
+
+<div id="goalEntryScreen" class="admin-page hidden overflow-y-auto">
+    <div class="max-w-2xl mx-auto pb-20 text-center">
+        <button onclick="goalEntryScreen.classList.add('hidden'); subjectsMenu.classList.remove('hidden')" class="mb-6 text-blue-600 font-bold float-right">⬅ رجوع</button>
+        <div id="entryHeader" class="p-8 rounded-[2rem] text-white text-center mb-8 shadow-xl"><h2 id="entryTitle" class="text-2xl font-black"></h2></div>
+        <div id="goalsListContainer" class="space-y-4"></div>
+        <button onclick="addNewGoalRow()" class="w-full mt-4 p-4 bg-slate-100 rounded-2xl font-bold border-2 border-dashed">+ إضافة هدف جديد</button>
+        <button onclick="saveGoals()" class="w-full mt-10 p-6 bg-orange-500 text-white rounded-[2rem] font-black text-xl">حفظ الخطة ✅</button>
     </div>
 </div>
 
 <div id="followUpScreen" class="admin-page hidden overflow-y-auto bg-slate-50">
     <div class="max-w-2xl mx-auto pb-20">
         <button onclick="followUpScreen.classList.add('hidden'); choiceScreen.classList.remove('hidden')" class="text-blue-600 font-bold mb-6">⬅ رجوع</button>
-        <h2 class="text-2xl font-black text-center mb-6 bg-blue-600 text-white p-4 rounded-2xl shadow-lg italic">Student Daily Report</h2>
+        <h2 class="text-2xl font-black text-center mb-6 bg-blue-600 text-white p-4 rounded-2xl italic">Daily Report</h2>
         
         <div class="follow-up-box shadow-md">
             <h3 class="section-title text-purple-600">Mood | الحالة المزاجية</h3>
             <div class="flex justify-around items-center">
-                <div onclick="setMood('happy', this)" class="text-center cursor-pointer group"><div class="mood-btn">🤩</div><p class="text-[10px] font-black">Happy</p></div>
-                <div onclick="setMood('angry', this)" class="text-center cursor-pointer group"><div class="mood-btn">😡</div><p class="text-[10px] font-black">Angry</p></div>
-                <div onclick="setMood('sad', this)" class="text-center cursor-pointer group"><div class="mood-btn">😢</div><p class="text-[10px] font-black">Sad</p></div>
-                <div onclick="setMood('naughty', this)" class="text-center cursor-pointer group"><div class="mood-btn">🤪</div><p class="text-[10px] font-black">Naughty</p></div>
+                <div onclick="setMood('happy', this)" class="text-center cursor-pointer"><div class="mood-btn">🤩</div></div>
+                <div onclick="setMood('angry', this)" class="text-center cursor-pointer"><div class="mood-btn">😡</div></div>
+                <div onclick="setMood('sad', this)" class="text-center cursor-pointer"><div class="mood-btn">😢</div></div>
+                <div onclick="setMood('naughty', this)" class="text-center cursor-pointer"><div class="mood-btn">🤪</div></div>
             </div>
         </div>
 
@@ -121,50 +160,24 @@
         </div>
 
         <div class="follow-up-box shadow-md">
-            <h3 class="section-title text-blue-500">Care | العناية الشخصية</h3>
+            <h3 class="section-title text-blue-500">Care | العناية</h3>
             <div class="space-y-4">
-                <div class="flex items-center justify-between bg-slate-50 p-3 rounded-xl"><span class="font-black italic text-sm">Toilet:</span><select id="potty_status" class="bg-white border p-2 rounded-lg font-bold"><option>Clean</option><option>Diaper Change</option><option>Potty Success</option></select></div>
-                <div class="flex items-center justify-between bg-slate-50 p-3 rounded-xl"><span class="font-black italic text-sm">Nap Time:</span><select id="nap_status" class="bg-white border p-2 rounded-lg font-bold"><option>No Sleep</option><option>1 Hour</option><option>2 Hours</option></select></div>
+                <div class="flex items-center justify-between bg-slate-50 p-3 rounded-xl"><span class="font-black">Toilet:</span><select id="potty_status" class="bg-white border p-2 rounded-lg font-bold"><option>Clean</option><option>Diaper Change</option><option>Success</option></select></div>
+                <div class="flex items-center justify-between bg-slate-50 p-3 rounded-xl"><span class="font-black">Sleep:</span><select id="nap_status" class="bg-white border p-2 rounded-lg font-bold"><option>No Sleep</option><option>1 Hour</option><option>2 Hours</option></select></div>
             </div>
         </div>
 
         <div class="follow-up-box shadow-md">
             <h3 class="section-title text-orange-500">Notes | ملاحظات</h3>
-            <textarea id="daily_notes" placeholder="اكتب ملاحظاتك هنا..." class="input-style h-24 resize-none p-4"></textarea>
+            <textarea id="daily_notes" placeholder="اكتب ملاحظاتك هنا..." class="input-style h-24 resize-none p-4 text-right"></textarea>
         </div>
 
-        <button onclick="saveDailyReport()" class="w-full p-6 bg-blue-600 text-white rounded-3xl font-black text-xl shadow-2xl">حفظ التقرير اليومي ✅</button>
-    </div>
-</div>
-
-<div id="subjectsMenu" class="admin-page hidden">
-    <div class="max-w-4xl mx-auto text-center">
-        <button onclick="subjectsMenu.classList.add('hidden'); choiceScreen.classList.remove('hidden')" class="mb-8 text-blue-600 font-bold block text-right">⬅ رجوع</button>
-        <h2 class="text-3xl font-black mb-10 text-orange-500 italic">الخطة التعليمية</h2>
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div onclick="openGoalEntry('اللغة العربية','#ef4444','📖')" class="p-8 bg-red-500 text-white rounded-[2rem] font-black text-xl shadow-lg cursor-pointer">📖 اللغة العربية</div>
-            <div onclick="openGoalEntry('English','#3b82f6','🔤')" class="p-8 bg-blue-500 text-white rounded-[2rem] font-black text-xl shadow-lg cursor-pointer">🔤 English</div>
-            <div onclick="openGoalEntry('Math','#10b981','🔢')" class="p-8 bg-emerald-500 text-white rounded-[2rem] font-black text-xl shadow-lg cursor-pointer">🔢 Math</div>
-            <div onclick="openGoalEntry('التربية الدينية','#f59e0b','🌙')" class="p-8 bg-amber-500 text-white rounded-[2rem] font-black text-xl shadow-lg cursor-pointer">🌙 التربية الدينية</div>
-            <div onclick="openGoalEntry('تنمية المهارات','#8b5cf6','🎨')" class="p-8 bg-purple-500 text-white rounded-[2rem] font-black text-xl shadow-lg cursor-pointer">🎨 تنمية المهارات</div>
-        </div>
-    </div>
-</div>
-
-<div id="goalEntryScreen" class="admin-page hidden overflow-y-auto">
-    <div class="max-w-2xl mx-auto pb-20">
-        <button onclick="goalEntryScreen.classList.add('hidden'); subjectsMenu.classList.remove('hidden')" class="mb-6 text-blue-600 font-bold block text-right">⬅ رجوع للمواد</button>
-        <div id="entryHeader" class="p-8 rounded-[2rem] text-white text-center mb-8 shadow-xl">
-            <h2 id="entryTitle" class="text-3xl font-black"></h2>
-        </div>
-        <div id="goalsListContainer" class="space-y-4 px-2"></div>
-        <button onclick="addNewGoalRow()" class="w-full mt-4 p-4 bg-slate-100 rounded-2xl font-bold border-2 border-dashed">+ إضافة هدف جديد</button>
-        <button onclick="saveGoals()" class="w-full mt-10 p-6 bg-orange-500 text-white rounded-[2rem] font-black text-xl">حفظ الخطة ✅</button>
+        <button onclick="saveDailyReport()" class="w-full p-6 bg-blue-600 text-white rounded-3xl font-black shadow-2xl">حفظ التقرير ✅</button>
     </div>
 </div>
 
 <script>
-// Firebase Config
+// Firebase Setup
 const firebaseConfig = {
     apiKey: "AIzaSyC4K55wOZy3w44cCNX1i_cmk4-g4P-L40",
     authDomain: "many-circles.firebaseapp.com",
@@ -182,28 +195,72 @@ const ADMINS = ["حسن","علياء","مصطفى","حنان"];
 const monthsArr = ["يناير","فبراير","مارس","أبريل","مايو","يونيو","يوليو","أغسطس","سبتمبر","أكتوبر","نوفمبر","ديسمبر"];
 let sId="", sName="", mName="", currentSub="", selectedMood="";
 
-// Login Functions
+// Login & Sections
 function showLogin(){ mainScreen.classList.add('hidden'); loginScreen.classList.remove('hidden'); }
 function login(){
-    const n=adminName.value.trim(); const p=adminPass.value.trim();
-    if(ADMINS.includes(n)&&p===MASTER_CODE){ loginScreen.classList.add('hidden'); dashboard.classList.remove('hidden'); }
-    else alert("بيانات خطأ");
+    if(ADMINS.includes(adminName.value.trim()) && adminPass.value.trim() === MASTER_CODE){
+        loginScreen.classList.add('hidden'); dashboard.classList.remove('hidden');
+    } else alert("بيانات غير صحيحة");
 }
 
-// Students Logic
+// المدرسين
+function openTeachersSection(){ dashboard.classList.add('hidden'); teachersSection.classList.remove('hidden'); loadTeachers(); }
+function addTeacher() {
+    const n = newTeacherName.value.trim(); 
+    const s = teacherSubject.value.trim();
+    const p = teacherPass.value.trim(); // ⭐ هنا بنقول للكمبيوتر روح لخانة الباسورد وهات اللي مكتوب فيها وسميه "p"
+
+    if (n && s && p) { // ⭐ هنا بنقوله لو الاسم والمادة والباسورد (التلاتة) مكتوبين.. نفذ اللي جاي
+        db.ref('Teachers').push({
+            name: n,
+            subject: s,
+            password: p // ⭐ هنا بنقوله احفظ الـ "p" (الباسورد) جوه قاعدة البيانات جنب الاسم والمادة
+        }).then(() => {
+            // السطور اللي تحت دي بتمسح الكلام من الخانات بعد ما يحفظ عشان الخانات تفضى للي بعده
+            newTeacherName.value = "";
+            teacherSubject.value = "";
+            teacherPass.value = ""; // ⭐ فضي خانة الباسورد بعد الحفظ
+            alert("تم إضافة المدرس بنجاح ✅");
+        });
+    } else {
+        alert("يرجى كتابة الاسم والمادة والباسورد");
+    }
+}
+function loadTeachers(){
+    db.ref('Teachers').on('value', snap => {
+        teachersList.innerHTML = "";
+        snap.forEach(c => {
+            const data = c.val(); // ⭐ بنعرف متغير اسمه data عشان نجيب منه المعلومات
+            teachersList.innerHTML += `
+                <div class="bg-white p-4 rounded-xl shadow-sm border-r-4 border-emerald-500 flex justify-between items-center">
+                    <div>
+                        <p class="font-bold">${data.name}</p>
+                        <p class="text-xs text-slate-500">${data.subject}</p>
+                        <p class="text-xs font-bold text-emerald-600">Pass: ${data.password || 'لا يوجد'}</p>
+                    </div>
+                    <button onclick="db.ref('Teachers/${c.key}').remove()" class="text-red-500 font-bold">حذف</button>
+                </div>`;
+        });
+    });
+}
+
+// الأطفال
 function openStudentsSection(){ dashboard.classList.add('hidden'); studentsSection.classList.remove('hidden'); loadStudents(); }
+function addStudent(){ const n=newStudentName.value.trim(); if(n){ db.ref('Students').push({name:n}); newStudentName.value=""; } }
 function loadStudents(){
     db.ref('Students').on('value',snap=>{
         studentsList.innerHTML="";
         snap.forEach(c=>{
             const d=document.createElement('div');
-            d.className="bg-white p-8 rounded-[2.5rem] shadow-sm font-black card-hover text-center border";
+            d.className="bg-white p-8 rounded-[2.5rem] shadow-sm font-black card-hover text-center border relative";
             d.innerHTML=`<div class="del-btn" onclick="trashStudent('${c.key}','${c.val().name}')">X</div>${c.val().name}`;
             d.onclick=(e)=>{ if(e.target.className!=='del-btn'){ sId=c.key; sName=c.val().name; openMonths(); } };
             studentsList.appendChild(d);
         });
     });
 }
+
+// السلة
 function trashStudent(id, name){
     if(confirm(`نقل ${name} للسلة؟`)){
         db.ref('Students/'+id).once('value', s=>{
@@ -214,7 +271,7 @@ function trashStudent(id, name){
 function openTrash(){
     studentsSection.classList.add('hidden'); trashScreen.classList.remove('hidden');
     db.ref('TrashBin/Students').on('value', snap=>{
-        trashStudentsList.innerHTML = snap.exists() ? "" : "<p class='text-center'>السلة فارغة</p>";
+        trashStudentsList.innerHTML = snap.exists() ? "" : "<p class='text-center text-slate-400'>السلة فارغة</p>";
         snap.forEach(c => {
             trashStudentsList.innerHTML += `<div class="bg-white p-4 rounded-xl flex justify-between border mb-2"><span>${c.val().name}</span><button onclick="restoreStudent('${c.key}')" class="text-blue-600 font-bold">استعادة</button></div>`;
         });
@@ -225,13 +282,8 @@ function restoreStudent(id){
         db.ref('Students/'+id).set(s.val()).then(()=> db.ref('TrashBin/Students/'+id).remove());
     });
 }
-function addStudent(){ const n=newStudentName.value.trim(); if(n){ db.ref('Students').push({name:n}); newStudentName.value=""; } }
-function filterStudents() {
-    const q=searchInput.value.toLowerCase();
-    document.querySelectorAll('#studentsList > div').forEach(c=>{ c.style.display=c.innerText.toLowerCase().includes(q)?"block":"none"; });
-}
 
-// Navigation
+// التنقل
 function openMonths(){
     studentsSection.classList.add('hidden'); monthsScreen.classList.remove('hidden');
     currentStudentTitle.innerText=sName; monthsGrid.innerHTML="";
@@ -243,37 +295,45 @@ function openMonths(){
 function openPlanMenu(){ choiceScreen.classList.add('hidden'); subjectsMenu.classList.remove('hidden'); }
 function openFollowUp(){ choiceScreen.classList.add('hidden'); followUpScreen.classList.remove('hidden'); }
 
-// Goals Logic (FIXED)
+// الأهداف
 function openGoalEntry(sub,col,ico){
     currentSub=sub; subjectsMenu.classList.add('hidden'); goalEntryScreen.classList.remove('hidden');
     entryHeader.style.backgroundColor=col; entryTitle.innerText=ico+" "+sub;
     goalsListContainer.innerHTML=""; 
-    db.ref(`MonthlyPlans/${sId}/${mName}/${sub}`).once('value',snap=>{
-        if(snap.exists()) snap.forEach(g=>addNewGoalRow(g.val()));
-        else goalsListContainer.innerHTML="<p id='emptyMsg' class='text-center text-slate-400 py-10'>لا يوجد أهداف حالياً</p>";
+    db.ref(`MonthlyPlans/${sId}/${mName}/${sub}`).once('value', snap => {
+        if(snap.exists()) snap.forEach(g => addNewGoalRow(g.val()));
+        else goalsListContainer.innerHTML = `<p id="emptyMsg" class="text-center text-slate-400 font-bold py-10">لا توجد أهداف حالياً</p>`;
     });
 }
 function addNewGoalRow(data=null){
-    const msg=document.getElementById('emptyMsg'); if(msg) msg.remove();
-    const d=document.createElement('div'); d.className="goal-card shadow-sm";
+    const msg = document.getElementById('emptyMsg'); if(msg) msg.remove();
+    const d = document.createElement('div'); d.className = "goal-card shadow-sm";
     d.innerHTML = `
-        <input class="input-style goal-name" placeholder="اسم الهدف" value="${data?data.name:''}">
-        <div class="grid grid-cols-2 gap-3 mt-2">
-            <select class="input-style goal-help bg-white"><option ${data?.help=='مساعدة بسيطة'?'selected':''}>مساعدة بسيطة</option><option ${data?.help=='مساعدة كبيرة'?'selected':''}>مساعدة كبيرة</option><option ${data?.help=='بدون مساعدة'?'selected':''}>بدون مساعدة</option></select>
-            <select class="input-style goal-score bg-white"><option ${data?.score=='0%'?'selected':''}>0%</option><option ${data?.score=='50%'?'selected':''}>50%</option><option ${data?.score=='100%'?'selected':''}>100%</option></select>
+        <input class="input-style goal-name mb-3" placeholder="اسم الهدف" value="${data?data.name:''}">
+        <div class="grid grid-cols-2 gap-2">
+            <select class="input-style goal-help bg-white text-xs"><option ${data?.help=='بدون مساعدة'?'selected':''}>بدون مساعدة</option><option ${data?.help=='مساعدة بسيطة'?'selected':''}>مساعدة بسيطة</option><option ${data?.help=='مساعدة كبيرة'?'selected':''}>مساعدة كبيرة</option></select>
+            <select class="input-style goal-score bg-white text-xs"><option ${data?.score=='0%'?'selected':''}>0%</option><option ${data?.score=='50%'?'selected':''}>50%</option><option ${data?.score=='100%'?'selected':''}>100%</option></select>
         </div>
-        <button class="text-red-500 text-xs w-full mt-2 font-bold underline" onclick="this.closest('.goal-card').remove()">حذف نهائي</button>`;
+        <button class="text-red-500 text-[10px] font-bold underline w-full mt-3" onclick="this.closest('.goal-card').remove()">حذف الهدف 🗑️</button>`;
     goalsListContainer.appendChild(d);
 }
 function saveGoals(){
     const goals=[];
     document.querySelectorAll('.goal-card').forEach(card=>{
-        goals.push({ name: card.querySelector('.goal-name').value, help: card.querySelector('.goal-help').value, score: card.querySelector('.goal-score').value });
+        goals.push({ 
+            name: card.querySelector('.goal-name').value, 
+            help: card.querySelector('.goal-help').value,
+            score: card.querySelector('.goal-score').value // السطر ده هو اللي بيحفظ النسبة
+        });
     });
-    db.ref(`MonthlyPlans/${sId}/${mName}/${currentSub}`).set(goals).then(()=>{ alert("تم الحفظ ✅"); goalEntryScreen.classList.add('hidden'); subjectsMenu.classList.remove('hidden'); });
+    db.ref(`MonthlyPlans/${sId}/${mName}/${currentSub}`).set(goals).then(()=>{ 
+        alert("تم حفظ الخطة والتقييم بنجاح ✅"); 
+        goalEntryScreen.classList.add('hidden'); 
+        subjectsMenu.classList.remove('hidden'); 
+    });
 }
 
-// Follow Up Logic
+// المتابعة اليومية
 function setMood(mood, el){
     selectedMood = mood;
     document.querySelectorAll('.mood-btn').forEach(btn => btn.classList.remove('active'));
@@ -281,15 +341,33 @@ function setMood(mood, el){
 }
 function saveDailyReport(){
     const today = new Date().toISOString().split('T')[0];
-    const report = {
+    db.ref(`DailyReports/${sId}/${today}`).set({
         mood: selectedMood,
         breakfast: meal_breakfast.value,
         lunch: meal_lunch.value,
         potty: potty_status.value,
         nap: nap_status.value,
         notes: daily_notes.value
-    };
-    db.ref(`DailyReports/${sId}/${today}`).set(report).then(()=>{ alert("تم حفظ التقرير ✅"); followUpScreen.classList.add('hidden'); choiceScreen.classList.remove('hidden'); });
+    }).then(()=>{ alert("تم حفظ التقرير ✅"); followUpScreen.classList.add('hidden'); choiceScreen.classList.remove('hidden'); });
+}
+function searchStudent() {
+    // 1. هات الكلمة اللي اتكتبت وحولها لحروف صغيرة
+    const query = document.getElementById('studentSearchInput').value.toLowerCase();
+    
+    // 2. هات كل كروت الأطفال اللي ظاهرة في الصفحة
+    const students = document.querySelectorAll('#studentsList > div');
+    
+    students.forEach(card => {
+        // 3. اقرأ الاسم اللي جوه الكارت
+        const name = card.innerText.toLowerCase();
+        
+        // 4. لو الاسم فيه الحروف اللي كتبناها سيبه، لو مفيش اخفيه
+        if (name.includes(query)) {
+            card.style.display = "block";
+        } else {
+            card.style.display = "none";
+        }
+    });
 }
 </script>
 </body>
