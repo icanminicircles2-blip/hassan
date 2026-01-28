@@ -28,27 +28,40 @@
 <div id="mainScreen" class="min-h-screen flex items-center justify-center p-4">
     <div class="w-full max-w-md bg-white p-10 rounded-[3rem] shadow-2xl text-center border">
         <h1 class="text-4xl font-black text-blue-600 mb-8 italic">Many Circles</h1>
-        <button onclick="showLogin()" class="w-full p-5 bg-blue-600 text-white rounded-2xl font-bold">👑 دخول الإدارة</button>
+        <div class="space-y-4">
+            <button onclick="showLogin('admin')" class="w-full p-5 bg-blue-600 text-white rounded-2xl font-bold">👑 دخول الإدارة</button>
+            
+            <button onclick="showLogin('teacher')" class="w-full p-5 bg-emerald-600 text-white rounded-2xl font-bold">👩‍🏫 دخول المعلمات</button>
+        </div>
     </div>
 </div>
 
 <div id="loginScreen" class="min-h-screen flex items-center justify-center p-4 hidden">
     <div class="w-full max-w-md bg-white p-8 rounded-[2.5rem] shadow-2xl text-center border">
-        <input type="text" id="adminName" placeholder="اسم المستخدم" class="input-style bg-slate-50 mb-4">
-        <input type="password" id="adminPass" placeholder="الكود السري" class="input-style bg-slate-50 mb-6">
-        <button onclick="login()" class="w-full p-4 bg-blue-600 text-white rounded-2xl font-bold">دخول</button>
+        <h2 id="loginTitle" class="text-xl font-black mb-6 text-slate-700">تسجيل دخول</h2>
+        <input type="text" id="loginName" placeholder="الاسم" class="input-style bg-slate-50 mb-4">
+        <input type="password" id="loginPass" placeholder="الكود السري" class="input-style bg-slate-50 mb-6">
+        <button id="loginBtn" class="w-full p-4 bg-blue-600 text-white rounded-2xl font-bold">دخول</button>
+        <button onclick="location.reload()" class="mt-4 text-slate-400 text-sm block w-full">إلغاء</button>
     </div>
 </div>
 
 <div id="dashboard" class="admin-page hidden bg-slate-50 text-center">
     <h2 class="text-3xl font-black mb-10 text-slate-800">لوحة التحكم</h2>
-    <div class="max-w-4xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-8 px-4">
+    <div class="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-8 px-4">
+        
         <div onclick="openStudentsSection()" class="bg-white p-10 rounded-[2.5rem] shadow-xl border-b-8 border-blue-500 cursor-pointer hover:scale-105 transition">
             <div class="text-6xl mb-4">👶</div><h3 class="text-2xl font-black text-blue-600">الأطفال</h3>
         </div>
+
         <div onclick="openTeachersSection()" class="bg-white p-10 rounded-[2.5rem] shadow-xl border-b-8 border-emerald-500 cursor-pointer hover:scale-105 transition">
             <div class="text-6xl mb-4">👩‍🏫</div><h3 class="text-2xl font-black text-emerald-600">مدرس جديد</h3>
         </div>
+
+        <div onclick="openParentsSection()" class="bg-white p-10 rounded-[2.5rem] shadow-xl border-b-8 border-indigo-500 cursor-pointer hover:scale-105 transition">
+            <div class="text-6xl mb-4">👨‍👩‍👧</div><h3 class="text-2xl font-black text-indigo-600">أولياء الأمور</h3>
+        </div>
+
     </div>
     <button onclick="location.reload()" class="mt-12 text-red-500 font-bold underline">تسجيل خروج</button>
 </div>
@@ -66,14 +79,28 @@
         <div id="teachersList" class="mt-10 space-y-4"></div>
     </div>
 </div>
-
+<div id="parentsSection" class="admin-page hidden text-center">
+    <button onclick="parentsSection.classList.add('hidden'); dashboard.classList.remove('hidden')" class="mb-6 font-bold text-indigo-600 float-right">⬅ عودة</button>
+    <div class="max-w-2xl mx-auto pt-10">
+        <h2 class="text-2xl font-black mb-8 text-indigo-600">إضافة ولي أمر</h2>
+        <div class="bg-slate-50 p-6 rounded-3xl border-2 border-dashed border-indigo-300">
+            <input type="text" id="parentName" placeholder="اسم ولي الأمر" class="input-style">
+            <input type="text" id="parentPass" placeholder="كود دخول ولي الأمر (Password)" class="input-style bg-indigo-50">
+            <select id="linkedStudentId" class="input-style bg-white text-xs">
+                <option value="">اختر الطفل المرتبط به</option>
+            </select>
+            <button onclick="addParent()" class="w-full bg-indigo-600 text-white p-4 rounded-xl font-bold mt-2 shadow-lg">إضافة ولي الأمر +</button>
+        </div>
+        <div id="parentsList" class="mt-10 space-y-4"></div>
+    </div>
+</div>
 <div id="studentsSection" class="admin-page hidden">
     <div class="max-w-4xl mx-auto">
         <div class="flex justify-between items-center mb-8 border-b pb-4">
-            <button onclick="dashboard.classList.remove('hidden'); studentsSection.classList.add('hidden')" class="text-blue-600 font-bold bg-blue-50 px-4 py-2 rounded-xl">⬅ العودة</button>
-            <button onclick="openTrash()" class="bg-red-50 text-red-500 px-4 py-2 rounded-xl font-bold border border-red-200">🗑️ السلة</button>
+            <button id="backBtn" class="text-blue-600 font-bold bg-blue-50 px-4 py-2 rounded-xl">⬅ العودة</button>
+            <button id="trashBtn" onclick="openTrash()" class="bg-red-50 text-red-500 px-4 py-2 rounded-xl font-bold border border-red-200">🗑️ السلة</button>
         </div>
-        <div class="bg-slate-50 p-6 rounded-[2.5rem] mb-6 text-center border-2 border-dashed border-slate-300">
+        <div id="addStudentBox" class="bg-slate-50 p-6 rounded-[2.5rem] mb-6 text-center border-2 border-dashed border-slate-300">
             <input type="text" id="newStudentName" placeholder="اسم الطفل الرباعي" class="input-style mb-2 md:w-64">
             <button onclick="addStudent()" class="bg-blue-600 text-white px-8 py-3 rounded-xl font-bold">إضافة +</button>
         </div>
@@ -196,13 +223,56 @@ const monthsArr = ["يناير","فبراير","مارس","أبريل","مايو
 let sId="", sName="", mName="", currentSub="", selectedMood="";
 
 // Login & Sections
-function showLogin(){ mainScreen.classList.add('hidden'); loginScreen.classList.remove('hidden'); }
-function login(){
-    if(ADMINS.includes(adminName.value.trim()) && adminPass.value.trim() === MASTER_CODE){
-        loginScreen.classList.add('hidden'); dashboard.classList.remove('hidden');
-    } else alert("بيانات غير صحيحة");
+let currentLoginType = ""; // متغير عشان نعرف مين اللي بيسجل دخول
+
+function showLogin(type) {
+    currentLoginType = type; // بنخزن النوع (أدمن ولا مدرس)
+    mainScreen.classList.add('hidden');
+    loginScreen.classList.remove('hidden');
+
+    // تظبيط شكل الشاشة حسب النوع
+    if (type === 'admin') {
+        loginTitle.innerText = "دخول الإدارة 👑";
+        loginBtn.style.backgroundColor = "#2563eb"; // أزرق للأدمن
+        loginBtn.onclick = adminLogin; // يروح لفانكشن دخول الأدمن
+    } else {
+        loginTitle.innerText = "دخول المعلمات 👩‍🏫";
+        loginBtn.style.backgroundColor = "#059669"; // أخضر للمدرسة
+        loginBtn.onclick = teacherLogin; // يروح لفانكشن دخول المدرسين
+    }
 }
 
+// فانكشن دخول الأدمن (زي ما كانت بس بأسماء الخانات الجديدة)
+function adminLogin() {
+    const user = loginName.value.trim();
+    const pass = loginPass.value.trim();
+    if (ADMINS.includes(user) && pass === MASTER_CODE) {
+        loginScreen.classList.add('hidden');
+        dashboard.classList.remove('hidden');
+    } else {
+        alert("بيانات الإدارة غير صحيحة");
+    }
+}
+
+// فانكشن دخول المعلمات (بتروح تدور في الداتا بيز)
+function teacherLogin() {
+    const user = loginName.value.trim();
+    const pass = loginPass.value.trim();
+    
+    db.ref('Teachers').once('value', snap => {
+        let found = false;
+        snap.forEach(t => {
+            const data = t.val();
+            if (data.name === user && data.password === pass) {
+                found = true;
+                alert("أهلاً بكِ يا مس " + user);
+                loginScreen.classList.add('hidden');
+                openStudentsSection(); // بنفتح لها صفحة الأطفال
+            }
+        });
+        if (!found) alert("اسم المعلمة أو الكود غير صحيح");
+    });
+}
 // المدرسين
 function openTeachersSection(){ dashboard.classList.add('hidden'); teachersSection.classList.remove('hidden'); loadTeachers(); }
 function addTeacher() {
@@ -245,7 +315,24 @@ function loadTeachers(){
 }
 
 // الأطفال
-function openStudentsSection(){ dashboard.classList.add('hidden'); studentsSection.classList.remove('hidden'); loadStudents(); }
+function openStudentsSection() {
+    dashboard.classList.add('hidden');
+    studentsSection.classList.remove('hidden');
+    loadStudents();
+
+    // لو اللي داخل "مدرس" اخفي زرار السلة وبوكس الإضافة
+    if (currentLoginType === 'teacher') {
+        trashBtn.classList.add('hidden');
+        addStudentBox.classList.add('hidden');
+        // زرار العودة للمدرس يرجعه للشاشة الرئيسية (اللوجين) مش الداشبورد
+        backBtn.onclick = () => location.reload();
+    } else {
+        // لو أدمن أظهرهم عادي
+        trashBtn.classList.remove('hidden');
+        addStudentBox.classList.remove('hidden');
+        backBtn.onclick = () => { dashboard.classList.remove('hidden'); studentsSection.classList.add('hidden'); };
+    }
+}
 function addStudent(){ const n=newStudentName.value.trim(); if(n){ db.ref('Students').push({name:n}); newStudentName.value=""; } }
 function loadStudents(){
     db.ref('Students').on('value',snap=>{
@@ -253,7 +340,8 @@ function loadStudents(){
         snap.forEach(c=>{
             const d=document.createElement('div');
             d.className="bg-white p-8 rounded-[2.5rem] shadow-sm font-black card-hover text-center border relative";
-            d.innerHTML=`<div class="del-btn" onclick="trashStudent('${c.key}','${c.val().name}')">X</div>${c.val().name}`;
+            let deleteBtn = currentLoginType === 'admin' ? `<div class="del-btn" onclick="trashStudent('${c.key}','${c.val().name}')">X</div>` : "";
+            d.innerHTML = `${deleteBtn} ${c.val().name}`;
             d.onclick=(e)=>{ if(e.target.className!=='del-btn'){ sId=c.key; sName=c.val().name; openMonths(); } };
             studentsList.appendChild(d);
         });
@@ -367,6 +455,63 @@ function searchStudent() {
         } else {
             card.style.display = "none";
         }
+    });
+}
+// 1. فتح القسم وتحميل البيانات
+function openParentsSection(){ 
+    dashboard.classList.add('hidden'); 
+    parentsSection.classList.remove('hidden'); 
+    loadParents();
+    fillStudentsSelect(); // عشان يملأ قائمة الأطفال اللي هنربط بيهم
+}
+
+// 2. ملء قائمة الأطفال للاختيار منهم
+function fillStudentsSelect() {
+    db.ref('Students').once('value', snap => {
+        linkedStudentId.innerHTML = '<option value="">اختر الطفل المرتبط به</option>';
+        snap.forEach(s => {
+            linkedStudentId.innerHTML += `<option value="${s.key}">${s.val().name}</option>`;
+        });
+    });
+}
+
+// 3. إضافة ولي الأمر للـ Firebase
+function addParent() {
+    const n = parentName.value.trim();
+    const p = parentPass.value.trim();
+    const sId = linkedStudentId.value;
+
+    if (n && p && sId) {
+        db.ref('Parents').push({
+            name: n,
+            password: p,
+            studentId: sId,
+            studentName: linkedStudentId.options[linkedStudentId.selectedIndex].text
+        }).then(() => {
+            parentName.value = ""; parentPass.value = "";
+            alert("تم إضافة ولي الأمر بنجاح ✅");
+        });
+    } else {
+        alert("اكمل البيانات: الاسم، الباسورد، واختيار الطفل");
+    }
+}
+
+// 4. عرض القائمة
+function loadParents() {
+    db.ref('Parents').on('value', snap => {
+        parentsList.innerHTML = "";
+        snap.forEach(c => {
+            const data = c.val();
+            parentsList.innerHTML += `
+                <div class="bg-white p-4 rounded-xl shadow-sm border-r-4 border-indigo-500 flex justify-between items-center text-right">
+                    <div>
+                        <p class="font-bold text-slate-800">${data.name}</p>
+                        <p class="text-xs text-indigo-600 font-bold">طفله: ${data.studentName}</p>
+                        <p class="text-[10px] text-slate-400">Pass: ${data.password}</p>
+                    </div>
+                    <button onclick="db.ref('Parents/${c.key}').remove()" class="text-red-500 font-bold text-sm">حذف</button>
+                </div>`;
+        });
     });
 }
 </script>
