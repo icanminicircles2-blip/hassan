@@ -29,10 +29,10 @@
     <div class="w-full max-w-md bg-white p-10 rounded-[3rem] shadow-2xl text-center border">
         <h1 class="text-4xl font-black text-blue-600 mb-8 italic">Many Circles</h1>
         <div class="space-y-4">
-            <button onclick="showLogin('admin')" class="w-full p-5 bg-blue-600 text-white rounded-2xl font-bold">👑 دخول الإدارة</button>
-            
-            <button onclick="showLogin('teacher')" class="w-full p-5 bg-emerald-600 text-white rounded-2xl font-bold">👩‍🏫 دخول المعلمات</button>
-        </div>
+    <button onclick="showLogin('admin')" class="w-full p-5 bg-blue-600 text-white rounded-2xl font-bold">👑 دخول الإدارة</button>
+    <button onclick="showLogin('teacher')" class="w-full p-5 bg-emerald-600 text-white rounded-2xl font-bold">👩‍🏫 دخول المعلمات</button>
+    <button onclick="showLogin('parent')" class="w-full p-5 bg-indigo-600 text-white rounded-2xl font-bold">👨‍👩‍👧 دخول أولياء الأمور</button>
+          </div>
     </div>
 </div>
 
@@ -223,23 +223,50 @@ const monthsArr = ["يناير","فبراير","مارس","أبريل","مايو
 let sId="", sName="", mName="", currentSub="", selectedMood="";
 
 // Login & Sections
-let currentLoginType = ""; // متغير عشان نعرف مين اللي بيسجل دخول
+
+
+let currentLoginType = ""; // نوع اللي داخل (admin, teacher, parent)
+let linkedStudentIdOfParent = ""; // لو ولي أمر هنخزن هنا ID ابنه
 
 function showLogin(type) {
-    currentLoginType = type; // بنخزن النوع (أدمن ولا مدرس)
+    currentLoginType = type; 
     mainScreen.classList.add('hidden');
     loginScreen.classList.remove('hidden');
 
-    // تظبيط شكل الشاشة حسب النوع
     if (type === 'admin') {
         loginTitle.innerText = "دخول الإدارة 👑";
-        loginBtn.style.backgroundColor = "#2563eb"; // أزرق للأدمن
-        loginBtn.onclick = adminLogin; // يروح لفانكشن دخول الأدمن
-    } else {
+        loginBtn.style.backgroundColor = "#2563eb"; 
+        loginBtn.onclick = adminLogin; 
+    } else if (type === 'teacher') {
         loginTitle.innerText = "دخول المعلمات 👩‍🏫";
-        loginBtn.style.backgroundColor = "#059669"; // أخضر للمدرسة
-        loginBtn.onclick = teacherLogin; // يروح لفانكشن دخول المدرسين
+        loginBtn.style.backgroundColor = "#059669"; 
+        loginBtn.onclick = teacherLogin; 
+    } else if (type === 'parent') {
+        loginTitle.innerText = "دخول أولياء الأمور 👨‍👩‍👧";
+        loginBtn.style.backgroundColor = "#4f46e5"; // بنفسجي لولي الأمر
+        loginBtn.onclick = parentLogin; // هيروح لفانكشن دخول ولي الأمر
     }
+}
+
+// ضيف الفانكشن دي تحت الـ teacherLogin عندك:
+function parentLogin() {
+    const user = loginName.value.trim();
+    const pass = loginPass.value.trim();
+    
+    db.ref('Parents').once('value', snap => {
+        let found = false;
+        snap.forEach(p => {
+            const data = p.val();
+            if (data.name === user && data.password === pass) {
+                found = true;
+                linkedStudentIdOfParent = data.studentId; // عرفنا هو أبو مين
+                alert("أهلاً بك يا أستاذ " + user);
+                loginScreen.classList.add('hidden');
+                openStudentsSection(); // هنوديه لصفحة الأطفال
+            }
+        });
+        if (!found) alert("الاسم أو الكود غير صحيح");
+    });
 }
 
 // فانكشن دخول الأدمن (زي ما كانت بس بأسماء الخانات الجديدة)
@@ -334,15 +361,30 @@ function openStudentsSection() {
     }
 }
 function addStudent(){ const n=newStudentName.value.trim(); if(n){ db.ref('Students').push({name:n}); newStudentName.value=""; } }
-function loadStudents(){
-    db.ref('Students').on('value',snap=>{
-        studentsList.innerHTML="";
-        snap.forEach(c=>{
-            const d=document.createElement('div');
-            d.className="bg-white p-8 rounded-[2.5rem] shadow-sm font-black card-hover text-center border relative";
+function loadStudents() {
+    db.ref('Students').on('value', snap => {
+        studentsList.innerHTML = "";
+        snap.forEach(c => {
+            // 🔥 أهم سطر: لو اللي داخل ولي أمر، والطفل ده مش ابنه (ID مش متطابق).. ما تظهروش واطلع من اللفة دي
+            if (currentLoginType === 'parent' && c.key !== linkedStudentIdOfParent) {
+                return; 
+            }
+
+            const d = document.createElement('div');
+            d.className = "bg-white p-8 rounded-[2.5rem] shadow-sm font-black card-hover text-center border relative";
+            
+            // لو مدرس أو ولي أمر، علامة الحذف (X) تختفي تماماً
             let deleteBtn = currentLoginType === 'admin' ? `<div class="del-btn" onclick="trashStudent('${c.key}','${c.val().name}')">X</div>` : "";
+            
             d.innerHTML = `${deleteBtn} ${c.val().name}`;
-            d.onclick=(e)=>{ if(e.target.className!=='del-btn'){ sId=c.key; sName=c.val().name; openMonths(); } };
+            
+            d.onclick = (e) => { 
+                if (e.target.className !== 'del-btn') { 
+                    sId = c.key; 
+                    sName = c.val().name; 
+                    openMonths(); 
+                } 
+            };
             studentsList.appendChild(d);
         });
     });
@@ -381,7 +423,55 @@ function openMonths(){
     });
 }
 function openPlanMenu(){ choiceScreen.classList.add('hidden'); subjectsMenu.classList.remove('hidden'); }
-function openFollowUp(){ choiceScreen.classList.add('hidden'); followUpScreen.classList.remove('hidden'); }
+function openFollowUp(){ 
+    choiceScreen.classList.add('hidden'); 
+    followUpScreen.classList.remove('hidden'); 
+
+    // ⭐ الجزء الجديد: لو ولي أمر، هات الداتا واقفل التعديل
+    if (currentLoginType === 'parent') {
+        const today = new Date().toISOString().split('T')[0]; // تاريخ النهاردة
+        db.ref(`DailyReports/${sId}/${today}`).once('value', snap => {
+            if (snap.exists()) {
+                const data = snap.val();
+                // بنملأ الخانات باللي المدرسة كتبته
+                meal_breakfast.value = data.breakfast;
+                meal_lunch.value = data.lunch;
+                potty_status.value = data.potty;
+                nap_status.value = data.nap;
+                daily_notes.value = data.notes;
+                
+                // بنعلم على الـ Mood اللي المدرسة اختارته
+                if(data.mood) {
+                    selectedMood = data.mood;
+                    // بنخلي كل الايموجيز باهتة ماعدا المختار
+                    document.querySelectorAll('.mood-btn').forEach(btn => {
+                        btn.classList.remove('active');
+                        if(btn.innerText.includes(getMoodEmoji(data.mood))) btn.classList.add('active');
+                    });
+                }
+            }
+            // قفل كل المدخلات والزراير
+            document.querySelectorAll('#followUpScreen select, #followUpScreen textarea, #followUpScreen button').forEach(el => {
+                if(el.innerText !== "⬅ رجوع") el.disabled = true; 
+            });
+            // إخفاء زرار الحفظ
+            document.querySelector('button[onclick="saveDailyReport()"]').style.display = 'none';
+        });
+    } else {
+        // لو مدرسة، نظهر زرار الحفظ ونفتح الخانات
+        document.querySelector('button[onclick="saveDailyReport()"]').style.display = 'block';
+        document.querySelectorAll('#followUpScreen select, #followUpScreen textarea, #followUpScreen button').forEach(el => el.disabled = false);
+    }
+}
+
+// دالة مساعدة بسيطة عشان نعرف الايموجي من اسمه
+function getMoodEmoji(mood){
+    if(mood === 'happy') return '🤩';
+    if(mood === 'angry') return '😡';
+    if(mood === 'sad') return '😢';
+    if(mood === 'naughty') return '🤪';
+    return '';
+}
 
 // الأهداف
 function openGoalEntry(sub,col,ico){
@@ -391,6 +481,19 @@ function openGoalEntry(sub,col,ico){
     db.ref(`MonthlyPlans/${sId}/${mName}/${sub}`).once('value', snap => {
         if(snap.exists()) snap.forEach(g => addNewGoalRow(g.val()));
         else goalsListContainer.innerHTML = `<p id="emptyMsg" class="text-center text-slate-400 font-bold py-10">لا توجد أهداف حالياً</p>`;
+        
+        // ⭐ الجزء الجديد: قفل التعديل لولي الأمر
+        if (currentLoginType === 'parent') {
+            // بنخلي كل الاختيارات والزراير "مقفولة" Disabled
+            document.querySelectorAll('.goal-card input, .goal-card select, .goal-card button').forEach(el => el.disabled = true);
+            // بنخفي زراير الحفظ والإضافة تماماً عشان الشكل يبقى أنظف
+            document.querySelector('button[onclick="addNewGoalRow()"]').style.display = 'none';
+            document.querySelector('button[onclick="saveGoals()"]').style.display = 'none';
+        } else {
+            // لو أدمن أو مدرسة، نتأكد إن الزراير ظاهرة
+            document.querySelector('button[onclick="addNewGoalRow()"]').style.display = 'block';
+            document.querySelector('button[onclick="saveGoals()"]').style.display = 'block';
+        }
     });
 }
 function addNewGoalRow(data=null){
@@ -476,6 +579,7 @@ function fillStudentsSelect() {
 }
 
 // 3. إضافة ولي الأمر للـ Firebase
+// 3. إضافة ولي الأمر للـ Firebase
 function addParent() {
     const n = parentName.value.trim();
     const p = parentPass.value.trim();
@@ -488,28 +592,30 @@ function addParent() {
             studentId: sId,
             studentName: linkedStudentId.options[linkedStudentId.selectedIndex].text
         }).then(() => {
-            parentName.value = ""; parentPass.value = "";
+            parentName.value = ""; 
+            parentPass.value = ""; 
+            linkedStudentId.value = "";
             alert("تم إضافة ولي الأمر بنجاح ✅");
         });
     } else {
-        alert("اكمل البيانات: الاسم، الباسورد، واختيار الطفل");
+        alert("برجاء ملء جميع البيانات واختيار الطفل");
     }
 }
 
-// 4. عرض القائمة
+// 4. عرض قائمة أولياء الأمور لإدارتهم
 function loadParents() {
     db.ref('Parents').on('value', snap => {
         parentsList.innerHTML = "";
-        snap.forEach(c => {
-            const data = c.val();
+        snap.forEach(p => {
+            const data = p.val();
             parentsList.innerHTML += `
-                <div class="bg-white p-4 rounded-xl shadow-sm border-r-4 border-indigo-500 flex justify-between items-center text-right">
-                    <div>
-                        <p class="font-bold text-slate-800">${data.name}</p>
-                        <p class="text-xs text-indigo-600 font-bold">طفله: ${data.studentName}</p>
-                        <p class="text-[10px] text-slate-400">Pass: ${data.password}</p>
+                <div class="bg-white p-4 rounded-xl shadow-sm border-r-4 border-indigo-500 flex justify-between items-center mb-2">
+                    <div class="text-right">
+                        <p class="font-bold">${data.name}</p>
+                        <p class="text-xs text-slate-500">ابنه: ${data.studentName}</p>
+                        <p class="text-xs font-bold text-indigo-600">Pass: ${data.password}</p>
                     </div>
-                    <button onclick="db.ref('Parents/${c.key}').remove()" class="text-red-500 font-bold text-sm">حذف</button>
+                    <button onclick="db.ref('Parents/${p.key}').remove()" class="text-red-500 font-bold">حذف</button>
                 </div>`;
         });
     });
