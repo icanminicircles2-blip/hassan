@@ -347,17 +347,17 @@ function openStudentsSection() {
     studentsSection.classList.remove('hidden');
     loadStudents();
 
-    // لو اللي داخل "مدرس" اخفي زرار السلة وبوكس الإضافة
-    if (currentLoginType === 'teacher') {
-        trashBtn.classList.add('hidden');
-        addStudentBox.classList.add('hidden');
-        // زرار العودة للمدرس يرجعه للشاشة الرئيسية (اللوجين) مش الداشبورد
-        backBtn.onclick = () => location.reload();
-    } else {
-        // لو أدمن أظهرهم عادي
-        trashBtn.classList.remove('hidden');
-        addStudentBox.classList.remove('hidden');
+    // السطرين دول هما الحل ✅
+    const isAdmin = (currentLoginType === 'admin');
+    trashBtn.style.display = isAdmin ? 'block' : 'none';
+    addStudentBox.style.display = isAdmin ? 'block' : 'none';
+
+    // تعديل زرار العودة حسب الرتبة
+    if (currentLoginType === 'admin') {
         backBtn.onclick = () => { dashboard.classList.remove('hidden'); studentsSection.classList.add('hidden'); };
+    } else {
+        // المدرس أو ولي الأمر يرجع للرئيسية (اللوجين) عشان ميسربش للداشبورد
+        backBtn.onclick = () => location.reload();
     }
 }
 function addStudent(){ const n=newStudentName.value.trim(); if(n){ db.ref('Students').push({name:n}); newStudentName.value=""; } }
@@ -571,7 +571,10 @@ function saveGoals(){
 }
 
 // المتابعة اليومية
-function setMood(mood, el){
+function setMood(mood, el) {
+    // لو ولي أمر، اخرج من الفانكشن فوراً وماتعملش حاجة
+    if (currentLoginType === 'parent') return; 
+
     selectedMood = mood;
     document.querySelectorAll('.mood-btn').forEach(btn => btn.classList.remove('active'));
     el.querySelector('.mood-btn').classList.add('active');
