@@ -148,12 +148,14 @@
         <h2 class="text-3xl font-black mb-4 text-blue-600" id="currentMonthTitle"></h2>
         <p class="text-slate-500 mb-6 font-bold">اختر اليوم (اليوم الحالي باللون الأصفر)</p>
         <div id="daysGrid" class="grid grid-cols-5 md:grid-cols-7 gap-3 px-4"></div>
-        <button id="exportFollowUpBtn" class="w-full max-w-md p-5 bg-blue-900 text-white rounded-2xl font-black text-lg shadow-xl hover:bg-black transition mt-10 mb-10">
-    📊 تصدير كتقرير عن (Follow Up)
-</button>
+
     </div>
 </div>
-
+<div class="max-w-2xl mx-auto px-4 mt-10">
+    <button onclick="exportMonthlyPlanPDF()" id="exportPlanBtn" class="w-full p-6 bg-slate-800 text-white rounded-[2rem] font-black text-xl shadow-xl hover:bg-black transition-all active:scale-95">
+        📄 تصدير كتقرير (الخطة الشهرية)
+    </button>
+</div>
 
 <div id="subjectsMenu" class="admin-page hidden text-center">
 
