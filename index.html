@@ -862,7 +862,7 @@ function saveDailyReport() {
     });
 }
 async function exportMonthlyPlanPDF() {
-    showToast("جاري إنشاء التقرير بدقة عالية... ⏳");
+    showToast("جاري إنشاء تقرير متعدد الصفحات... ⏳");
 
     try {
         const snapshot = await db.ref(`MonthlyPlans/${sId}/${mName}`).once('value');
@@ -873,14 +873,13 @@ async function exportMonthlyPlanPDF() {
             return;
         }
 
-        // 1. بناء عنصر الـ HTML في مكان مرئي ولكن خارج الشاشة لضمان "الرسم"
         const element = document.createElement('div');
         element.style.width = '700px';
         element.style.padding = '30px';
         element.style.backgroundColor = 'white';
-        element.style.position = 'fixed'; // ثابت لضمان عدم تأثره بالاسكرول
+        element.style.position = 'absolute';
         element.style.top = '0';
-        element.style.left = '-2000px'; // بعيد عن العين
+        element.style.left = '-2000px'; 
         element.setAttribute('dir', 'rtl');
 
         const subjectStyles = {
@@ -894,56 +893,64 @@ async function exportMonthlyPlanPDF() {
             const color = subjectStyles[subject] || '#444';
             const cleanGoals = Array.isArray(goals) ? goals : Object.values(goals);
             let goalsRows = cleanGoals.map(g => g.name ? `
-                <div style="display:flex; justify-content:space-between; padding:8px; border-bottom:1px solid #eee; font-family: Arial;">
-                    <span style="font-weight:bold; color:#333;">• ${g.name}</span>
-                    <span style="color:${color}; font-weight:bold;">[${g.help}] - ${g.score}</span>
+                <div style="display:flex; justify-content:space-between; padding:12px; border-bottom:1px solid #eee; font-family: Arial;">
+                    <span style="font-weight:bold; color:#333; font-size:16px;">• ${g.name}</span>
+                    <span style="color:${color}; font-weight:bold; font-size:14px;">[${g.help}] - ${g.score}</span>
                 </div>` : "").join('');
 
             subjectsHTML += `
-                <div style="margin-bottom:15px; border:2px solid ${color}; border-radius:12px; overflow:hidden;">
-                    <div style="background:${color}; color:white; padding:8px; font-weight:bold; text-align:center;">${subject}</div>
-                    <div style="background:white;">${goalsRows}</div>
+                <div style="margin-bottom:25px; border:2px solid ${color}; border-radius:15px; overflow:hidden; background: white;">
+                    <div style="background:${color}; color:white; padding:12px; font-weight:bold; text-align:center; font-size:20px;">${subject}</div>
+                    <div>${goalsRows}</div>
                 </div>`;
         }
 
         element.innerHTML = `
-            <div style="text-align:center; border-bottom:3px solid #1e40af; padding-bottom:15px; margin-bottom:15px;">
-                <h1 style="color:#1e40af; font-size:32px; margin:0;">Many Circles</h1>
-                <p style="font-size:16px; color:#666;">تقرير شهر: ${mName}</p>
-                <p style="font-size:20px; font-weight:bold; margin:10px 0;">البطل: ${sName} ⭐</p>
-                <p style="color:#0369a1; font-weight:bold; font-size:14px;">فخورين بك يا بطل! استمر في التقدم 🌟</p>
+            <div style="text-align:center; border-bottom:4px solid #1e40af; padding-bottom:20px; margin-bottom:25px; font-family: Arial;">
+                <h1 style="color:#1e40af; font-size:40px; margin:0;">Many Circles</h1>
+                <p style="font-size:20px; color:#666; margin:5px 0;">تقرير المتابعة - شهر ${mName}</p>
+                <p style="font-size:26px; font-weight:bold; margin:15px 0;">البطل: ${sName} ⭐</p>
             </div>
             ${subjectsHTML}
-            <div style="text-align:center; color:#999; margin-top:20px; font-size:12px;">صنع بكل حب في Many Circles ❤️</div>
+            <div style="text-align:center; color:#94a3b8; font-size:14px; margin-top:20px;">صنع بكل حب في Many Circles ❤️</div>
         `;
 
         document.body.appendChild(element);
 
-        // 2. الانتظار قليلاً للتأكد من أن المتصفح رسم العناصر (حل مشكلة الورقة البيضاء)
-        await new Promise(resolve => setTimeout(resolve, 500));
+        // انتظار الرسم
+        await new Promise(resolve => setTimeout(resolve, 800));
 
-        // 3. تحويل الـ HTML إلى صورة Canvas
         const canvas = await html2canvas(element, {
-            scale: 2, // جودة عالية
+            scale: 2,
             useCORS: true,
-            logging: false,
             backgroundColor: "#ffffff"
         });
 
         const imgData = canvas.toDataURL('image/jpeg', 1.0);
-        
-        // 4. وضع الصورة داخل ملف PDF
         const { jsPDF } = window.jspdf;
         const pdf = new jsPDF('p', 'mm', 'a4');
-        const pdfWidth = pdf.internal.pageSize.getWidth();
-        const pdfHeight = (canvas.height * pdfWidth) / canvas.width;
 
-        pdf.addImage(imgData, 'JPEG', 0, 0, pdfWidth, pdfHeight);
+        const imgWidth = 210; // عرض A4 بالمليمتر
+        const pageHeight = 295; // ارتفاع A4 بالمليمتر
+        const imgHeight = (canvas.height * imgWidth) / canvas.width;
+        let heightLeft = imgHeight;
+        let position = 0;
+
+        // إضافة الصفحة الأولى
+        pdf.addImage(imgData, 'JPEG', 0, position, imgWidth, imgHeight);
+        heightLeft -= pageHeight;
+
+        // إضافة صفحات إضافية لو التقرير طويل
+        while (heightLeft >= 0) {
+            position = heightLeft - imgHeight;
+            pdf.addPage();
+            pdf.addImage(imgData, 'JPEG', 0, position, imgWidth, imgHeight);
+            heightLeft -= pageHeight;
+        }
+
         pdf.save(`Report_${sName}.pdf`);
-
-        // 5. التنظيف
         document.body.removeChild(element);
-        showToast("تم التحميل بنجاح! ✅");
+        showToast("تم تحميل التقرير الشهري باعلي جودة ! ✅");
 
     } catch (e) {
         console.error(e);
