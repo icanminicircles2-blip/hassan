@@ -814,14 +814,15 @@ async function exportMonthlyPlanPDF() {
 
             if (typeof g === 'object' && g !== null) {
                 // بيدور على النص في كل الاحتمالات
-                text = g.text || g.goal || g.goalName || g.title || "";
-                if (!text) text = Object.values(g).find(v => typeof v === 'string' && v.length > 2) || "";
+               // محاولة صيد النص الحقيقي للهدف من كل الاحتمالات
+                text = g.goalText || g.target || g.text || g.goal || "";
                 
-                achievement = g.achievement || g.completion || g.percent || "0%";
-                help = g.help || g.assistance || g.helpType || "مساعدة";
-            } else {
-                text = g;
-            }
+                // لو لسه النص فاضي، بنجيب أي نص في الكائن بشرط ميكونش هو المساعدة أو النسبة
+                if (!text) {
+                    text = Object.entries(g).find(([k, v]) => 
+                        typeof v === 'string' && !['help','achievement','assist','percent','id'].includes(k.toLowerCase())
+                    )?.[1] || "";
+                }
 
             if (!text || String(text).includes("[object")) return "";
 
