@@ -30,10 +30,31 @@
             100% { box-shadow: 0 0 0 0 rgba(250, 204, 21, 0); }
         }
         .today-pulse { animation: pulse-yellow 2s infinite; }
+        .toast {
+    animation: slideIn 0.5s ease-out forwards;
+    min-width: 250px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+@keyframes slideIn {
+    from { transform: translateX(100%); opacity: 0; }
+    to { transform: translateX(0); opacity: 1; }
+}
+
+.toast-fade-out {
+    animation: slideOut 0.5s ease-in forwards;
+}
+
+@keyframes slideOut {
+    from { transform: translateX(0); opacity: 1; }
+    to { transform: translateX(100%); opacity: 0; }
+}
     </style>
 </head>
 <body>
-
+<div id="toastContainer" class="fixed bottom-5 right-5 z-[200] space-y-3"></div>
 <div class="fixed top-2 left-2 z-[100]">
     <img src="https://i.ibb.co/1f5TfvT0/9a9c7b66-e1a7-4616-aec7-4e5dc39e51c1.jpg" class="w-16 h-16 rounded-full border-2 border-white shadow-md">
 </div>
@@ -119,22 +140,27 @@
 
 <div id="subjectsMenu" class="admin-page hidden text-center">
     <button onclick="subjectsMenu.classList.add('hidden'); choiceScreen.classList.remove('hidden')" class="mb-8 text-blue-600 font-bold float-right">⬅ رجوع</button>
-    <h2 class="text-3xl font-black mb-10 text-orange-500">المواد التعليمية</h2>
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-2xl mx-auto">
-        <div onclick="openGoalEntry('اللغة العربية','#ef4444','📖')" class="p-8 bg-red-500 text-white rounded-[2rem] font-black text-xl shadow-lg cursor-pointer">📖 اللغة العربية</div>
-        <div onclick="openGoalEntry('English','#3b82f6','🔤')" class="p-8 bg-blue-500 text-white rounded-[2rem] font-black text-xl shadow-lg cursor-pointer">🔤 English</div>
-        <div onclick="openGoalEntry('Math','#10b981','🔢')" class="p-8 bg-emerald-500 text-white rounded-[2rem] font-black text-xl shadow-lg cursor-pointer">🔢 Math</div>
-        <div onclick="openGoalEntry('التربية الدينية','#f59e0b','🌙')" class="p-8 bg-amber-500 text-white rounded-[2rem] font-black text-xl shadow-lg cursor-pointer">🌙 التربية الدينية</div>
-        <div onclick="openGoalEntry('تنمية المهارات','#8b5cf6','🎨')" class="p-8 bg-purple-500 text-white rounded-[2rem] font-black text-xl shadow-lg cursor-pointer">🎨 تنمية المهارات</div>
+    <h2 class="text-3xl font-black mb-10 text-orange-500">المواد التعليمية والأنشطة</h2>
+    
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-2xl mx-auto px-4">
+        <div onclick="openGoalEntry('اللغة العربية','#ef4444','📖')" class="p-8 bg-red-500 text-white rounded-[2rem] font-black text-xl shadow-lg cursor-pointer hover:scale-105 transition">📖 اللغة العربية</div>
+        <div onclick="openGoalEntry('English','#3b82f6','🔤')" class="p-8 bg-blue-500 text-white rounded-[2rem] font-black text-xl shadow-lg cursor-pointer hover:scale-105 transition">🔤 English</div>
+        <div onclick="openGoalEntry('Math','#10b981','🔢')" class="p-8 bg-emerald-500 text-white rounded-[2rem] font-black text-xl shadow-lg cursor-pointer hover:scale-105 transition">🔢 Math</div>
+        <div onclick="openGoalEntry('التربية الدينية','#f59e0b','🌙')" class="p-8 bg-amber-500 text-white rounded-[2rem] font-black text-xl shadow-lg cursor-pointer hover:scale-105 transition">🌙 التربية الدينية</div>
+        
+        <div onclick="openGoalEntry('Montessori','#8b5cf6','🧩')" class="p-8 bg-purple-500 text-white rounded-[2rem] font-black text-xl shadow-lg cursor-pointer hover:scale-105 transition">🧩 Montessori</div>
+        <div onclick="openGoalEntry('قرآن إضافي','#047857','🕌')" class="p-8 bg-emerald-700 text-white rounded-[2rem] font-black text-xl shadow-lg cursor-pointer hover:scale-105 transition">🕌 قرآن إضافي</div>
+        <div onclick="openGoalEntry('مناسبات','#db2777','🎉')" class="p-8 bg-pink-600 text-white rounded-[2rem] font-black text-xl shadow-lg cursor-pointer hover:scale-105 transition">🎉 مناسبات</div>
+        
+        <div onclick="openGoalEntry('تنمية المهارات','#6366f1','🎨')" class="p-8 bg-indigo-500 text-white rounded-[2rem] font-black text-xl shadow-lg cursor-pointer hover:scale-105 transition">🎨 تنمية المهارات</div>
     </div>
     
-    <div class="max-w-2xl mx-auto mt-10">
+    <div class="max-w-2xl mx-auto mt-10 px-4">
         <button onclick="exportMonthlyPlanPDF()" class="w-full p-6 bg-slate-800 text-white rounded-[2rem] font-black text-xl shadow-xl hover:bg-black transition-all active:scale-95">
             📄 تصدير تقرير الخطة الشهرية
         </button>
     </div>
 </div>
-
 <div id="goalEntryScreen" class="admin-page hidden overflow-y-auto">
     <div class="max-w-2xl mx-auto pb-20 text-center">
         <button onclick="goalEntryScreen.classList.add('hidden'); subjectsMenu.classList.remove('hidden')" class="mb-6 text-blue-600 font-bold float-right">⬅ رجوع</button>
@@ -158,7 +184,8 @@
         <button onclick="followUpScreen.classList.add('hidden'); daysScreen.classList.remove('hidden')" class="text-blue-600 font-bold mb-6 block text-right">⬅ رجوع للأيام</button>
         
         <div class="bg-white rounded-[2.5rem] shadow-xl p-6 border-t-8 border-blue-600">
-            <h2 class="text-2xl font-black text-center mb-6 text-blue-600 italic">Daily Report 📝</h2>
+            <h2 class="text-2xl font-black text-center mb-2 text-blue-600 italic">Daily Report 📝</h2>
+            <p id="reportDateDisplay" class="text-center text-slate-400 font-bold mb-6 text-sm"></p>
             
             <div class="follow-up-box">
                 <h3 class="section-title text-purple-600">Mood | الحالة المزاجية</h3>
@@ -171,23 +198,36 @@
             </div>
 
             <div class="follow-up-box">
-                <h3 class="section-title text-emerald-600">Meals | الوجبات</h3>
-                <div class="space-y-4">
-                    <div class="flex items-center justify-between bg-slate-50 p-3 rounded-xl border">
-                        <span class="font-black">Breakfast:</span>
-                        <select id="meal_breakfast" class="bg-white border p-2 rounded-lg font-bold">
-                            <option>All</option><option>Some</option><option>None</option>
-                        </select>
-                    </div>
-                    <div class="flex items-center justify-between bg-slate-50 p-3 rounded-xl border">
-                        <span class="font-black">Lunch:</span>
-                        <select id="meal_lunch" class="bg-white border p-2 rounded-lg font-bold">
-                            <option>All</option><option>Some</option><option>None</option>
-                        </select>
-                    </div>
+                <h3 class="section-title text-sky-600">Nap | القيلولة</h3>
+                <div class="grid grid-cols-2 gap-4">
+                    <input type="time" id="nap_from" class="input-style" title="من">
+                    <input type="time" id="nap_to" class="input-style" title="إلى">
                 </div>
             </div>
 
+            <div class="follow-up-box">
+                <h3 class="section-title text-amber-600">Potty | الحمام</h3>
+                <div class="flex justify-around bg-slate-50 p-4 rounded-xl">
+                    <label class="font-bold"><input type="checkbox" id="potty_urine" class="ml-2"> Urine 💧</label>
+                    <label class="font-bold"><input type="checkbox" id="potty_stool" class="ml-2"> Stool 💩</label>
+                </div>
+            </div>
+
+            <div class="follow-up-box">
+                <h3 class="section-title text-pink-600">Activities | الأنشطة</h3>
+                <div id="activitiesGrid" class="grid grid-cols-2 gap-2 text-xs font-bold text-right">
+                    </div>
+            </div>
+
+            <div class="follow-up-box">
+                <h3 class="section-title text-orange-500">Notes | ملاحظات</h3>
+                <textarea id="daily_notes" placeholder="اكتب ملاحظاتك هنا..." class="input-style h-24 resize-none p-4 text-right border"></textarea>
+            </div>
+
+            <button id="saveDailyBtn" onclick="saveDailyReport()" class="w-full p-6 bg-blue-600 text-white rounded-3xl font-black shadow-lg hover:bg-blue-700 transition">حفظ التقرير ✅</button>
+        </div>
+    </div>
+</div>
             <div class="follow-up-box">
                 <h3 class="section-title text-blue-500">Care | العناية</h3>
                 <div class="grid grid-cols-1 gap-4">
@@ -730,42 +770,56 @@ function openFollowUp() {
     choiceScreen.classList.add('hidden');
     followUpScreen.classList.remove('hidden');
     
-    const year = 2026; // يفضل تثبيتها كما فعلت في الأيام
-    const monthIdx = (monthsArr.indexOf(mName)+1).toString().padStart(2,'0');
-    const reportDate = `${year}-${monthIdx}-${selectedDay.toString().padStart(2,'0')}`;
+    // قائمة الأنشطة من التقرير الورقي
+    const activitiesList = ["Montessori", "Garden", "Colouring", "Art", "Swimming", "Puzzle", "Moral Values", "Songs", "Etiquette", "Circle Time", "Dancing", "P.E"];
+    const grid = document.getElementById('activitiesGrid');
+    
+    // رسم شبكة الأنشطة
+    grid.innerHTML = activitiesList.map(act => `
+        <label class="flex items-center justify-between bg-slate-50 p-2 rounded-lg border border-pink-100">
+            <span>${act}</span>
+            <input type="checkbox" class="activity-checkbox w-4 h-4" value="${act}">
+        </label>
+    `).join('');
+
+    const year = 2026;
+    const monthIdx = (monthsArr.indexOf(mName) + 1).toString().padStart(2, '0');
+    const reportDate = `${year}-${monthIdx}-${selectedDay.toString().padStart(2, '0')}`;
+    
+    document.getElementById('reportDateDisplay').innerText = `يوم ${selectedDay} / ${monthIdx} / ${year}`;
 
     db.ref(`DailyReports/${sId}/${reportDate}`).once('value', snap => {
         const data = snap.val() || {};
-        // تأكد من وجود كل هذه الـ IDs في الـ HTML بتاعك
-        const fields = ['meal_breakfast', 'meal_lunch', 'potty_status', 'daily_notes']; 
         const isParent = (currentLoginType === 'parent');
 
-        fields.forEach(id => {
-            const el = document.getElementById(id);
-            if(el) {
-                // تعديل بسيط للتعامل مع المفاتيح في Firebase
-                let key = id.replace('meal_', '').replace('_status', '');
-                el.value = data[key] || (id === 'daily_notes' ? "" : "All");
-                el.disabled = isParent;
-            }
+        // تحميل القيلولة والحمام والملاحظات
+        document.getElementById('nap_from').value = data.nap_from || "";
+        document.getElementById('nap_to').value = data.nap_to || "";
+        document.getElementById('potty_urine').checked = data.potty_urine || false;
+        document.getElementById('potty_stool').checked = data.potty_stool || false;
+        document.getElementById('daily_notes').value = data.notes || "";
+
+        // تحميل الأنشطة المختارة
+        const savedActivities = data.activities || [];
+        document.querySelectorAll('.activity-checkbox').forEach(cb => {
+            cb.checked = savedActivities.includes(cb.value);
+            cb.disabled = isParent;
         });
 
-        // إخفاء زر الحفظ لولي الأمر
-        const saveBtn = document.getElementById('saveDailyBtn');
-        if(saveBtn) saveBtn.style.display = isParent ? 'none' : 'block';
+        // قفل الحقول لو المستخدم ولي أمر
+        document.getElementById('nap_from').disabled = isParent;
+        document.getElementById('nap_to').disabled = isParent;
+        document.getElementById('potty_urine').disabled = isParent;
+        document.getElementById('potty_stool').disabled = isParent;
+        document.getElementById('daily_notes').disabled = isParent;
+        document.getElementById('saveDailyBtn').style.display = isParent ? 'none' : 'block';
 
-        // عرض حالة المزاج بشكل صحيح
+        // ضبط الحالة المزاجية
         selectedMood = data.mood || "";
-        document.querySelectorAll('.mood-btn').forEach(btn => btn.classList.remove('active'));
-        if(selectedMood) {
-            // البحث عن الزرار اللي واخد نفس قيمة المود
-            const allMoodBtns = document.querySelectorAll('.mood-btn');
-            allMoodBtns.forEach(btn => {
-                if(btn.getAttribute('onclick').includes(selectedMood)) {
-                    btn.classList.add('active');
-                }
-            });
-        }
+        document.querySelectorAll('.mood-btn').forEach(btn => {
+            btn.classList.remove('active');
+            if(selectedMood && btn.getAttribute('onclick').includes(selectedMood)) btn.classList.add('active');
+        });
     });
 }
 function setMood(mood, el) {
@@ -776,23 +830,32 @@ function setMood(mood, el) {
     // إضافة active للعنصر الذي تم الضغط عليه مباشرة
     el.classList.add('active'); 
 }
-function saveDailyReport(){
-    const year = new Date().getFullYear();
+function saveDailyReport() {
+    const year = 2026;
     const monthIdx = (monthsArr.indexOf(mName) + 1).toString().padStart(2, '0');
-    const day = selectedDay.toString().padStart(2, '0');
-    const reportDate = `${year}-${monthIdx}-${day}`;
+    const reportDate = `${year}-${monthIdx}-${selectedDay.toString().padStart(2, '0')}`;
 
-    db.ref(`DailyReports/${sId}/${reportDate}`).set({
+    // تجميع الأنشطة المختارة في Array
+    const selectedActivities = [];
+    document.querySelectorAll('.activity-checkbox:checked').forEach(cb => {
+        selectedActivities.push(cb.value);
+    });
+
+    const reportData = {
         mood: selectedMood,
-        breakfast: document.getElementById('meal_breakfast').value,
-        lunch: document.getElementById('meal_lunch').value,
-        potty: document.getElementById('potty_status').value,
-        nap: document.getElementById('nap_status').value,
+        nap_from: document.getElementById('nap_from').value,
+        nap_to: document.getElementById('nap_to').value,
+        potty_urine: document.getElementById('potty_urine').checked,
+        potty_stool: document.getElementById('potty_stool').checked,
+        activities: selectedActivities,
         notes: document.getElementById('daily_notes').value
-    }).then(() => { 
-        alert("تم حفظ تقرير يوم " + selectedDay + " بنجاح ✅"); 
-        document.getElementById('followUpScreen').classList.add('hidden'); 
-        document.getElementById('choiceScreen').classList.remove('hidden'); 
+    };
+
+    db.ref(`DailyReports/${sId}/${reportDate}`).update(reportData).then(() => {
+        showToast("تم حفظ تقرير يوم " + selectedDay + " بنجاح ✅");
+        followUpScreen.classList.add('hidden');
+        daysScreen.classList.remove('hidden');
+        openDays(); // لتحديث لون اليوم في التقويم لـ "أخضر"
     });
 }
 async function exportMonthlyPlanPDF() {
@@ -875,6 +938,33 @@ async function exportMonthlyPlanPDF() {
         html2pdf().set(opt).from(element).save();
 
     } catch (e) { console.error(e); alert("حدث خطأ أثناء التصدير"); }
+    // داخل دالة exportMonthlyPlanPDF
+for (const [subject, goals] of Object.entries(planData)) {
+    // سيقوم الكود تلقائياً بالمرور على (Montessori, قرآن إضافي, مناسبات)
+    // طالما تم حفظ أهداف لها في قاعدة البيانات.
+    
+    let cleanGoals = Array.isArray(goals) ? goals : Object.values(goals);
+    // ... باقي الكود كما هو ...
+}
+}
+function showToast(message, type = 'success') {
+    const container = document.getElementById('toastContainer');
+    const toast = document.createElement('div');
+    
+    // تحديد الألوان بناءً على النوع
+    const bg = type === 'success' ? 'bg-emerald-600' : 'bg-red-600';
+    const icon = type === 'success' ? '✅' : '⚠️';
+
+    toast.className = `${bg} text-white px-6 py-4 rounded-2xl shadow-2xl toast flex items-center font-bold`;
+    toast.innerHTML = `<span>${icon}</span> <span>${message}</span>`;
+
+    container.appendChild(toast);
+
+    // إخفاء الإشعار بعد 3 ثوانٍ
+    setTimeout(() => {
+        toast.classList.add('toast-fade-out');
+        setTimeout(() => toast.remove(), 500);
+    }, 3000);
 }
 </script>
 </body>
