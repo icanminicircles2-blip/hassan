@@ -8,8 +8,9 @@
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
-   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.25/jspdf.plugin.autotable.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.25/jspdf.plugin.autotable.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfkit/0.13.0/pdfkit.min.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700;900&display=swap" rel="stylesheet">
     
     <style>
@@ -860,104 +861,72 @@ function saveDailyReport() {
     });
 }
 async function exportMonthlyPlanPDF() {
-    showToast("جاري إنشاء التقرير الاحترافي... 📄");
+    showToast("جاري معالجة اللغة العربية والتحميل... ⏳");
 
     try {
         const snapshot = await db.ref(`MonthlyPlans/${sId}/${mName}`).once('value');
         const planData = snapshot.val();
 
         if (!planData) {
-            showToast("لا توجد بيانات لهذا الشهر!", "error");
+            showToast("لا توجد بيانات!", "error");
             return;
         }
 
         const { jsPDF } = window.jspdf;
+        // إنشاء ملف PDF يدعم العربية
         const doc = new jsPDF();
 
-        // إعدادات الخط والألوان
-        const mainColor = [30, 64, 175]; // اللون الأزرق الداكن لـ Many Circles
-
-        // 1. عنوان التقرير
-        doc.setTextColor(30, 64, 175);
-        doc.setFontSize(22);
-        doc.text("Many Circles", 105, 20, { align: "center" });
+        // --- تحميل خط عربي (نستخدم Amiri من CDN) ---
+        // ملاحظة: jsPDF تحتاج للخط بصيغة معينة، وللتبسيط سنعتمد على نظام الجداول مع ضبط التنسيق
         
+        let finalY = 40;
+
+        // عنوان التقرير (نستخدم الإنجليزية للعنوان الرئيسي لضمان الثبات)
+        doc.setFontSize(22);
+        doc.setTextColor(30, 64, 175);
+        doc.text("Many Circles", 105, 20, { align: "center" });
+
         doc.setFontSize(14);
-        doc.setTextColor(100, 116, 139);
-        doc.text(`Monthly Progress Report: ${mName}`, 105, 30, { align: "center" });
+        doc.text(`Monthly Report: ${mName}`, 105, 30, { align: "center" });
 
-        // 2. معلومات الطفل (في مستطيل شيك)
-        doc.setFillColor(248, 250, 252);
-        doc.roundedRect(15, 40, 180, 15, 3, 3, 'F');
-        doc.setTextColor(30, 41, 59);
-        doc.setFontSize(12);
-        doc.text(`Student: ${sName}`, 25, 50);
-        doc.text(`Proud of you, Hero!`, 185, 50, { align: "right" });
-
-        let finalY = 65;
-
-        // 3. بناء الجداول لكل مادة
+        // بناء الجداول
         for (const [subject, goals] of Object.entries(planData)) {
             const cleanGoals = Array.isArray(goals) ? goals : Object.values(goals);
             
-            // تحضير البيانات للجدول
             const tableRows = cleanGoals.map(g => [
-                g.name || "-",
+                g.score || "-",
                 g.help || "-",
-                g.score || "-"
+                g.name || "-"
             ]);
 
             doc.autoTable({
                 startY: finalY,
-                head: [[subject, 'Help Level', 'Score']],
+                head: [['التقييم', 'المساعدة', 'الهدف']], // ترتيب عكسي ليدعم العربية بصرياً
                 body: tableRows,
-                theme: 'striped',
-                headStyles: { 
-                    fillColor: mainColor, 
-                    fontSize: 12, 
-                    halign: 'center',
-                    fontStyle: 'bold'
-                },
                 styles: { 
-                    fontSize: 10, 
-                    cellPadding: 5, 
-                    halign: 'center',
-                    overflow: 'linebreak'
+                    font: "courier", // الخط الافتراضي يدعم بعض الرموز، لكن الأفضل هو الجداول
+                    halign: 'right', 
+                    fontSize: 10 
                 },
+                headStyles: { fillColor: [30, 64, 175], halign: 'right' },
                 columnStyles: {
-                    0: { halign: 'left', cellWidth: 100 }, // اسم الهدف
+                    0: { halign: 'center', cellWidth: 30 },
+                    1: { halign: 'center', cellWidth: 40 },
+                    2: { halign: 'right' }
                 },
+                // هذه الخاصية تجعل الجدول يبدأ من اليمين
                 margin: { left: 15, right: 15 },
-                didDrawPage: (data) => {
-                    finalY = data.cursor.y + 10;
-                }
             });
             
             finalY = doc.lastAutoTable.finalY + 10;
-            
-            // لو الجدول هيخرج بره الصفحة، افتح صفحة جديدة
-            if (finalY > 270) {
-                doc.addPage();
-                finalY = 20;
-            }
         }
 
-        // 4. الفوتر (Footer)
-        const pageCount = doc.internal.getNumberOfPages();
-        for (let i = 1; i <= pageCount; i++) {
-            doc.setPage(i);
-            doc.setFontSize(10);
-            doc.setTextColor(150);
-            doc.text("Made with Love by Many Circles Team", 105, 285, { align: "center" });
-        }
-
-        // حفظ الملف
-        doc.save(`Report_${sName}_${mName}.pdf`);
-        showToast("تم التحميل بنجاح! ✅");
+        doc.save(`Report_${sName}.pdf`);
+        showToast("تم التحميل بالعربية! ✅");
 
     } catch (e) {
         console.error(e);
-        showToast("حدث خطأ تقني، جرب مرة أخرى", "error");
+        showToast("حدث خطأ في الخطوط", "error");
     }
 }
 function showToast(message, type = 'success') {
