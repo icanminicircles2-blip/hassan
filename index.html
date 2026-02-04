@@ -763,6 +763,7 @@ function saveDailyReport(){
     });
 }
 async function exportMonthlyPlanPDF() {
+    // 1. جلب البيانات من Firebase
     const snapshot = await db.ref(`MonthlyPlans/${sId}/${mName}`).once('value');
     const planData = snapshot.val() || {};
 
@@ -771,13 +772,13 @@ async function exportMonthlyPlanPDF() {
         return;
     }
 
-    // 1. بناء هيكل التقرير المبهج
+    // 2. بناء هيكل التقرير المبهج
     let reportContent = `
         <div id="pdf-template" dir="rtl" style="padding: 20px; font-family: 'Cairo', sans-serif; background-color: #f0f9ff; min-height: 1000px;">
-            <div style="background: white; border: 15px solid #dbeafe; border-radius: 40px; padding: 30px; box-shadow: 0 10px 25px rgba(0,0,0,0.05); position: relative;">
+            <div style="background: white; border: 15px solid #dbeafe; border-radius: 40px; padding: 30px; box-shadow: 0 10px 25px rgba(0,0,0,0.05);">
                 
                 <div style="text-align: center; margin-bottom: 40px;">
-                    <div style="background: #3b82f6; color: white; display: inline-block; padding: 10px 40px; border-radius: 0 0 30px 30px; margin-top: -45px; font-weight: 900; font-size: 22px; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
+                    <div style="background: #3b82f6; color: white; display: inline-block; padding: 10px 40px; border-radius: 0 0 30px 30px; margin-top: -45px; font-weight: 900; font-size: 22px;">
                         التقرير التعليمي الشهري 🌟
                     </div>
                     <h1 style="color: #1e3a8a; font-size: 32px; margin-top: 30px; margin-bottom: 10px; font-weight: 900;">بطلنا الصغير: ${sName}</h1>
@@ -795,27 +796,42 @@ async function exportMonthlyPlanPDF() {
         'تنمية المهارات': { color: '#8b5cf6', icon: '🎨' }
     };
 
-    // 2. معالجة البيانات
+    // 3. معالجة البيانات بمرونة عالية (الجوكر)
     for (const [subject, goals] of Object.entries(planData)) {
         const config = subjectConfig[subject] || { color: '#64748b', icon: '📝' };
         
-        let cleanGoals = Array.isArray(goals) ? goals : Object.values(goals);
-        
-        let goalsHTML = cleanGoals.map(g => {
-            let text = (typeof g === 'object') ? (g.text || g.goal || "") : g;
-            // جلب نسبة الإنجاز والمساعدة (نفترض المسميات في الداتابيز: achievement و help)
-            let achievement = g.achievement || g.percent || "0%";
-            let help = g.help || g.assist || "مساعدة كلية";
+        let cleanGoals = [];
+        if (Array.isArray(goals)) {
+            cleanGoals = goals;
+        } else if (typeof goals === 'object') {
+            cleanGoals = Object.values(goals);
+        }
 
-            if (!text || text.includes("[object")) return "";
+        let goalsHTML = cleanGoals.map(g => {
+            let text = "";
+            let achievement = "0%";
+            let help = "مساعدة";
+
+            if (typeof g === 'object' && g !== null) {
+                // بيدور على النص في كل الاحتمالات
+                text = g.text || g.goal || g.goalName || g.title || "";
+                if (!text) text = Object.values(g).find(v => typeof v === 'string' && v.length > 2) || "";
+                
+                achievement = g.achievement || g.completion || g.percent || "0%";
+                help = g.help || g.assistance || g.helpType || "مساعدة";
+            } else {
+                text = g;
+            }
+
+            if (!text || String(text).includes("[object")) return "";
 
             return `
                 <div style="background: white; border-radius: 15px; padding: 12px 15px; margin-bottom: 10px; border-right: 5px solid ${config.color}; box-shadow: 0 2px 4px rgba(0,0,0,0.03); display: flex; justify-content: space-between; align-items: center;">
-                    <div style="flex: 1; font-size: 15px; color: #334155; font-weight: bold; line-height: 1.6; padding-left: 10px;">
+                    <div style="flex: 1; font-size: 15px; color: #334155; font-weight: bold; line-height: 1.6; text-align: right; padding-left: 10px;">
                         ${text}
                     </div>
-                    <div style="text-align: left; min-width: 140px;">
-                        <span style="background: ${config.color}20; color: ${config.color}; padding: 3px 8px; border-radius: 8px; font-size: 11px; font-weight: 900; margin-left: 5px;">${help}</span>
+                    <div style="text-align: left; min-width: 140px; display: flex; flex-direction: row-reverse; gap: 5px;">
+                        <span style="background: ${config.color}20; color: ${config.color}; padding: 3px 8px; border-radius: 8px; font-size: 11px; font-weight: 900;">${help}</span>
                         <span style="background: #1e293b; color: white; padding: 3px 8px; border-radius: 8px; font-size: 11px; font-weight: 900;">${achievement}</span>
                     </div>
                 </div>
@@ -829,7 +845,7 @@ async function exportMonthlyPlanPDF() {
                     <h3 style="color: ${config.color}; font-size: 20px; font-weight: 900; margin: 0;">${subject}</h3>
                 </div>
                 <div style="background: ${config.color}05; padding: 15px; border-radius: 20px; border: 1px dashed ${config.color}40;">
-                    ${goalsHTML || "<p style='color:#94a3b8; font-style:italic;'>لم يتم تسجيل أهداف بعد</p>"}
+                    ${goalsHTML || "<p style='color:#94a3b8; font-style:italic;'>لم يتم تسجيل أهداف</p>"}
                 </div>
             </div>
         `;
@@ -839,27 +855,25 @@ async function exportMonthlyPlanPDF() {
                 </div>
                 <div style="margin-top: 50px; text-align: center; border-top: 2px dashed #e2e8f0; padding-top: 20px;">
                     <p style="color: #1e3a8a; font-weight: 900; margin: 0;">نحن فخورون بتقدمك يا بطل! ❤️</p>
-                    <p style="color: #94a3b8; font-size: 12px; margin-top: 5px;">تم استخراج التقرير في ${new Date().toLocaleDateString('ar-EG')}</p>
+                    <p style="color: #94a3b8; font-size: 12px;">تم استخراج التقرير في ${new Date().toLocaleDateString('ar-EG')}</p>
                 </div>
             </div>
         </div>
     `;
 
-    // 3. التصدير
     const element = document.createElement('div');
     element.innerHTML = reportContent;
     
-    const opt = {
+    html2pdf().set({
         margin: 5,
         filename: `تقرير_${sName}_${mName}.pdf`,
         image: { type: 'jpeg', quality: 1 },
-        html2canvas: { scale: 3, useCORS: true, letterRendering: true },
+        html2canvas: { scale: 3, useCORS: true },
         jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
-    };
-
-    html2pdf().set(opt).from(element).save();
+    }).from(element).save();
 }
 
+// سطر الربط بالزرار - تأكد إنه موجود مرة واحدة فقط
 document.getElementById('exportPlanBtn').onclick = exportMonthlyPlanPDF;
 </script>
 </body>
