@@ -763,7 +763,6 @@ function saveDailyReport(){
     });
 }
 async function exportMonthlyPlanPDF() {
-    // 1. جلب البيانات من Firebase
     const snapshot = await db.ref(`MonthlyPlans/${sId}/${mName}`).once('value');
     const planData = snapshot.val() || {};
 
@@ -772,86 +771,89 @@ async function exportMonthlyPlanPDF() {
         return;
     }
 
-    // 2. بناء شكل التقرير
+    // 1. بناء هيكل التقرير المبهج
     let reportContent = `
-        <div id="pdf-template" dir="rtl" style="padding: 30px; font-family: 'Cairo', sans-serif; background: #fff;">
-            <div style="text-align: center; border-bottom: 5px solid #3b82f6; padding-bottom: 20px; margin-bottom: 30px;">
-                <h1 style="color: #1e40af; font-size: 28px; margin: 0;">التقرير الشهري للخطة التعليمية</h1>
-                <p style="font-size: 18px; color: #64748b;">الطفل: <b>${sName}</b> | الشهر: <b>${mName}</b></p>
-            </div>
-            <div style="display: grid; grid-template-columns: 1fr; gap: 20px;">
+        <div id="pdf-template" dir="rtl" style="padding: 20px; font-family: 'Cairo', sans-serif; background-color: #f0f9ff; min-height: 1000px;">
+            <div style="background: white; border: 15px solid #dbeafe; border-radius: 40px; padding: 30px; box-shadow: 0 10px 25px rgba(0,0,0,0.05); position: relative;">
+                
+                <div style="text-align: center; margin-bottom: 40px;">
+                    <div style="background: #3b82f6; color: white; display: inline-block; padding: 10px 40px; border-radius: 0 0 30px 30px; margin-top: -45px; font-weight: 900; font-size: 22px; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
+                        التقرير التعليمي الشهري 🌟
+                    </div>
+                    <h1 style="color: #1e3a8a; font-size: 32px; margin-top: 30px; margin-bottom: 10px; font-weight: 900;">بطلنا الصغير: ${sName}</h1>
+                    <p style="font-size: 18px; color: #64748b; font-weight: bold;">خطة شهر: <span style="color: #3b82f6;">${mName}</span></p>
+                </div>
+
+                <div style="display: grid; grid-template-columns: 1fr; gap: 25px;">
     `;
 
-    const subjectColors = {
-        'اللغة العربية': '#ef4444',
-        'English': '#3b82f6',
-        'Math': '#10b981',
-        'التربية الدينية': '#f59e0b',
-        'تنمية المهارات': '#8b5cf6'
+    const subjectConfig = {
+        'اللغة العربية': { color: '#ef4444', icon: '📖' },
+        'English': { color: '#3b82f6', icon: '🔤' },
+        'Math': { color: '#10b981', icon: '🔢' },
+        'التربية الدينية': { color: '#f59e0b', icon: '🌙' },
+        'تنمية المهارات': { color: '#8b5cf6', icon: '🎨' }
     };
 
-    // 3. معالجة البيانات بمرونة عالية
+    // 2. معالجة البيانات
     for (const [subject, goals] of Object.entries(planData)) {
-        const color = subjectColors[subject] || '#64748b';
-        let goalsListHTML = "";
+        const config = subjectConfig[subject] || { color: '#64748b', icon: '📝' };
+        
+        let cleanGoals = Array.isArray(goals) ? goals : Object.values(goals);
+        
+        let goalsHTML = cleanGoals.map(g => {
+            let text = (typeof g === 'object') ? (g.text || g.goal || "") : g;
+            // جلب نسبة الإنجاز والمساعدة (نفترض المسميات في الداتابيز: achievement و help)
+            let achievement = g.achievement || g.percent || "0%";
+            let help = g.help || g.assist || "مساعدة كلية";
 
-        // تحويل أي شكل من البيانات (Object أو Array) لقائمة بسيطة
-        let cleanGoals = [];
-        if (Array.isArray(goals)) {
-            cleanGoals = goals;
-        } else if (typeof goals === 'object') {
-            cleanGoals = Object.values(goals); // تحويل الكائن لمصفوفة قيم
-        } else {
-            cleanGoals = [goals]; // لو نص واحد حطه في مصفوفة
-        }
+            if (!text || text.includes("[object")) return "";
 
-        goalsListHTML = cleanGoals.map(g => {
-            let text = "";
-            
-            if (typeof g === 'object' && g !== null) {
-                // لو هو كائن، بنجرب ندور على النص جوه أكتر من مسمى محتمل
-                text = g.text || g.goal || g.title || g.name || "";
-                
-                // لو منفعش، بنشوف لو الكائن فيه قيمة واحدة بس هي النص
-                if (!text) {
-                    let values = Object.values(g).filter(v => typeof v === 'string');
-                    text = values.length > 0 ? values[0] : "";
-                }
-            } else {
-                // لو هو نص مباشر بنظفه من أي مسافات زيادة
-                text = String(g).trim();
-            }
-
-            // لو النص طلع فاضي أو فيه كلمة "object" بنتجاهله
-            if (!text || text.toLowerCase().includes("[object")) return "";
-            
-            return `<li style="margin-bottom: 8px; font-size: 15px; line-height: 1.5;">${text}</li>`;
-        }).join('');
-        reportContent += `
-            <div style="border: 2px solid ${color}; border-radius: 15px; overflow: hidden; page-break-inside: avoid; margin-bottom:15px;">
-                <div style="background: ${color}; color: white; padding: 10px 20px; font-weight: bold; font-size: 18px;">
-                    ${subject}
+            return `
+                <div style="background: white; border-radius: 15px; padding: 12px 15px; margin-bottom: 10px; border-right: 5px solid ${config.color}; box-shadow: 0 2px 4px rgba(0,0,0,0.03); display: flex; justify-content: space-between; align-items: center;">
+                    <div style="flex: 1; font-size: 15px; color: #334155; font-weight: bold; line-height: 1.6; padding-left: 10px;">
+                        ${text}
+                    </div>
+                    <div style="text-align: left; min-width: 140px;">
+                        <span style="background: ${config.color}20; color: ${config.color}; padding: 3px 8px; border-radius: 8px; font-size: 11px; font-weight: 900; margin-left: 5px;">${help}</span>
+                        <span style="background: #1e293b; color: white; padding: 3px 8px; border-radius: 8px; font-size: 11px; font-weight: 900;">${achievement}</span>
+                    </div>
                 </div>
-                <div style="padding: 15px; background: #fcfcfc;">
-                    <ul style="margin: 0; padding-right: 20px; color: #334155;">
-                        ${goalsListHTML || "<li>لا توجد أهداف مسجلة</li>"}
-                    </ul>
+            `;
+        }).join('');
+
+        reportContent += `
+            <div style="page-break-inside: avoid;">
+                <div style="display: flex; align-items: center; margin-bottom: 10px;">
+                    <span style="font-size: 24px; margin-left: 10px;">${config.icon}</span>
+                    <h3 style="color: ${config.color}; font-size: 20px; font-weight: 900; margin: 0;">${subject}</h3>
+                </div>
+                <div style="background: ${config.color}05; padding: 15px; border-radius: 20px; border: 1px dashed ${config.color}40;">
+                    ${goalsHTML || "<p style='color:#94a3b8; font-style:italic;'>لم يتم تسجيل أهداف بعد</p>"}
                 </div>
             </div>
         `;
     }
 
-    reportContent += `</div></div>`;
+    reportContent += `
+                </div>
+                <div style="margin-top: 50px; text-align: center; border-top: 2px dashed #e2e8f0; padding-top: 20px;">
+                    <p style="color: #1e3a8a; font-weight: 900; margin: 0;">نحن فخورون بتقدمك يا بطل! ❤️</p>
+                    <p style="color: #94a3b8; font-size: 12px; margin-top: 5px;">تم استخراج التقرير في ${new Date().toLocaleDateString('ar-EG')}</p>
+                </div>
+            </div>
+        </div>
+    `;
 
-    // 4. التصدير
+    // 3. التصدير
     const element = document.createElement('div');
     element.innerHTML = reportContent;
     
     const opt = {
-        margin: 10,
-        filename: `خطة_${sName}_${mName}.pdf`,
-        image: { type: 'jpeg', quality: 0.98 },
-        html2canvas: { scale: 2 },
+        margin: 5,
+        filename: `تقرير_${sName}_${mName}.pdf`,
+        image: { type: 'jpeg', quality: 1 },
+        html2canvas: { scale: 3, useCORS: true, letterRendering: true },
         jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
     };
 
