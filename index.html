@@ -8,7 +8,8 @@
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.25/jspdf.plugin.autotable.min.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700;900&display=swap" rel="stylesheet">
     
     <style>
@@ -859,102 +860,104 @@ function saveDailyReport() {
     });
 }
 async function exportMonthlyPlanPDF() {
+    showToast("جاري إنشاء التقرير الاحترافي... 📄");
+
     try {
         const snapshot = await db.ref(`MonthlyPlans/${sId}/${mName}`).once('value');
         const planData = snapshot.val();
 
         if (!planData) {
-            showToast("لا توجد خطة مسجلة لهذا الشهر!", "error");
+            showToast("لا توجد بيانات لهذا الشهر!", "error");
             return;
         }
 
-        const subjectStyles = {
-            'اللغة العربية': { color: '#ef4444', bg: '#fff5f5', icon: '📖' },
-            'English': { color: '#3b82f6', bg: '#f0f7ff', icon: '🔤' },
-            'Math': { color: '#10b981', bg: '#f0fff4', icon: '🔢' },
-            'التربية الدينية': { color: '#f59e0b', bg: '#fffaf0', icon: '🌙' },
-            'Montessori': { color: '#8b5cf6', bg: '#f5f3ff', icon: '🧩' },
-            'قرآن إضافي': { color: '#047857', bg: '#f0fdf4', icon: '🕌' },
-            'مناسبات': { color: '#db2777', bg: '#fff5f7', icon: '🎉' },
-            'تنمية المهارات': { color: '#6366f1', bg: '#f5f7ff', icon: '🎨' }
-        };
+        const { jsPDF } = window.jspdf;
+        const doc = new jsPDF();
 
-        // إنشاء المحتوى كـ String
-        let goalsContent = "";
+        // إعدادات الخط والألوان
+        const mainColor = [30, 64, 175]; // اللون الأزرق الداكن لـ Many Circles
+
+        // 1. عنوان التقرير
+        doc.setTextColor(30, 64, 175);
+        doc.setFontSize(22);
+        doc.text("Many Circles", 105, 20, { align: "center" });
+        
+        doc.setFontSize(14);
+        doc.setTextColor(100, 116, 139);
+        doc.text(`Monthly Progress Report: ${mName}`, 105, 30, { align: "center" });
+
+        // 2. معلومات الطفل (في مستطيل شيك)
+        doc.setFillColor(248, 250, 252);
+        doc.roundedRect(15, 40, 180, 15, 3, 3, 'F');
+        doc.setTextColor(30, 41, 59);
+        doc.setFontSize(12);
+        doc.text(`Student: ${sName}`, 25, 50);
+        doc.text(`Proud of you, Hero!`, 185, 50, { align: "right" });
+
+        let finalY = 65;
+
+        // 3. بناء الجداول لكل مادة
         for (const [subject, goals] of Object.entries(planData)) {
-            const style = subjectStyles[subject] || { color: '#64748b', bg: '#f8fafc', icon: '📝' };
-            let cleanGoals = Array.isArray(goals) ? goals : Object.values(goals);
+            const cleanGoals = Array.isArray(goals) ? goals : Object.values(goals);
             
-            let goalsHTML = cleanGoals.map(g => {
-                if(!g.name) return "";
-                return `
-                    <div style="display:flex; align-items:center; justify-content:space-between; padding:8px 12px; background:#fff; border-radius:8px; margin-bottom:5px; border:1px solid ${style.color}15; flex-direction: row-reverse;">
-                        <span style="font-weight:bold; color:#475569; font-size:14px;">• ${g.name}</span>
-                        <div style="display:flex; gap:8px; flex-direction: row-reverse;">
-                            <span style="background:${style.bg}; color:${style.color}; padding:2px 10px; border-radius:4px; font-size:12px; font-weight:bold; border:1px solid ${style.color}25;">${g.help}</span>
-                            <span style="background:${style.color}; color:#fff; padding:2px 12px; border-radius:4px; font-size:12px; font-weight:bold;">${g.score}</span>
-                        </div>
-                    </div>`;
-            }).join('');
+            // تحضير البيانات للجدول
+            const tableRows = cleanGoals.map(g => [
+                g.name || "-",
+                g.help || "-",
+                g.score || "-"
+            ]);
 
-            goalsContent += `
-                <div style="page-break-inside:avoid; background:${style.bg}; padding:15px; border-radius:15px; border:1px solid ${style.color}15; margin-bottom:12px; text-align:right;">
-                    <h3 style="color:${style.color}; margin:0 0 10px 0; font-size:18px; display:flex; align-items:center; justify-content: flex-start; gap:8px; flex-direction: row-reverse;">
-                        <span>${style.icon}</span> <span>${subject}</span>
-                    </h3>
-                    ${goalsHTML}
-                </div>`;
+            doc.autoTable({
+                startY: finalY,
+                head: [[subject, 'Help Level', 'Score']],
+                body: tableRows,
+                theme: 'striped',
+                headStyles: { 
+                    fillColor: mainColor, 
+                    fontSize: 12, 
+                    halign: 'center',
+                    fontStyle: 'bold'
+                },
+                styles: { 
+                    fontSize: 10, 
+                    cellPadding: 5, 
+                    halign: 'center',
+                    overflow: 'linebreak'
+                },
+                columnStyles: {
+                    0: { halign: 'left', cellWidth: 100 }, // اسم الهدف
+                },
+                margin: { left: 15, right: 15 },
+                didDrawPage: (data) => {
+                    finalY = data.cursor.y + 10;
+                }
+            });
+            
+            finalY = doc.lastAutoTable.finalY + 10;
+            
+            // لو الجدول هيخرج بره الصفحة، افتح صفحة جديدة
+            if (finalY > 270) {
+                doc.addPage();
+                finalY = 20;
+            }
         }
 
-        const fullHTML = `
-            <div id="pdf-report" dir="rtl" style="padding:20px; font-family: Arial, sans-serif; background:#fff; width:750px;">
-                <div style="text-align:center; margin-bottom:20px; border-bottom:2px solid #f1f5f9; padding-bottom:15px;">
-                    <h1 style="margin:0; color:#1e40af; font-size:28px;">Many Circles</h1>
-                    <p style="margin:5px 0; color:#64748b; font-size:16px;">تقرير المتابعة الشهري - ${mName}</p>
-                    <div style="margin-top:10px;">
-                        <span style="font-size:18px; color:#334155; background:#f8fafc; padding:8px 25px; border-radius:12px; border:1px solid #e2e8f0;">
-                            البطل: <strong>${sName}</strong> ⭐
-                        </span>
-                    </div>
-                </div>
-                ${goalsContent}
-                <div style="margin-top:30px; text-align:center; color:#94a3b8; font-size:14px;">صنع بكل حب في Many Circles ❤️</div>
-            </div>
-        `;
+        // 4. الفوتر (Footer)
+        const pageCount = doc.internal.getNumberOfPages();
+        for (let i = 1; i <= pageCount; i++) {
+            doc.setPage(i);
+            doc.setFontSize(10);
+            doc.setTextColor(150);
+            doc.text("Made with Love by Many Circles Team", 105, 285, { align: "center" });
+        }
 
-        // الحل السحري للموبايل: إنشاء Frame مؤقت مرئي للحظة
-        const container = document.createElement('div');
-        container.innerHTML = fullHTML;
-        container.style.position = "fixed";
-        container.style.top = "0";
-        container.style.left = "0";
-        container.style.width = "800px";
-        container.style.zIndex = "-1"; // ورا الشاشة عشان ميضايقش المستخدم
-        container.style.background = "white";
-        document.body.appendChild(container);
+        // حفظ الملف
+        doc.save(`Report_${sName}_${mName}.pdf`);
+        showToast("تم التحميل بنجاح! ✅");
 
-        const opt = {
-            margin: 5,
-            filename: `ManyCircles_${sName}.pdf`,
-            image: { type: 'jpeg', quality: 0.98 },
-            html2canvas: { 
-                scale: 2, 
-                useCORS: true,
-                logging: false,
-                width: 780
-            },
-            jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
-        };
-
-        // تنفيذ الطباعة
-        await html2pdf().set(opt).from(container).save();
-        
-        // مسح الحاوية بعد ثانية
-        setTimeout(() => document.body.removeChild(container), 1000);
-
-    } catch (e) { 
-        console.error(e); 
-        showToast("حدث خطأ، حاول مرة أخرى", "error"); 
+    } catch (e) {
+        console.error(e);
+        showToast("حدث خطأ تقني، جرب مرة أخرى", "error");
     }
 }
 function showToast(message, type = 'success') {
