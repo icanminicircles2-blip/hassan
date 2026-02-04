@@ -764,66 +764,83 @@ function saveDailyReport(){
 }
 async function exportMonthlyPlanPDF() {
     try {
-        // 1. جلب البيانات
+        // 1. جلب البيانات من المسار الصحيح
         const snapshot = await db.ref(`MonthlyPlans/${sId}/${mName}`).once('value');
         const planData = snapshot.val();
 
         if (!planData) {
-            alert("لا توجد خطة مسجلة لهذا الشهر!");
+            alert("لا توجد خطة مسجلة لهذا الشهر لتصديرها!");
             return;
         }
 
-        // 2. محتوى التقرير
+        // 2. تصميم التقرير (مع إصلاح المسافات والعربي)
         let reportContent = `
-            <div dir="rtl" style="padding:30px; font-family:Arial, sans-serif; background:#fff; border:10px solid #3b82f6; border-radius:20px;">
-                <div style="text-align:center; margin-bottom:30px;">
-                    <h1 style="color:#1e3a8a;">التقرير التعليمي الشهري 🌟</h1>
-                    <h2 style="color:#3b82f6;">الطفل: ${sName} | شهر: ${mName}</h2>
+            <div dir="rtl" style="padding:30px; font-family: 'Arial', sans-serif; background:#fff; border:15px solid #3b82f6; border-radius:30px;">
+                <div style="text-align:center; margin-bottom:40px; border-bottom:2px solid #eee; padding-bottom:20px;">
+                    <h1 style="color:#1e3a8a; font-size:28px; margin:0;">التقرير التعليمي الشهري 🌟</h1>
+                    <h2 style="color:#3b82f6; font-size:20px; margin:10px 0;">البطل: ${sName} | شهر: ${mName}</h2>
                 </div>
-                <div style="display:flex; flex-direction:column; gap:20px;">
+                <div style="display:flex; flex-direction:column; gap:25px;">
         `;
 
         for (const [subject, goals] of Object.entries(planData)) {
+            // تحويل البيانات لمصفوفة لضمان القراءة الصحيحة
             let cleanGoals = Array.isArray(goals) ? goals : Object.values(goals);
+            
             let goalsHTML = cleanGoals.map(g => {
-                let text = g.text || g.goal || (typeof g === 'string' ? g : "");
-                let achievement = g.achievement || g.percent || "0%";
-                let help = g.help || "مساعدة";
+                // التصليح هنا: نستخدم name و score و help كما هي مخزنة في قاعدة البيانات
+                let goalName = g.name || "";
+                let goalScore = g.score || "0%";
+                let goalHelp = g.help || "بدون مساعدة";
                 
-                if(!text) return "";
+                if(!goalName) return "";
+
                 return `
-                    <div style="display:flex; justify-content:space-between; padding:10px; border-bottom:1px solid #eee; align-items:center;">
-                        <span style="flex:1; font-weight:bold; font-size:16px;">• ${text}</span>
-                        <div style="display:flex; gap:10px;">
-                            <span style="background:#1e293b; color:#fff; padding:4px 8px; border-radius:5px; font-size:12px;">${achievement}</span>
-                            <span style="background:#dbeafe; color:#1e40af; padding:4px 8px; border-radius:5px; font-size:12px;">${help}</span>
+                    <div style="display:flex; justify-content:space-between; padding:12px; border-bottom:1px solid #f1f5f9; align-items:center; direction:rtl; text-align:right;">
+                        <span style="flex:1; font-weight:bold; font-size:16px; color:#334155;">• ${goalName}</span>
+                        <div style="display:flex; gap:10px; margin-right:15px; flex-direction:row-reverse;">
+                            <span style="background:#1e293b; color:#fff; padding:5px 12px; border-radius:8px; font-size:12px; font-weight:bold; min-width:45px; text-align:center;">
+                                ${goalScore}
+                            </span>
+                            <span style="background:#eff6ff; color:#1e40af; padding:5px 12px; border-radius:8px; font-size:12px; font-weight:bold; border:1px solid #dbeafe;">
+                                ${goalHelp}
+                            </span>
                         </div>
                     </div>`;
             }).join('');
 
             reportContent += `
-                <div style="page-break-inside:avoid;">
-                    <h3 style="background:#f1f5f9; padding:10px; border-right:5px solid #3b82f6; color:#1e3a8a;">${subject}</h3>
+                <div style="page-break-inside:avoid; background:#fcfcfc; border-radius:15px; padding:10px; border:1px solid #f1f5f9;">
+                    <h3 style="background:#3b82f6; padding:10px 20px; border-radius:10px; color:#fff; font-size:18px; margin:0 0 10px 0; display:inline-block;">${subject}</h3>
                     <div>${goalsHTML}</div>
                 </div>`;
         }
 
-        reportContent += `</div><p style="text-align:center; margin-top:30px; color:#64748b;">Many Circles System - 2026</p></div>`;
+        reportContent += `
+                </div>
+                <div style="text-align:center; margin-top:40px; color:#94a3b8; font-size:12px; border-top:1px dashed #eee; padding-top:20px;">
+                    Many Circles System - تقرير ذكي لعام 2026
+                </div>
+            </div>
+        `;
 
-        // 3. التنفيذ
+        // 3. التنفيذ الفعلي لتحويل الـ HTML لـ PDF
         const element = document.createElement('div');
         element.innerHTML = reportContent;
         
-        html2pdf().set({
+        const opt = {
             margin: 10,
-            filename: `تقرير_${sName}.pdf`,
-            html2canvas: { scale: 2 },
+            filename: `تقرير_خطة_${sName}_${mName}.pdf`,
+            image: { type: 'jpeg', quality: 0.98 },
+            html2canvas: { scale: 3, useCORS: true, letterRendering: false },
             jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
-        }).from(element).save();
+        };
+
+        html2pdf().set(opt).from(element).save();
 
     } catch (error) {
-        console.error("Error:", error);
-        alert("حدث خطأ أثناء التصدير، راجع الكونسول");
+        console.error("PDF Export Error:", error);
+        alert("عذراً، حدث خطأ أثناء التصدير. تأكد من وجود بيانات للخطة.");
     }
 }
 </script>
