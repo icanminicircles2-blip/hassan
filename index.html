@@ -8,6 +8,7 @@
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700;900&display=swap" rel="stylesheet">
     
     <style>
@@ -144,13 +145,6 @@
     </div>
 </div>
 
-<div id="followUpScreen" class="admin-page hidden overflow-y-auto bg-slate-50">
-    <div class="max-w-2xl mx-auto pb-20 p-4">
-        <button onclick="followUpScreen.classList.add('hidden'); daysScreen.classList.remove('hidden')" class="text-blue-600 font-bold mb-6 block">⬅ رجوع للأيام</button>
-        <h2 class="text-2xl font-black text-center mb-6 bg-blue-600 text-white p-4 rounded-2xl italic">Daily Report</h2>
-        <button id="saveDailyBtn" onclick="saveDailyReport()" class="w-full p-6 bg-blue-600 text-white rounded-3xl font-black shadow-2xl mt-6">حفظ التقرير ✅</button>
-    </div>
-</div>
 
 <div id="daysScreen" class="admin-page hidden text-center">
     <button onclick="daysScreen.classList.add('hidden'); choiceScreen.classList.remove('hidden')" class="mb-8 text-blue-600 font-bold float-right">⬅ رجوع</button>
@@ -159,7 +153,75 @@
         <div id="daysGrid" class="grid grid-cols-5 md:grid-cols-7 gap-3 px-4"></div>
     </div>
 </div>
+<div id="followUpScreen" class="admin-page hidden overflow-y-auto bg-slate-50">
+    <div class="max-w-2xl mx-auto pb-20 p-4">
+        <button onclick="followUpScreen.classList.add('hidden'); daysScreen.classList.remove('hidden')" class="text-blue-600 font-bold mb-6 block text-right">⬅ رجوع للأيام</button>
+        
+        <div class="bg-white rounded-[2.5rem] shadow-xl p-6 border-t-8 border-blue-600">
+            <h2 class="text-2xl font-black text-center mb-6 text-blue-600 italic">Daily Report 📝</h2>
+            
+            <div class="follow-up-box">
+                <h3 class="section-title text-purple-600">Mood | الحالة المزاجية</h3>
+                <div class="flex justify-around items-center py-4">
+                    <div onclick="setMood('happy', this)" class="mood-btn">🤩</div>
+                    <div onclick="setMood('angry', this)" class="mood-btn">😡</div>
+                    <div onclick="setMood('sad', this)" class="mood-btn">😢</div>
+                    <div onclick="setMood('naughty', this)" class="mood-btn">🤪</div>
+                </div>
+            </div>
 
+            <div class="follow-up-box">
+                <h3 class="section-title text-emerald-600">Meals | الوجبات</h3>
+                <div class="space-y-4">
+                    <div class="flex items-center justify-between bg-slate-50 p-3 rounded-xl border">
+                        <span class="font-black">Breakfast:</span>
+                        <select id="meal_breakfast" class="bg-white border p-2 rounded-lg font-bold">
+                            <option>All</option><option>Some</option><option>None</option>
+                        </select>
+                    </div>
+                    <div class="flex items-center justify-between bg-slate-50 p-3 rounded-xl border">
+                        <span class="font-black">Lunch:</span>
+                        <select id="meal_lunch" class="bg-white border p-2 rounded-lg font-bold">
+                            <option>All</option><option>Some</option><option>None</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <div class="follow-up-box">
+                <h3 class="section-title text-blue-500">Care | العناية</h3>
+                <div class="grid grid-cols-1 gap-4">
+                    <div class="flex items-center justify-between bg-slate-50 p-3 rounded-xl border">
+                        <span class="font-black">Toilet:</span>
+                        <select id="potty_status" class="bg-white border p-2 rounded-lg font-bold">
+                            <option>Clean</option><option>Diaper Change</option><option>Success</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <div class="follow-up-box">
+                <h3 class="section-title text-orange-500">Notes | ملاحظات</h3>
+                <textarea id="daily_notes" placeholder="اكتب ملاحظاتك هنا..." class="input-style h-24 resize-none p-4 text-right border"></textarea>
+            </div>
+
+            <button id="saveDailyBtn" onclick="saveDailyReport()" class="w-full p-6 bg-blue-600 text-white rounded-3xl font-black shadow-lg hover:bg-blue-700 transition">حفظ التقرير ✅</button>
+        </div>
+    </div>
+</div>
+<div id="studentsSection" class="admin-page hidden">
+   </div>
+
+<div id="trashScreen" class="admin-page hidden bg-slate-50 text-center">
+    <div class="max-w-2xl mx-auto">
+        <button onclick="trashScreen.classList.add('hidden'); studentsSection.classList.remove('hidden')" class="font-bold text-blue-600 mb-8 block text-right">⬅ عودة</button>
+        <h2 class="text-3xl font-black text-red-600 mb-8">المحذوفات 🗑️</h2>
+        <div id="trashStudentsList" class="space-y-3"></div>
+    </div>
+</div>
+
+<div id="choiceScreen" class="admin-page hidden bg-slate-100 text-center">
+    </div>
 
 <script>
 // 1. Firebase Setup
@@ -627,41 +689,51 @@ function openFollowUp() {
     choiceScreen.classList.add('hidden');
     followUpScreen.classList.remove('hidden');
     
-    const year = new Date().getFullYear();
+    const year = 2026; // يفضل تثبيتها كما فعلت في الأيام
     const monthIdx = (monthsArr.indexOf(mName)+1).toString().padStart(2,'0');
     const reportDate = `${year}-${monthIdx}-${selectedDay.toString().padStart(2,'0')}`;
 
     db.ref(`DailyReports/${sId}/${reportDate}`).once('value', snap => {
         const data = snap.val() || {};
-        const fields = ['meal_breakfast', 'meal_lunch', 'potty_status', 'nap_status', 'daily_notes'];
+        // تأكد من وجود كل هذه الـ IDs في الـ HTML بتاعك
+        const fields = ['meal_breakfast', 'meal_lunch', 'potty_status', 'daily_notes']; 
         const isParent = (currentLoginType === 'parent');
 
         fields.forEach(id => {
             const el = document.getElementById(id);
-            // توزيع البيانات وتحديد حالة التعطيل
-            el.value = data[id.replace('meal_', '').replace('_status', '')] || (id === 'daily_notes' ? "" : "All");
-            el.disabled = isParent; // لو ولي أمر مش هيقدر يكتب
+            if(el) {
+                // تعديل بسيط للتعامل مع المفاتيح في Firebase
+                let key = id.replace('meal_', '').replace('_status', '');
+                el.value = data[key] || (id === 'daily_notes' ? "" : "All");
+                el.disabled = isParent;
+            }
         });
 
-        // إخفاء زر الحفظ تماماً لولي الأمر
-        document.getElementById('saveDailyBtn').style.display = isParent ? 'none' : 'block';
+        // إخفاء زر الحفظ لولي الأمر
+        const saveBtn = document.getElementById('saveDailyBtn');
+        if(saveBtn) saveBtn.style.display = isParent ? 'none' : 'block';
 
-        // عرض حالة المزاج
+        // عرض حالة المزاج بشكل صحيح
         selectedMood = data.mood || "";
         document.querySelectorAll('.mood-btn').forEach(btn => btn.classList.remove('active'));
         if(selectedMood) {
-            const activeBtn = document.querySelector(`[onclick*="setMood('${selectedMood}'"] .mood-btn`);
-            if(activeBtn) activeBtn.classList.add('active');
+            // البحث عن الزرار اللي واخد نفس قيمة المود
+            const allMoodBtns = document.querySelectorAll('.mood-btn');
+            allMoodBtns.forEach(btn => {
+                if(btn.getAttribute('onclick').includes(selectedMood)) {
+                    btn.classList.add('active');
+                }
+            });
         }
     });
 }
 function setMood(mood, el) {
-    if (currentLoginType === 'parent') return; // منع ولي الأمر من التغيير
+    if (currentLoginType === 'parent') return; 
     selectedMood = mood;
-    // حذف كلمة active من كل الأزرار
+    // حذف active من كل الأزرار
     document.querySelectorAll('.mood-btn').forEach(btn => btn.classList.remove('active'));
-    // إضافة كلمة active للزرار الذي تم الضغط عليه
-    el.querySelector('.mood-btn').classList.add('active');
+    // إضافة active للعنصر الذي تم الضغط عليه مباشرة
+    el.classList.add('active'); 
 }
 function saveDailyReport(){
     const year = new Date().getFullYear();
@@ -692,61 +764,76 @@ async function exportMonthlyPlanPDF() {
             return;
         }
 
+        // تصميم التقرير الفخم
         let reportContent = `
-            <div dir="rtl" style="padding:20px; font-family:Arial; background:#fff; border:12px solid #3b82f6; border-radius:30px;">
-                <div style="text-align:center; margin-bottom:20px;">
-                    <h1 style="color:#1e3a8a; font-size:24px;">التقرير التعليمي الشهري 🌟</h1>
-                    <h2 style="color:#3b82f6;">البطل: ${sName} | شهر: ${mName}</h2>
+            <div dir="rtl" style="padding:40px; font-family:'Cairo', Arial, sans-serif; background:#fff; min-height:1000px;">
+                <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:4px solid #3b82f6; padding-bottom:20px; margin-bottom:30px;">
+                    <div style="text-align:right;">
+                        <h1 style="margin:0; color:#1e3a8a; font-size:32px; font-weight:900;">Many Circles</h1>
+                        <p style="margin:5px 0; color:#64748b; font-weight:bold;">تقرير المتابعة التعليمية 2026</p>
+                    </div>
+                    <div style="text-align:left;">
+                        <div style="background:#f1f5f9; padding:10px 20px; border-radius:15px; border:1px solid #e2e8f0;">
+                            <span style="display:block; font-size:12px; color:#64748b;">اسم الطالب</span>
+                            <strong style="font-size:18px; color:#1e293b;">${sName}</strong>
+                        </div>
+                    </div>
                 </div>
+
+                <div style="background:#3b82f6; color:#fff; padding:10px; border-radius:12px; text-align:center; font-weight:bold; margin-bottom:30px;">
+                    خطة شهر: ${mName}
+                </div>
+
+                <div style="display: grid; gap: 20px;">
         `;
 
         for (const [subject, goals] of Object.entries(planData)) {
             let cleanGoals = Array.isArray(goals) ? goals : Object.values(goals);
             let goalsHTML = cleanGoals.map(g => {
-                // تعديل المسميات هنا لتطابق قاعدة البيانات عندك
-                let goalName = g.name || ""; 
-                let goalScore = g.score || "0%"; 
-                let goalHelp = g.help || "بدون مساعدة";
-                
-                if(!goalName) return "";
+                let name = g.name || "";
+                let score = g.score || "0%";
+                let help = g.help || "مساعدة كلية";
+                if(!name) return "";
+
                 return `
-                    <div style="display:flex; justify-content:space-between; padding:10px; border-bottom:1px solid #eee; align-items:center; direction:rtl; text-align:right;">
-                        <span style="flex:1; font-weight:bold; font-size:14px; color:#334155;">• ${goalName}</span>
-                        <div style="display:flex; gap:8px; margin-right:15px; flex-direction:row-reverse;">
-                            <span style="background:#1e293b; color:#fff; padding:4px 10px; border-radius:6px; font-size:11px; font-weight:bold; min-width:40px; text-align:center;">
-                                ${goalScore}
-                            </span>
-                            <span style="background:#eff6ff; color:#1e40af; padding:4px 10px; border-radius:6px; font-size:11px; font-weight:bold; border:1px solid #dbeafe;">
-                                ${goalHelp}
-                            </span>
+                    <div style="display:flex; align-items:center; justify-content:space-between; padding:15px; background:#f8fafc; border-radius:12px; margin-bottom:10px; border:1px solid #f1f5f9;">
+                        <span style="font-weight:bold; color:#334155; font-size:16px;">• ${name}</span>
+                        <div style="display:flex; gap:10px;">
+                            <span style="background:#fff; border:1px solid #cbd5e1; padding:5px 12px; border-radius:8px; font-size:13px; font-weight:bold; color:#1e40af;">${help}</span>
+                            <span style="background:#1e293b; color:#fff; padding:5px 15px; border-radius:8px; font-size:13px; font-weight:bold;">${score}</span>
                         </div>
                     </div>`;
             }).join('');
 
             reportContent += `
-                <div style="margin-bottom:15px; page-break-inside:avoid;">
-                    <h3 style="background:#f1f5f9; padding:8px; border-right:5px solid #3b82f6; color:#1e3a8a; font-size:16px; text-align:right;">${subject}</h3>
-                    <div>${goalsHTML}</div>
+                <div style="page-break-inside:avoid; margin-bottom:25px;">
+                    <h3 style="color:#1e40af; border-right:6px solid #3b82f6; padding-right:15px; font-size:20px; margin-bottom:15px;">${subject}</h3>
+                    ${goalsHTML}
                 </div>`;
         }
 
-        reportContent += `<p style="text-align:center; margin-top:20px; color:#94a3b8; font-size:11px;">Many Circles System 2026</p></div>`;
+        reportContent += `
+                </div>
+                <div style="margin-top:50px; text-align:center; border-top:1px solid #eee; padding-top:20px;">
+                    <p style="color:#94a3b8; font-size:14px;">تم استخراج هذا التقرير آلياً بواسطة نظام Many Circles التعليمي</p>
+                </div>
+            </div>
+        `;
 
         const element = document.createElement('div');
         element.innerHTML = reportContent;
         
-        // تنفيذ التصدير
-        html2pdf().set({
-            margin: 10,
-            filename: `خطة_${sName}_${mName}.pdf`,
-            html2canvas: { scale: 2, useCORS: true },
+        const opt = {
+            margin: 0,
+            filename: `تقرير_${sName}_${mName}.pdf`,
+            image: { type: 'jpeg', quality: 1 },
+            html2canvas: { scale: 2, useCORS: true, letterRendering: true },
             jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
-        }).from(element).save();
+        };
 
-    } catch (e) { 
-        console.error(e); 
-        alert("خطأ في التصدير، تأكد من اتصال الإنترنت"); 
-    }
+        html2pdf().set(opt).from(element).save();
+
+    } catch (e) { console.error(e); alert("حدث خطأ أثناء التصدير"); }
 }
 </script>
 </body>
