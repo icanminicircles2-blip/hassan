@@ -794,14 +794,24 @@ async function exportMonthlyPlanPDF() {
 
     for (const [subject, goals] of Object.entries(planData)) {
         const color = subjectColors[subject] || '#64748b';
+        
+        // تعديل مهم: التأكد من قراءة النص سواء كان الهدف (Text) أو (Object)
+        let goalsListHTML = "";
+        if (Array.isArray(goals)) {
+            goalsListHTML = goals.map(g => {
+                let goalText = (typeof g === 'object') ? (g.text || g.goal || "") : g;
+                return goalText ? `<li style="margin-bottom: 8px; font-size: 15px;">${goalText}</li>` : "";
+            }).join('');
+        }
+
         reportContent += `
-            <div style="border: 2px solid ${color}; border-radius: 15px; overflow: hidden;">
+            <div style="border: 2px solid ${color}; border-radius: 15px; overflow: hidden; page-break-inside: avoid;">
                 <div style="background: ${color}; color: white; padding: 10px 20px; font-weight: bold; font-size: 18px;">
                     ${subject}
                 </div>
                 <div style="padding: 15px; background: #fcfcfc;">
                     <ul style="margin: 0; padding-right: 20px; color: #334155;">
-                        ${goals.map(g => `<li style="margin-bottom: 8px; font-size: 15px;">${g.text}</li>`).join('')}
+                        ${goalsListHTML || "<li>لا توجد أهداف مسجلة</li>"}
                     </ul>
                 </div>
             </div>
@@ -831,7 +841,7 @@ async function exportMonthlyPlanPDF() {
     html2pdf().set(opt).from(element).save();
 }
 
-// 5. ربط الزرار بالدالة
+// ربط الزرار
 document.getElementById('exportPlanBtn').onclick = exportMonthlyPlanPDF;
 </script>
 </body>
