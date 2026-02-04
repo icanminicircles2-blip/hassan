@@ -778,7 +778,7 @@ async function exportMonthlyPlanPDF() {
             <div style="background: white; border: 15px solid #dbeafe; border-radius: 40px; padding: 30px; box-shadow: 0 10px 25px rgba(0,0,0,0.05);">
                 
                 <div style="text-align: center; margin-bottom: 40px;">
-                    <div style="background: #3b82f6; color: white; display: inline-block; padding: 10px 40px; border-radius: 0 0 30px 30px; margin-top: -45px; font-weight: 900; font-size: 22px;">
+                    <div style="background: #3b82f6; color: white; display: inline-block; padding: 10px 40px; border-radius: 0 0 30px 30px; margin-top: -45px; font-weight: 900; font-size: 22px; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
                         التقرير التعليمي الشهري 🌟
                     </div>
                     <h1 style="color: #1e3a8a; font-size: 32px; margin-top: 30px; margin-bottom: 10px; font-weight: 900;">بطلنا الصغير: ${sName}</h1>
@@ -796,16 +796,12 @@ async function exportMonthlyPlanPDF() {
         'تنمية المهارات': { color: '#8b5cf6', icon: '🎨' }
     };
 
-    // 3. معالجة البيانات بمرونة عالية (الجوكر)
+    // 3. معالجة البيانات بمرونة عالية
     for (const [subject, goals] of Object.entries(planData)) {
         const config = subjectConfig[subject] || { color: '#64748b', icon: '📝' };
         
-        let cleanGoals = [];
-        if (Array.isArray(goals)) {
-            cleanGoals = goals;
-        } else if (typeof goals === 'object') {
-            cleanGoals = Object.values(goals);
-        }
+        // تحويل الداتا لمصفوفة سواء كانت Array أو Object
+        let cleanGoals = Array.isArray(goals) ? goals : Object.values(goals);
 
         let goalsHTML = cleanGoals.map(g => {
             let text = "";
@@ -813,40 +809,48 @@ async function exportMonthlyPlanPDF() {
             let help = "مساعدة";
 
             if (typeof g === 'object' && g !== null) {
-                // بيدور على النص في كل الاحتمالات
-               // محاولة صيد النص الحقيقي للهدف من كل الاحتمالات
-                text = g.goalText || g.target || g.text || g.goal || "";
+                // محاولة صيد النص الحقيقي للهدف من كل الاحتمالات
+                text = g.goalText || g.target || g.text || g.goal || g.goalName || "";
                 
                 // لو لسه النص فاضي، بنجيب أي نص في الكائن بشرط ميكونش هو المساعدة أو النسبة
                 if (!text) {
-                    text = Object.entries(g).find(([k, v]) => 
-                        typeof v === 'string' && !['help','achievement','assist','percent','id'].includes(k.toLowerCase())
-                    )?.[1] || "";
+                    let entries = Object.entries(g);
+                    let found = entries.find(([k, v]) => 
+                        typeof v === 'string' && !['help','achievement','assist','percent','id','status'].includes(k.toLowerCase())
+                    );
+                    text = found ? found[1] : "";
                 }
+                
+                achievement = g.achievement || g.completion || g.percent || "0%";
+                help = g.help || g.assistance || g.helpType || "مساعدة";
+            } else {
+                text = g;
+            }
 
+            // تصفية النصوص الفارغة أو البرمجية
             if (!text || String(text).includes("[object")) return "";
 
             return `
-                <div style="background: white; border-radius: 15px; padding: 12px 15px; margin-bottom: 10px; border-right: 5px solid ${config.color}; box-shadow: 0 2px 4px rgba(0,0,0,0.03); display: flex; justify-content: space-between; align-items: center;">
+                <div style="background: white; border-radius: 15px; padding: 12px 15px; margin-bottom: 10px; border-right: 5px solid ${config.color}; box-shadow: 0 2px 4px rgba(0,0,0,0.03); display: flex; justify-content: space-between; align-items: center; page-break-inside: avoid;">
                     <div style="flex: 1; font-size: 15px; color: #334155; font-weight: bold; line-height: 1.6; text-align: right; padding-left: 10px;">
                         ${text}
                     </div>
-                    <div style="text-align: left; min-width: 140px; display: flex; flex-direction: row-reverse; gap: 5px;">
-                        <span style="background: ${config.color}20; color: ${config.color}; padding: 3px 8px; border-radius: 8px; font-size: 11px; font-weight: 900;">${help}</span>
-                        <span style="background: #1e293b; color: white; padding: 3px 8px; border-radius: 8px; font-size: 11px; font-weight: 900;">${achievement}</span>
+                    <div style="text-align: left; min-width: 150px; display: flex; flex-direction: row-reverse; gap: 8px; align-items: center;">
+                        <span style="background: ${config.color}20; color: ${config.color}; padding: 4px 10px; border-radius: 10px; font-size: 11px; font-weight: 900; white-space: nowrap;">${help}</span>
+                        <span style="background: #1e293b; color: white; padding: 4px 10px; border-radius: 10px; font-size: 11px; font-weight: 900; white-space: nowrap;">${achievement}</span>
                     </div>
                 </div>
             `;
         }).join('');
 
         reportContent += `
-            <div style="page-break-inside: avoid;">
-                <div style="display: flex; align-items: center; margin-bottom: 10px;">
+            <div style="page-break-inside: avoid; margin-bottom: 10px;">
+                <div style="display: flex; align-items: center; margin-bottom: 12px;">
                     <span style="font-size: 24px; margin-left: 10px;">${config.icon}</span>
                     <h3 style="color: ${config.color}; font-size: 20px; font-weight: 900; margin: 0;">${subject}</h3>
                 </div>
                 <div style="background: ${config.color}05; padding: 15px; border-radius: 20px; border: 1px dashed ${config.color}40;">
-                    ${goalsHTML || "<p style='color:#94a3b8; font-style:italic;'>لم يتم تسجيل أهداف</p>"}
+                    ${goalsHTML || "<p style='color:#94a3b8; font-style:italic;'>لم يتم تسجيل أهداف لهذا القسم</p>"}
                 </div>
             </div>
         `;
@@ -855,26 +859,29 @@ async function exportMonthlyPlanPDF() {
     reportContent += `
                 </div>
                 <div style="margin-top: 50px; text-align: center; border-top: 2px dashed #e2e8f0; padding-top: 20px;">
-                    <p style="color: #1e3a8a; font-weight: 900; margin: 0;">نحن فخورون بتقدمك يا بطل! ❤️</p>
-                    <p style="color: #94a3b8; font-size: 12px;">تم استخراج التقرير في ${new Date().toLocaleDateString('ar-EG')}</p>
+                    <p style="color: #1e3a8a; font-weight: 900; margin: 0; font-size: 18px;">نحن فخورون بتقدمك يا بطل! ❤️</p>
+                    <p style="color: #94a3b8; font-size: 12px; margin-top: 5px;">تم استخراج التقرير من نظام Many Circles في ${new Date().toLocaleDateString('ar-EG')}</p>
                 </div>
             </div>
         </div>
     `;
 
+    // 4. عملية التصدير لـ PDF بجودة عالية
     const element = document.createElement('div');
     element.innerHTML = reportContent;
     
-    html2pdf().set({
+    const opt = {
         margin: 5,
-        filename: `تقرير_${sName}_${mName}.pdf`,
+        filename: `تقرير_خطة_${sName}_${mName}.pdf`,
         image: { type: 'jpeg', quality: 1 },
-        html2canvas: { scale: 3, useCORS: true },
+        html2canvas: { scale: 3, useCORS: true, letterRendering: true },
         jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
-    }).from(element).save();
+    };
+
+    html2pdf().set(opt).from(element).save();
 }
 
-// سطر الربط بالزرار - تأكد إنه موجود مرة واحدة فقط
+// ربط الدالة بالزرار
 document.getElementById('exportPlanBtn').onclick = exportMonthlyPlanPDF;
 </script>
 </body>
