@@ -21,6 +21,15 @@
         .mood-btn.active { filter: grayscale(0); transform: scale(1.2); opacity: 1; }
         .input-style { width: 100%; padding: 12px; border-radius: 12px; border: 1px solid #cbd5e1; outline: none; margin-bottom: 8px; font-size: 14px; font-weight: bold; text-align: center; }
         .goal-card { background: #fff; padding: 15px; border-radius: 1.5rem; border: 1px solid #e2e8f0; margin-bottom: 10px; border-right: 5px solid #f97316; }
+        @keyframes pulse-yellow {
+    0% { box-shadow: 0 0 0 0 rgba(250, 204, 21, 0.7); }
+    70% { box-shadow: 0 0 0 10px rgba(250, 204, 21, 0); }
+    100% { box-shadow: 0 0 0 0 rgba(250, 204, 21, 0); }
+}
+
+.today-pulse {
+    animation: pulse-yellow 2s infinite;
+}
     </style>
 </head>
 <body>
@@ -139,19 +148,7 @@
         <div id="daysGrid" class="grid grid-cols-5 md:grid-cols-7 gap-3 px-4"></div>
     </div>
 </div>
-<div id="choiceScreen" class="admin-page hidden bg-slate-100 text-center">
-    <div class="max-w-4xl mx-auto pt-20">
-        <button onclick="choiceScreen.classList.add('hidden'); daysScreen.classList.remove('hidden')" class="mb-10 text-blue-600 font-bold float-right">⬅ رجوع للأيام</button>
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-8 px-4 w-full">
-            <div onclick="openPlanMenu()" class="bg-white p-12 shadow-2xl rounded-[3rem] border-t-8 border-orange-400 cursor-pointer hover:scale-105 transition">
-                <div class="text-6xl mb-4">📋</div><h3 class="text-2xl font-black text-orange-500">الخطة الشهرية</h3>
-            </div>
-            <div onclick="openFollowUp()" class="bg-white p-12 shadow-2xl rounded-[3rem] border-t-8 border-blue-500 cursor-pointer hover:scale-105 transition">
-                <div class="text-6xl mb-4">🚀</div><h3 class="text-2xl font-black text-blue-600">Follow Up</h3>
-            </div>
-        </div>
-    </div>
-</div>
+
 
 <div id="subjectsMenu" class="admin-page hidden text-center">
     <button onclick="subjectsMenu.classList.add('hidden'); choiceScreen.classList.remove('hidden')" class="mb-8 text-blue-600 font-bold float-right">⬅ رجوع</button>
@@ -215,7 +212,23 @@
 <button id="saveDailyBtn" onclick="saveDailyReport()" class="w-full p-6 bg-blue-600 text-white rounded-3xl font-black shadow-2xl">حفظ التقرير ✅</button>
     </div>
 </div>
-
+<div id="choiceScreen" class="admin-page hidden bg-slate-100 text-center">
+    <div class="max-w-4xl mx-auto pt-20">
+        <button onclick="choiceScreen.classList.add('hidden'); monthsScreen.classList.remove('hidden')" class="mb-10 text-blue-600 font-bold float-right">⬅ رجوع للشهور</button>
+        
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8 px-4 w-full">
+            <div onclick="openPlanMenu()" class="bg-white p-12 shadow-2xl rounded-[3rem] border-t-8 border-orange-400 cursor-pointer hover:scale-105 transition">
+                <div class="text-6xl mb-4">📋</div>
+                <h3 class="text-2xl font-black text-orange-500">الخطة الشهرية</h3>
+            </div>
+            
+            <div onclick="openFollowUpMenu()" class="bg-white p-12 shadow-2xl rounded-[3rem] border-t-8 border-blue-500 cursor-pointer hover:scale-105 transition">
+                <div class="text-6xl mb-4">🚀</div>
+                <h3 class="text-2xl font-black text-blue-600">Follow Up</h3>
+            </div>
+        </div>
+    </div>
+</div>
 <script>
 // 1. Firebase Setup
 const firebaseConfig = {
@@ -367,53 +380,76 @@ function openMonths(){
     monthsScreen.classList.remove('hidden');
     document.getElementById('currentStudentTitle').innerText = sName; 
     monthsGrid.innerHTML = "";
+    
+    const now = new Date();
+    const currentMonthName = monthsArr[now.getMonth()]; // اسم الشهر الحالي من المصفوفة
+
     monthsArr.forEach(m => {
         const d = document.createElement('div'); 
-        d.className = "bg-white p-5 rounded-2xl border-2 font-bold cursor-pointer text-center hover:bg-blue-50 transition";
-        d.innerText = m; 
-        d.onclick = () => { mName = m; openDays(); }; 
+        
+        // لو الشهر هو الشهر الحالي، اديله لون مميز (أزرق غامق وبرواز)
+        if (m === currentMonthName) {
+            d.className = "bg-blue-600 text-white p-5 rounded-2xl border-4 border-blue-300 font-black cursor-pointer text-center shadow-lg transform scale-105 relative";
+            d.innerHTML = `${m} <br> <span class="text-[10px] text-blue-100">(الشهر الحالي)</span>`;
+        } else {
+            d.className = "bg-white p-5 rounded-2xl border-2 font-bold cursor-pointer text-center hover:bg-blue-50 transition text-slate-700 border-slate-100";
+            d.innerText = m; 
+        }
+
+        d.onclick = () => { 
+            mName = m; 
+            monthsScreen.classList.add('hidden');
+            choiceScreen.classList.remove('hidden');
+        }; 
         monthsGrid.appendChild(d);
     });
 }
-
 function openDays() {
-    monthsScreen.classList.add('hidden');
     daysScreen.classList.remove('hidden');
-    document.getElementById('currentMonthTitle').innerText = `شهر ${mName} - ${sName}`;
+    document.getElementById('currentMonthTitle').innerText = `أيام شهر ${mName} - ${sName}`;
     daysGrid.innerHTML = "";
+    
     const now = new Date();
-    const todayNum = now.getDate();
+    const currentYear = now.getFullYear();
     const currentMonthIdx = now.getMonth();
+    const currentDay = now.getDate();
+
+    const year = 2026; 
+    const monthIdx = monthsArr.indexOf(mName);
 
     for (let i = 1; i <= 31; i++) {
-        const d = document.createElement('div');
-        const isToday = (i === todayNum && monthsArr[currentMonthIdx] === mName);
-        const isPastMonth = monthsArr.indexOf(mName) < currentMonthIdx;
-        const isPastDayInSameMonth = (monthsArr.indexOf(mName) === currentMonthIdx && i < todayNum);
-        const isPast = isPastMonth || isPastDayInSameMonth;
+        let dateCheck = new Date(year, monthIdx, i);
+        if (dateCheck.getMonth() !== monthIdx) break;
 
-        d.className = "p-4 rounded-xl border-2 font-bold cursor-pointer transition text-center ";
+        let dayOfWeek = dateCheck.getDay(); 
+        if (dayOfWeek === 5 || dayOfWeek === 6) continue;
+
+        const d = document.createElement('div');
+        
+        // شرط اليوم الحالي (في نفس السنة والشهر المختارين)
+        const isToday = (year === currentYear && monthIdx === currentMonthIdx && i === currentDay);
+        
         if (isToday) {
-            d.className += "bg-yellow-400 border-yellow-600 shadow-lg scale-110 text-yellow-900";
-            d.innerHTML = `${i}<br><span class="text-[10px]">اليوم</span>`;
-        } else if (isPast) {
-            d.className += "bg-white border-blue-100 text-blue-800";
-            d.innerText = i;
+            // ستايل "منور" باللون الأصفر الذهبي
+            d.className = "p-4 rounded-xl border-4 border-yellow-400 font-black cursor-pointer transition text-center bg-yellow-100 text-yellow-900 scale-110 shadow-xl z-10 relative today-pulse";
+            d.innerHTML = `${i} <br> <span class="text-[10px]">اليوم</span>`;
         } else {
-            d.className += "bg-slate-50 border-slate-100 text-slate-300 opacity-50";
+            d.className = "p-4 rounded-xl border-2 font-bold cursor-pointer transition text-center bg-white border-blue-100 text-blue-800 hover:bg-blue-600 hover:text-white shadow-sm";
             d.innerText = i;
         }
 
         d.onclick = () => {
             selectedDay = i;
-            window.isDayPast = isPast; 
             daysScreen.classList.add('hidden');
-            choiceScreen.classList.remove('hidden');
+            openFollowUp();
         };
         daysGrid.appendChild(d);
     }
 }
-
+function openFollowUpMenu(){ 
+    choiceScreen.classList.add('hidden'); 
+    openDays(); // بتنادي على دالة رسم الأيام
+}
 // --- 1. إدارة المدرسين ---
 function openTeachersSection(){ 
     dashboard.classList.add('hidden'); 
