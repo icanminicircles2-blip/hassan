@@ -54,6 +54,19 @@
     from { transform: translateX(0); opacity: 1; }
     to { transform: translateX(100%); opacity: 0; }
 }
+.btn-back {
+    background: #ef4444 !important; /* لون أحمر واضح */
+    color: white !important;
+    padding: 12px 25px !important;
+    border-radius: 50px !important; /* شكل بيضاوي */
+    font-weight: bold !important;
+    font-size: 16px !important;
+    box-shadow: 0 4px 10px rgba(239, 68, 68, 0.3);
+    border: none !important;
+    display: block;
+    margin-bottom: 20px;
+    width: fit-content;
+}
     </style>
 </head>
 <body>
@@ -166,8 +179,9 @@
 </div>
 <div id="goalEntryScreen" class="admin-page hidden overflow-y-auto">
     <div class="max-w-2xl mx-auto pb-20 text-center">
-        <button onclick="document.getElementById('goalEntryScreen').classList.add('hidden'); document.getElementById('subjectsMenu').classList.remove('hidden')" class="mb-6 text-blue-600 font-bold float-right">⬅ رجوع</button>
-        
+<button onclick="document.getElementById('goalEntryScreen').classList.add('hidden'); document.getElementById('subjectsMenu').classList.remove('hidden')" class="btn-back">
+    ⬅️ رجوع للخلف
+</button>        
         <div id="entryHeader" class="p-8 rounded-[2rem] text-white text-center mb-8 shadow-xl">
             <h2 id="entryTitle" class="text-2xl font-black"></h2>
         </div>
