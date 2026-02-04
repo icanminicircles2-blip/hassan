@@ -806,11 +806,27 @@ async function exportMonthlyPlanPDF() {
         }
 
         goalsListHTML = cleanGoals.map(g => {
-            // استخراج النص سواء كان g نص مباشر أو جواه property اسمه text
-            let text = (typeof g === 'object') ? (g.text || g.goal || g.title || JSON.stringify(g)) : g;
-            return text ? `<li style="margin-bottom: 8px; font-size: 15px;">${text}</li>` : "";
-        }).join('');
+            let text = "";
+            
+            if (typeof g === 'object' && g !== null) {
+                // لو هو كائن، بنجرب ندور على النص جوه أكتر من مسمى محتمل
+                text = g.text || g.goal || g.title || g.name || "";
+                
+                // لو منفعش، بنشوف لو الكائن فيه قيمة واحدة بس هي النص
+                if (!text) {
+                    let values = Object.values(g).filter(v => typeof v === 'string');
+                    text = values.length > 0 ? values[0] : "";
+                }
+            } else {
+                // لو هو نص مباشر بنظفه من أي مسافات زيادة
+                text = String(g).trim();
+            }
 
+            // لو النص طلع فاضي أو فيه كلمة "object" بنتجاهله
+            if (!text || text.toLowerCase().includes("[object")) return "";
+            
+            return `<li style="margin-bottom: 8px; font-size: 15px; line-height: 1.5;">${text}</li>`;
+        }).join('');
         reportContent += `
             <div style="border: 2px solid ${color}; border-radius: 15px; overflow: hidden; page-break-inside: avoid; margin-bottom:15px;">
                 <div style="background: ${color}; color: white; padding: 10px 20px; font-weight: bold; font-size: 18px;">
