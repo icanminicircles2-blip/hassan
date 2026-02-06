@@ -10,7 +10,6 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.25/jspdf.plugin.autotable.min.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700;900&display=swap" rel="stylesheet">
     
     <style>
@@ -74,6 +73,7 @@
     <img src="https://i.ibb.co/1f5TfvT0/9a9c7b66-e1a7-4616-aec7-4e5dc39e51c1.jpg" class="w-16 h-16 rounded-full border-2 border-white shadow-md">
 </div>
 
+<!-- الشاشة الرئيسية -->
 <div id="mainScreen" class="min-h-screen flex items-center justify-center p-4">
     <div class="w-full max-w-md bg-white p-10 rounded-[3rem] shadow-2xl text-center border">
         <h1 class="text-4xl font-black text-blue-600 mb-8 italic">Many Circles</h1>
@@ -85,6 +85,7 @@
     </div>
 </div>
 
+<!-- شاشة تسجيل الدخول -->
 <div id="loginScreen" class="min-h-screen flex items-center justify-center p-4 hidden">
     <div class="w-full max-w-md bg-white p-8 rounded-[2.5rem] shadow-2xl text-center border">
         <h2 id="loginTitle" class="text-xl font-black mb-6 text-slate-700">تسجيل دخول</h2>
@@ -95,6 +96,7 @@
     </div>
 </div>
 
+<!-- لوحة التحكم -->
 <div id="dashboard" class="admin-page hidden bg-slate-50 text-center">
     <h2 class="text-3xl font-black mb-10 text-slate-800">لوحة التحكم</h2>
     <div class="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-8 px-4">
@@ -108,6 +110,7 @@
     <button onclick="location.reload()" class="mt-12 text-red-500 font-bold underline">🚪 تسجيل خروج</button>
 </div>
 
+<!-- قسم الأطفال -->
 <div id="studentsSection" class="admin-page hidden">
     <div class="max-w-4xl mx-auto">
         <div class="flex justify-between items-center mb-8 border-b pb-4">
@@ -125,6 +128,7 @@
     </div>
 </div>
 
+<!-- شاشة الشهور -->
 <div id="monthsScreen" class="admin-page hidden text-center">
     <button onclick="monthsScreen.classList.add('hidden'); studentsSection.classList.remove('hidden')" class="mb-8 text-blue-600 font-bold float-right">◀️ رجوع</button>
     <div class="max-w-4xl mx-auto pt-10">
@@ -133,6 +137,7 @@
     </div>
 </div>
 
+<!-- شاشة الاختيار -->
 <div id="choiceScreen" class="admin-page hidden bg-slate-100 text-center">
     <div class="max-w-4xl mx-auto pt-20">
         <button onclick="choiceScreen.classList.add('hidden'); monthsScreen.classList.remove('hidden')" 
@@ -140,31 +145,32 @@
         
         <div class="grid grid-cols-1 md:grid-cols-3 gap-8 px-4 w-full">
             
-            <!-- الزر الأول: الخطة الشهرية -->
+            <!-- البرنامج الشهري -->
             <div onclick="openPlanMenu()" 
                  class="bg-white p-12 shadow-2xl rounded-[3rem] border-t-8 border-orange-400 cursor-pointer hover:scale-105 transition">
                 <div class="text-6xl mb-4">📅</div>
                 <h3 class="text-2xl font-black text-orange-500">📅 البرنامج الشهري</h3>
             </div>
             
-            <!-- الزر الثاني: Follow Up -->
+            <!-- Follow Up -->
             <div onclick="openFollowUpMenu()" 
                  class="bg-white p-12 shadow-2xl rounded-[3rem] border-t-8 border-blue-500 cursor-pointer hover:scale-105 transition">
                 <div class="text-6xl mb-4">📝</div>
                 <h3 class="text-2xl font-black text-blue-600">📝 Follow Up</h3>
             </div>
             
-            <!-- الزر الثالث: الجدول اليومي -->
-            <div onclick="openDailySchedule()" 
-                 class="bg-white p-12 shadow-2xl rounded-[3rem] border-t-8 border-emerald-500 cursor-pointer hover:scale-105 transition">
-                <div class="text-6xl mb-4">📋</div>
-                <h3 class="text-2xl font-black text-emerald-600">📋 الجدول اليومي</h3>
+            <!-- الصور اليومية -->
+            <div onclick="openDailyCameraDirect()" 
+                 class="bg-white p-12 shadow-2xl rounded-[3rem] border-t-8 border-purple-500 cursor-pointer hover:scale-105 transition">
+                <div class="text-6xl mb-4">📸</div>
+                <h3 class="text-2xl font-black text-purple-600">📸 الصور اليومية</h3>
             </div>
             
         </div>
     </div>
 </div>
 
+<!-- المواد التعليمية -->
 <div id="subjectsMenu" class="admin-page hidden text-center">
     <button onclick="subjectsMenu.classList.add('hidden'); choiceScreen.classList.remove('hidden')" class="mb-8 text-blue-600 font-bold float-right">◀️ رجوع</button>
     <h2 class="text-3xl font-black mb-10 text-orange-500">📚 المواد التعليمية والأنشطة</h2>
@@ -189,6 +195,7 @@
     </div>
 </div>
 
+<!-- إدخال الأهداف -->
 <div id="goalEntryScreen" class="admin-page hidden overflow-y-auto">
     <div class="max-w-2xl mx-auto pb-20 text-center">
         <button onclick="document.getElementById('goalEntryScreen').classList.add('hidden'); document.getElementById('subjectsMenu').classList.remove('hidden')" class="btn-back">
@@ -247,6 +254,7 @@
     </div>
 </div>
 
+<!-- الأيام -->
 <div id="daysScreen" class="admin-page hidden text-center">
     <button onclick="daysScreen.classList.add('hidden'); choiceScreen.classList.remove('hidden')" class="mb-8 text-blue-600 font-bold float-right">◀️ رجوع</button>
     <div class="max-w-4xl mx-auto pt-10">
@@ -255,6 +263,7 @@
     </div>
 </div>
 
+<!-- Follow Up -->
 <div id="followUpScreen" class="admin-page hidden overflow-y-auto bg-slate-50">
     <div class="max-w-2xl mx-auto pb-20 p-4">
         <button onclick="document.getElementById('followUpScreen').classList.add('hidden'); document.getElementById('daysScreen').classList.remove('hidden')" class="text-blue-600 font-bold mb-6 block text-right">📅 رجوع للأيام</button>
@@ -314,6 +323,7 @@
     </div>
 </div>
 
+<!-- السلة -->
 <div id="trashScreen" class="admin-page hidden bg-slate-50 text-center">
     <div class="max-w-2xl mx-auto p-4">
         <button onclick="document.getElementById('trashScreen').classList.add('hidden'); document.getElementById('studentsSection').classList.remove('hidden')" class="font-bold text-blue-600 mb-8 block text-right">🏠 عودة</button>
@@ -322,6 +332,7 @@
     </div>
 </div>
 
+<!-- المعلمات -->
 <div id="teachersSection" class="admin-page hidden">
     <div class="max-w-4xl mx-auto p-4">
         <div class="flex justify-between items-center mb-8 border-b pb-4">
@@ -340,8 +351,62 @@
     </div>
 </div>
 
+<!-- الصور اليومية البسيطة -->
+<div id="dailyCameraSimple" class="admin-page hidden">
+    <div class="max-w-2xl mx-auto p-4">
+        <button onclick="closeSimpleCamera()" class="mb-6 text-purple-600 font-bold bg-purple-50 px-4 py-2 rounded-xl">◀️ العودة</button>
+        
+        <div class="bg-white rounded-[2.5rem] shadow-xl p-6 border-t-8 border-purple-600 text-center">
+            <h2 class="text-2xl font-black mb-2 text-purple-600">📸 الصور اليومية</h2>
+            <p id="simpleDate" class="text-slate-400 mb-8"></p>
+            
+            <!-- إذا لا توجد صور -->
+            <div id="noPhotosSimple" class="p-10 bg-slate-50 rounded-[2rem] border-2 border-dashed border-slate-200 mb-8">
+                <div class="text-5xl mb-4">📸</div>
+                <p class="text-slate-600 font-bold text-lg mb-2">لا توجد صور حالياً</p>
+                <p class="text-slate-400">إلتقط أول صورة باستخدام الكاميرا</p>
+            </div>
+            
+            <!-- معرض صور بسيط -->
+            <div id="simpleGallery" class="grid grid-cols-2 md:grid-cols-3 gap-4 mb-8 hidden"></div>
+            
+            <!-- الأزرار -->
+            <div class="flex flex-col gap-4">
+                <!-- زر الكاميرا -->
+                <button onclick="openCamera()" class="p-6 bg-purple-600 text-white rounded-2xl font-bold shadow-lg hover:bg-purple-700 transition flex items-center justify-center gap-3">
+                    <span class="text-2xl">📷</span>
+                    <span>فتح الكاميرا</span>
+                </button>
+                
+                <!-- زر فتح الملفات -->
+                <button onclick="openGallery()" class="p-6 bg-blue-600 text-white rounded-2xl font-bold shadow-lg hover:bg-blue-700 transition flex items-center justify-center gap-3">
+                    <span class="text-2xl">📁</span>
+                    <span>فتح معرض الصور</span>
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- نافذة الكاميرا -->
+<div id="cameraModal" class="fixed inset-0 bg-black bg-opacity-90 z-[1000] hidden">
+    <div class="absolute top-4 left-4">
+        <button onclick="closeCameraModal()" class="text-white text-2xl">❌</button>
+    </div>
+    
+    <div class="h-full flex flex-col items-center justify-center p-4">
+        <video id="simpleCamera" class="w-full max-w-2xl rounded-2xl bg-black" autoplay playsinline></video>
+        
+        <div class="mt-8">
+            <button onclick="takePhoto()" class="w-16 h-16 bg-white rounded-full flex items-center justify-center">
+                <div class="w-12 h-12 bg-red-500 rounded-full"></div>
+            </button>
+        </div>
+    </div>
+</div>
+
 <script>
-// 1. Firebase Setup
+// Firebase Setup
 const firebaseConfig = {
     apiKey: "AIzaSyC4K55wOZy3w44cCNX1i_cmk4-g4P-L40",
     authDomain: "many-circles.firebaseapp.com",
@@ -354,7 +419,7 @@ const firebaseConfig = {
 firebase.initializeApp(firebaseConfig);
 const db = firebase.database();
 
-// 2. التعريفات الأساسية
+// التعريفات الأساسية
 const MASTER_CODE = "2012";
 const ADMINS = ["حسن","علياء","مصطفى","حنان"];
 const monthsArr = ["يناير","فبراير","مارس","أبريل","مايو","يونيو","يوليو","أغسطس","سبتمبر","أكتوبر","نوفمبر","ديسمبر"];
@@ -362,26 +427,9 @@ const monthsArr = ["يناير","فبراير","مارس","أبريل","مايو
 let sId="", sName="", mName="", currentSubject="", selectedMood="", selectedDay=0;
 let currentLoginType = ""; 
 let editingGoalId = null;
+let cameraStream = null;
 
-// 3. ربط عناصر الواجهة
-const mainScreen = document.getElementById('mainScreen');
-const loginScreen = document.getElementById('loginScreen');
-const dashboard = document.getElementById('dashboard');
-const loginTitle = document.getElementById('loginTitle');
-const loginBtn = document.getElementById('loginBtn');
-const loginName = document.getElementById('loginName');
-const loginPass = document.getElementById('loginPass');
-const studentsSection = document.getElementById('studentsSection');
-const studentsList = document.getElementById('studentsList');
-const monthsScreen = document.getElementById('monthsScreen');
-const monthsGrid = document.getElementById('monthsGrid');
-const daysScreen = document.getElementById('daysScreen');
-const daysGrid = document.getElementById('daysGrid');
-const choiceScreen = document.getElementById('choiceScreen');
-const followUpScreen = document.getElementById('followUpScreen');
-
-// --- الدوال (Functions) ---
-
+// دالة showLogin
 function showLogin(type) {
     currentLoginType = type; 
     mainScreen.classList.add('hidden');
@@ -398,6 +446,7 @@ function showLogin(type) {
     }
 }
 
+// دالة دخول الإدارة
 function adminLogin() {
     const user = loginName.value.trim();
     const pass = loginPass.value.trim();
@@ -407,6 +456,7 @@ function adminLogin() {
     } else { alert("بيانات الإدارة غير صحيحة"); }
 }
 
+// دالة دخول المعلمات
 function teacherLogin() {
     const user = loginName.value.trim();
     const pass = loginPass.value.trim();
@@ -425,6 +475,7 @@ function teacherLogin() {
     });
 }
 
+// دالة فتح قسم الأطفال
 function openStudentsSection() {
     dashboard.classList.add('hidden');
     studentsSection.classList.remove('hidden');
@@ -442,6 +493,7 @@ function openStudentsSection() {
     }
 }
 
+// دالة تحميل الأطفال
 function loadStudents() {
     db.ref('Students').on('value', snap => {
         studentsList.innerHTML = "";
@@ -461,6 +513,7 @@ function loadStudents() {
     });
 }
 
+// دالة فتح الشهور
 function openMonths(){
     studentsSection.classList.add('hidden'); 
     monthsScreen.classList.remove('hidden');
@@ -490,22 +543,25 @@ function openMonths(){
     });
 }
 
+// دالة فتح الأيام
 function openDays() {
     daysScreen.classList.remove('hidden');
     document.getElementById('currentMonthTitle').innerText = `أيام شهر ${mName} - ${sName}`;
     
+    // إنشاء زر الرجوع
     const backButton = document.createElement('button');
     backButton.onclick = () => {
         daysScreen.classList.add('hidden');
         choiceScreen.classList.remove('hidden');
     };
-    
     backButton.className = "mb-8 text-blue-600 font-bold float-right";
     backButton.innerHTML = "◀️ رجوع";
     
+    // إزالة أي زر رجوع قديم
     const oldButton = daysScreen.querySelector('button');
     if (oldButton) oldButton.remove();
     
+    // إضافة زر الرجوع الجديد
     daysScreen.insertBefore(backButton, daysScreen.firstChild);
     
     daysGrid.innerHTML = "";
@@ -518,6 +574,7 @@ function openDays() {
     const year = 2026; 
     const monthIdx = monthsArr.indexOf(mName);
 
+    // جلب التقارير اليومية
     db.ref(`DailyReports/${sId}`).once('value').then(reportsSnap => {
         const reportsData = reportsSnap.val() || {};
 
@@ -559,17 +616,213 @@ function openDays() {
     });
 }
 
+// دالة فتح Follow Up
 function openFollowUpMenu(){ 
     choiceScreen.classList.add('hidden'); 
     openDays();
 }
 
+// دالة فتح البرنامج الشهري
+function openPlanMenu(){ 
+    choiceScreen.classList.add('hidden'); 
+    document.getElementById('subjectsMenu').classList.remove('hidden'); 
+}
+
+// دالة فتح الصور اليومية
+function openDailyCameraDirect() {
+    choiceScreen.classList.add('hidden');
+    document.getElementById('dailyCameraSimple').classList.remove('hidden');
+    
+    // تحديث التاريخ
+    const today = new Date();
+    document.getElementById('simpleDate').textContent = 
+        `${sName} - ${today.toLocaleDateString('ar-EG')}`;
+    
+    // تحميل صور اليوم
+    loadTodayPhotos();
+}
+
+// دالة تحميل صور اليوم
+async function loadTodayPhotos() {
+    const today = new Date();
+    const year = today.getFullYear();
+    const month = (today.getMonth() + 1).toString().padStart(2, '0');
+    const day = today.getDate().toString().padStart(2, '0');
+    const todayKey = `${year}-${month}-${day}`;
+    
+    try {
+        const snapshot = await db.ref(`DailyPhotos/${sId}/${todayKey}`).once('value');
+        const photos = snapshot.val();
+        
+        const noPhotosDiv = document.getElementById('noPhotosSimple');
+        const galleryDiv = document.getElementById('simpleGallery');
+        
+        if (!photos) {
+            noPhotosDiv.classList.remove('hidden');
+            galleryDiv.classList.add('hidden');
+            return;
+        }
+        
+        noPhotosDiv.classList.add('hidden');
+        galleryDiv.classList.remove('hidden');
+        galleryDiv.innerHTML = '';
+        
+        // عرض الصور
+        Object.entries(photos).forEach(([key, photo]) => {
+            const imgDiv = document.createElement('div');
+            imgDiv.className = 'relative group';
+            imgDiv.innerHTML = `
+                <div class="bg-slate-100 rounded-xl overflow-hidden">
+                    <img src="${photo.photoUrl}" 
+                         class="w-full h-48 object-cover"
+                         alt="صورة اليومية">
+                    <div class="p-2 text-center text-xs text-slate-500">
+                        ${photo.time}
+                    </div>
+                </div>
+                ${currentLoginType === 'admin' ? `
+                    <button onclick="deleteSimplePhoto('${todayKey}', '${key}')" 
+                            class="absolute top-2 right-2 bg-red-600 text-white p-1 rounded-full opacity-0 group-hover:opacity-100 transition text-xs">
+                        🗑️
+                    </button>
+                ` : ''}
+            `;
+            galleryDiv.appendChild(imgDiv);
+        });
+        
+    } catch (error) {
+        console.error('خطأ في تحميل الصور:', error);
+    }
+}
+
+// دالة فتح الكاميرا
+async function openCamera() {
+    document.getElementById('cameraModal').classList.remove('hidden');
+    
+    try {
+        cameraStream = await navigator.mediaDevices.getUserMedia({
+            video: {
+                facingMode: 'environment',
+                width: { ideal: 1280 },
+                height: { ideal: 720 }
+            },
+            audio: false
+        });
+        
+        const video = document.getElementById('simpleCamera');
+        video.srcObject = cameraStream;
+        
+    } catch (error) {
+        alert("تعذر الوصول إلى الكاميرا. تأكد من السماح باستخدام الكاميرا.");
+        closeCameraModal();
+    }
+}
+
+// دالة التقاط صورة
+function takePhoto() {
+    const video = document.getElementById('simpleCamera');
+    const canvas = document.createElement('canvas');
+    canvas.width = video.videoWidth;
+    canvas.height = video.videoHeight;
+    
+    const ctx = canvas.getContext('2d');
+    ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+    
+    const photoUrl = canvas.toDataURL('image/jpeg', 0.8);
+    saveSimplePhoto(photoUrl);
+}
+
+// دالة حفظ الصورة
+async function saveSimplePhoto(photoUrl) {
+    const today = new Date();
+    const year = today.getFullYear();
+    const month = (today.getMonth() + 1).toString().padStart(2, '0');
+    const day = today.getDate().toString().padStart(2, '0');
+    const todayKey = `${year}-${month}-${day}`;
+    const timestamp = new Date().getTime();
+    
+    try {
+        await db.ref(`DailyPhotos/${sId}/${todayKey}/${timestamp}`).set({
+            photoUrl: photoUrl,
+            timestamp: timestamp,
+            takenBy: currentLoginType,
+            date: today.toLocaleDateString('ar-EG'),
+            time: today.toLocaleTimeString('ar-EG', { hour: '2-digit', minute: '2-digit' })
+        });
+        
+        showToast("تم حفظ الصورة بنجاح! 📸");
+        closeCameraModal();
+        loadTodayPhotos();
+        
+    } catch (error) {
+        console.error('خطأ في حفظ الصورة:', error);
+        showToast("حدث خطأ أثناء حفظ الصورة", "error");
+    }
+}
+
+// دالة حذف صورة
+function deleteSimplePhoto(date, photoId) {
+    if (currentLoginType !== 'admin') {
+        showToast("هذا الإجراء مسموح للإدارة فقط", "error");
+        return;
+    }
+    
+    if (confirm("هل أنت متأكد من حذف هذه الصورة؟")) {
+        db.ref(`DailyPhotos/${sId}/${date}/${photoId}`).remove()
+        .then(() => {
+            showToast("تم حذف الصورة بنجاح 🗑️");
+            loadTodayPhotos();
+        })
+        .catch(error => {
+            showToast("حدث خطأ أثناء الحذف", "error");
+        });
+    }
+}
+
+// دالة فتح معرض الصور
+function openGallery() {
+    const input = document.createElement('input');
+    input.type = 'file';
+    input.accept = 'image/*';
+    
+    input.onchange = (event) => {
+        const file = event.target.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                saveSimplePhoto(e.target.result);
+            };
+            reader.readAsDataURL(file);
+        }
+    };
+    
+    input.click();
+}
+
+// دالة إغلاق نافذة الكاميرا
+function closeCameraModal() {
+    document.getElementById('cameraModal').classList.add('hidden');
+    
+    if (cameraStream) {
+        cameraStream.getTracks().forEach(track => track.stop());
+        cameraStream = null;
+    }
+}
+
+// دالة إغلاق شاشة الصور
+function closeSimpleCamera() {
+    document.getElementById('dailyCameraSimple').classList.add('hidden');
+    choiceScreen.classList.remove('hidden');
+}
+
+// دالة فتح قسم المعلمات
 function openTeachersSection(){ 
     dashboard.classList.add('hidden'); 
     document.getElementById('teachersSection').classList.remove('hidden'); 
     loadTeachers(); 
 }
 
+// دالة إضافة معلمة
 function addTeacher() {
     const n = document.getElementById('newTeacherName').value.trim(); 
     const s = document.getElementById('teacherSubject').value.trim();
@@ -586,6 +839,7 @@ function addTeacher() {
     } else { alert("برجاء ملء جميع البيانات"); }
 }
 
+// دالة تحميل المعلمات
 function loadTeachers(){
     db.ref('Teachers').on('value', snap => {
         const list = document.getElementById('teachersList');
@@ -605,6 +859,7 @@ function loadTeachers(){
     });
 }
 
+// دالة نقل طفل للسلة
 function trashStudent(id, name) {
     if (confirm(`نقل ${name} للسلة؟`)) {
         db.ref('Students/' + id).once('value', s => {
@@ -615,6 +870,7 @@ function trashStudent(id, name) {
     }
 }
 
+// دالة فتح السلة
 function openTrash() {
     studentsSection.classList.add('hidden');
     document.getElementById('trashScreen').classList.remove('hidden');
@@ -632,6 +888,7 @@ function openTrash() {
     });
 }
 
+// دالة استعادة طفل
 function restoreStudent(id) {
     db.ref('TrashBin/Students/' + id).once('value', s => {
         db.ref('Students/' + id).set(s.val()).then(() => {
@@ -641,6 +898,7 @@ function restoreStudent(id) {
     });
 }
 
+// دالة إضافة طفل
 function addStudent() {
     const n = document.getElementById('newStudentName').value.trim();
     if (n) {
@@ -650,20 +908,7 @@ function addStudent() {
     }
 }
 
-function toggleGoalForm(show) {
-    const form = document.getElementById('goalInputForm');
-    const addBtn = document.getElementById('showAddFormBtn');
-    
-    if (show) {
-        form.classList.remove('hidden');
-        addBtn.classList.add('hidden');
-    } else {
-        form.classList.add('hidden');
-        addBtn.classList.remove('hidden');
-        document.getElementById('goalName').value = "";
-    }
-}
-
+// دالة فتح إدخال هدف
 function openGoalEntry(subject, color, icon) {
     currentSubject = subject;
     
@@ -688,6 +933,7 @@ function openGoalEntry(subject, color, icon) {
     loadGoals();
 }
 
+// دالة تحميل الأهداف
 function loadGoals() {
     const container = document.getElementById('goalsListContainer');
     const msg = document.getElementById('noGoalsMessage');
@@ -724,6 +970,7 @@ function loadGoals() {
     });
 }
 
+// دالة البحث عن طفل
 function searchStudent() {
     const query = document.getElementById('studentSearchInput').value.toLowerCase();
     const cards = studentsList.querySelectorAll('div');
@@ -733,6 +980,7 @@ function searchStudent() {
     });
 }
 
+// دالة حفظ الهدف
 function saveGoal() {
     const name = document.getElementById('goalName').value;
     const score = document.getElementById('goalScore').value;
@@ -768,6 +1016,7 @@ function saveGoal() {
     .catch(e => showToast("خطأ في الاتصال", "error"));
 }
 
+// دالة إعادة تعيين نموذج الهدف
 function resetGoalForm() {
     editingGoalId = null;
     toggleGoalForm(false);
@@ -780,6 +1029,7 @@ function resetGoalForm() {
     }
 }
 
+// دالة حذف الهدف
 function deleteGoal(goalId) {
     if (confirm("هل أنت متأكد من حذف هذا الهدف؟")) {
         db.ref(`MonthlyPlans/${sId}/${mName}/${currentSubject}/${goalId}`).remove()
@@ -792,6 +1042,7 @@ function deleteGoal(goalId) {
     }
 }
 
+// دالة تعديل الهدف
 function editGoal(id, name, score, help) {
     editingGoalId = id;
     
@@ -812,6 +1063,7 @@ function editGoal(id, name, score, help) {
     }
 }
 
+// دالة فتح Follow Up
 function openFollowUp() {
     choiceScreen.classList.add('hidden');
     followUpScreen.classList.remove('hidden');
@@ -853,13 +1105,14 @@ function openFollowUp() {
     });
 }
 
+// دالة تعيين المزاج
 function setMood(mood, el) {
-    if (currentLoginType === 'parent') return; 
     selectedMood = mood;
     document.querySelectorAll('.mood-btn').forEach(btn => btn.classList.remove('active'));
     el.classList.add('active'); 
 }
 
+// دالة حفظ التقرير اليومي
 function saveDailyReport() {
     const year = 2026;
     const monthIdx = (monthsArr.indexOf(mName) + 1).toString().padStart(2, '0');
@@ -887,6 +1140,7 @@ function saveDailyReport() {
     });
 }
 
+// دالة تصدير PDF للخطة الشهرية
 async function exportMonthlyPlanPDF() {
     showToast("جاري تحضير تقرير Many Circles... ⏳");
 
@@ -1001,6 +1255,7 @@ async function exportMonthlyPlanPDF() {
     }
 }
 
+// دالة تصدير PDF للتقرير اليومي
 async function exportDailyReportPDF() {
     showToast("جاري تحضير التقرير اليومي... ⏳");
 
@@ -1173,11 +1428,7 @@ async function exportDailyReportPDF() {
     }
 }
 
-function openDailySchedule() {
-    choiceScreen.classList.add('hidden');
-    openDays();
-}
-
+// دالة showToast
 function showToast(message, type = 'success') {
     const container = document.getElementById('toastContainer');
     const toast = document.createElement('div');
@@ -1195,97 +1446,19 @@ function showToast(message, type = 'success') {
         setTimeout(() => toast.remove(), 500);
     }, 3000);
 }
-function openPlanMenu(){ 
-    // إخفاء شاشة الاختيار
-    choiceScreen.classList.add('hidden'); 
+
+// دالة toggleGoalForm
+function toggleGoalForm(show) {
+    const form = document.getElementById('goalInputForm');
+    const addBtn = document.getElementById('showAddFormBtn');
     
-    // إظهار قائمة المواد التعليمية
-    document.getElementById('subjectsMenu').classList.remove('hidden'); 
-    
-    // في حالة أنك تريد تحميل خطط سابقة للمادة المحددة:
-    // loadMonthlyPlan();
-}
-
-// دالة لتحميل الخطة الشهرية (إذا كنت تريد عرض بيانات سابقة)
-function loadMonthlyPlan() {
-    // هنا يمكنك جلب البيانات من Firebase للمادة الحالية
-    // مثلاً: db.ref(`MonthlyPlans/${sId}/${mName}`).once('value'...
-}
-
-// يمكنك إضافة دالة لفتح كل مادة
-function openSubject(subject) {
-    currentSubject = subject;
-    // يمكنك هنا تحميل الأهداف السابقة لهذه المادة
-    loadGoalsForSubject(subject);
-}
-
-// دالة لتحميل أهداف مادة معينة
-function loadGoalsForSubject(subject) {
-    db.ref(`MonthlyPlans/${sId}/${mName}/${subject}`).once('value')
-    .then(snapshot => {
-        const goals = snapshot.val();
-        // عرض الأهداف في الواجهة
-        displayGoals(goals);
-    });
-}
-
-// دالة لعرض الأهداف
-function displayGoals(goals) {
-    const container = document.getElementById('goalsContainer');
-    container.innerHTML = '';
-    
-    if (!goals) {
-        container.innerHTML = '<div class="text-center text-gray-500">لا توجد أهداف مسجلة</div>';
-        return;
-    }
-    
-    Object.entries(goals).forEach(([key, goal]) => {
-        const goalElement = document.createElement('div');
-        goalElement.className = 'goal-item p-3 border rounded-lg mb-2';
-        goalElement.innerHTML = `
-            <div class="flex justify-between">
-                <span>${goal.name}</span>
-                <div class="flex gap-2">
-                    <button onclick="editGoal('${key}')" class="text-blue-500">✏️</button>
-                    <button onclick="deleteGoal('${key}')" class="text-red-500">🗑️</button>
-                </div>
-            </div>
-            <div class="text-sm text-gray-600">
-                ${goal.score ? `النسبة: ${goal.score}` : ''}
-                ${goal.help ? ` | المساعدة: ${goal.help}` : ''}
-            </div>
-        `;
-        container.appendChild(goalElement);
-    });
-}
-
-// دالة لإضافة هدف جديد
-function addNewGoal(subject, goalData) {
-    const goalRef = db.ref(`MonthlyPlans/${sId}/${mName}/${subject}`).push();
-    goalRef.set(goalData)
-    .then(() => {
-        showToast("تم إضافة الهدف بنجاح ✅");
-        loadGoalsForSubject(subject);
-    })
-    .catch(error => {
-        showToast("حدث خطأ أثناء الإضافة ❌", "error");
-    });
-}
-
-// دالة لتعديل هدف
-function editGoal(goalId) {
-    // يمكنك هنا فتح نموذج التعديل
-    // وتعبئته بالبيانات الحالية
-}
-
-// دالة لحذف هدف
-function deleteGoal(goalId) {
-    if (confirm("هل أنت متأكد من حذف هذا الهدف؟")) {
-        db.ref(`MonthlyPlans/${sId}/${mName}/${currentSubject}/${goalId}`).remove()
-        .then(() => {
-            showToast("تم الحذف بنجاح 🗑️");
-            loadGoalsForSubject(currentSubject);
-        });
+    if (show) {
+        form.classList.remove('hidden');
+        addBtn.classList.add('hidden');
+    } else {
+        form.classList.add('hidden');
+        addBtn.classList.remove('hidden');
+        document.getElementById('goalName').value = "";
     }
 }
 </script>
