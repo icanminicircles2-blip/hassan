@@ -111,6 +111,32 @@
 .month-report-btn:active {
     transform: translateY(0);
 }
+/* أضف في الـ style */
+.backup-btn {
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.backup-btn:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+}
+
+.file-drop-zone {
+    border: 3px dashed #a78bfa;
+    background: linear-gradient(135deg, #f5f3ff 0%, #ede9fe 100%);
+    transition: all 0.3s;
+}
+
+.file-drop-zone:hover {
+    border-color: #8b5cf6;
+    background: linear-gradient(135deg, #ede9fe 0%, #ddd6fe 100%);
+}
+
+.file-drop-zone.dragover {
+    border-color: #7c3aed;
+    background: linear-gradient(135deg, #ddd6fe 0%, #c4b5fd 100%);
+    transform: scale(1.02);
+}
     </style>
 </head>
 <body>
@@ -153,6 +179,35 @@
             <div class="text-6xl mb-4">👩‍🏫</div><h3 class="text-2xl font-black text-emerald-600">👩‍🏫 مدرس جديد</h3>
         </div>
     </div>
+    <div class="max-w-4xl mx-auto bg-white rounded-[2.5rem] shadow-xl p-8 mb-8 border-t-8 border-indigo-500">
+        <h3 class="text-2xl font-black mb-6 text-indigo-600">📦 النسخ الاحتياطي والاستعادة</h3>
+        
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <!-- زر 1: نسخ احتياطي PDF -->
+            <button onclick="createPDFBackup()" class="p-8 bg-gradient-to-br from-blue-500 to-indigo-600 text-white rounded-2xl font-bold shadow-lg hover:scale-105 transition flex flex-col items-center justify-center gap-3">
+                <span class="text-4xl">📄</span>
+                <span>نسخ احتياطي PDF</span>
+                <span class="text-sm opacity-80">حفظ كملف PDF</span>
+            </button>
+            
+            <!-- زر 2: نسخ احتياطي JSON -->
+            <button onclick="createJSONBackup()" class="p-8 bg-gradient-to-br from-emerald-500 to-green-600 text-white rounded-2xl font-bold shadow-lg hover:scale-105 transition flex flex-col items-center justify-center gap-3">
+                <span class="text-4xl">📊</span>
+                <span>نسخ احتياطي JSON</span>
+                <span class="text-sm opacity-80">حفظ كملف JSON</span>
+            </button>
+            
+            <!-- زر 3: استعادة -->
+            <button onclick="openRestoreMenu()" class="p-8 bg-gradient-to-br from-purple-500 to-pink-600 text-white rounded-2xl font-bold shadow-lg hover:scale-105 transition flex flex-col items-center justify-center gap-3">
+                <span class="text-4xl">🔄</span>
+                <span>استعادة البيانات</span>
+                <span class="text-sm opacity-80">تحميل من ملف</span>
+            </button>
+        </div>
+    </div>
+    
+    <button onclick="location.reload()" class="mt-12 text-red-500 font-bold underline">🚪 تسجيل خروج</button>
+</div>
     <button onclick="location.reload()" class="mt-12 text-red-500 font-bold underline">🚪 تسجيل خروج</button>
 </div>
 
@@ -450,7 +505,53 @@
         </div>
     </div>
 </div>
-
+<!-- بعد نافذة الكاميرا، قبل </body> -->
+<div id="restoreMenu" class="admin-page hidden">
+    <div class="max-w-2xl mx-auto p-4">
+        <button onclick="closeRestoreMenu()" class="mb-6 text-purple-600 font-bold bg-purple-50 px-4 py-2 rounded-xl">◀️ العودة</button>
+        
+        <div class="bg-white rounded-[2.5rem] shadow-xl p-6 border-t-8 border-purple-600 text-center">
+            <h2 class="text-2xl font-black mb-2 text-purple-600">🔄 استعادة البيانات</h2>
+            <p class="text-slate-400 mb-8">تحميل نسخة احتياطية من النظام</p>
+            
+            <!-- تعليمات -->
+            <div class="bg-blue-50 text-blue-800 p-4 rounded-xl mb-6 text-right">
+                <p class="font-bold mb-2">📌 ملاحظات مهمة:</p>
+                <ul class="text-sm space-y-1 list-disc pr-5">
+                    <li>يمكنك استعادة ملف JSON فقط</li>
+                    <li>النسخ الاحتياطي يحفظ جميع البيانات (أطفال، معلمات، تقارير، خطط)</li>
+                    <li>الاستعادة تضيف البيانات دون حذف القديم</li>
+                    <li>احفظ نسخة احتياطية قبل الاستعادة</li>
+                </ul>
+            </div>
+            
+            <!-- زر اختيار الملف -->
+            <div class="mb-8">
+                <label class="block mb-4 text-slate-600 font-bold">اختر ملف النسخ الاحتياطي (JSON):</label>
+                <div onclick="document.getElementById('backupFile').click()" 
+                     class="p-10 border-4 border-dashed border-purple-300 rounded-2xl cursor-pointer hover:bg-purple-50 transition">
+                    <div class="text-5xl mb-4">📁</div>
+                    <p class="text-purple-600 font-bold">انقر لاختيار ملف</p>
+                    <p class="text-slate-400 text-sm mt-2">يجب أن يكون الملف بصيغة JSON</p>
+                </div>
+                <input type="file" id="backupFile" accept=".json" class="hidden" onchange="handleFileSelect(this)">
+            </div>
+            
+            <!-- معاينة البيانات -->
+            <div id="filePreview" class="hidden bg-slate-50 p-4 rounded-xl mb-6 text-right">
+                <h4 class="font-bold text-slate-700 mb-3">معاينة البيانات:</h4>
+                <div id="previewContent" class="text-sm text-slate-600 max-h-60 overflow-y-auto"></div>
+            </div>
+            
+            <!-- زر الاستعادة -->
+            <button id="restoreBtn" onclick="restoreFromFile()" 
+                    class="p-6 bg-purple-600 text-white rounded-2xl font-bold shadow-lg hover:bg-purple-700 transition w-full disabled:opacity-50 disabled:cursor-not-allowed"
+                    disabled>
+                🔄 بدء الاستعادة
+            </button>
+        </div>
+    </div>
+</div>
 <script>
 // Firebase Setup
 const firebaseConfig = {
@@ -1897,6 +1998,501 @@ function getPerformanceSummary(happyDays, totalDays) {
         return `يحتاج إلى تحسين! ${percentage}% من الأيام كانت سعيدة 🤔`;
     }
 }
+// ==================== النسخ الاحتياطي PDF ====================
+async function createPDFBackup() {
+    showToast("جاري إنشاء نسخة احتياطية PDF... ⏳");
+    
+    try {
+        const { jsPDF } = window.jspdf;
+        const pdf = new jsPDF('p', 'mm', 'a4');
+        
+        // صفحة الغلاف
+        pdf.setFontSize(32);
+        pdf.setTextColor(30, 64, 175);
+        pdf.text("Many Circles Backup", 105, 40, { align: 'center' });
+        
+        pdf.setFontSize(20);
+        pdf.setTextColor(100, 116, 139);
+        pdf.text("نسخة احتياطية شاملة", 105, 55, { align: 'center' });
+        
+        pdf.setFontSize(16);
+        pdf.text(`التاريخ: ${new Date().toLocaleDateString('ar-EG')}`, 105, 70, { align: 'center' });
+        pdf.text(`الوقت: ${new Date().toLocaleTimeString('ar-EG')}`, 105, 80, { align: 'center' });
+        
+        // جمع البيانات
+        const backupData = await getAllBackupData();
+        
+        let pageNumber = 1;
+        
+        // 1. الأطفال
+        pdf.addPage();
+        pdf.setFontSize(18);
+        pdf.setTextColor(30, 64, 175);
+        pdf.text("قائمة الأطفال 👶", 20, 20);
+        
+        pdf.setFontSize(12);
+        pdf.setTextColor(0, 0, 0);
+        
+        let yPos = 30;
+        backupData.students.forEach((student, index) => {
+            pdf.text(`${index + 1}. ${student.name}`, 20, yPos);
+            yPos += 8;
+            if (yPos > 280) {
+                pdf.addPage();
+                yPos = 20;
+            }
+        });
+        
+        pageNumber++;
+        
+        // 2. المعلمات
+        pdf.addPage();
+        pdf.setFontSize(18);
+        pdf.setTextColor(30, 64, 175);
+        pdf.text("قائمة المعلمات 👩‍🏫", 20, 20);
+        
+        pdf.setFontSize(12);
+        pdf.setTextColor(0, 0, 0);
+        
+        yPos = 30;
+        backupData.teachers.forEach((teacher, index) => {
+            pdf.text(`${index + 1}. ${teacher.name} - ${teacher.subject}`, 20, yPos);
+            yPos += 8;
+            if (yPos > 280) {
+                pdf.addPage();
+                yPos = 20;
+            }
+        });
+        
+        pageNumber++;
+        
+        // 3. الإحصائيات
+        pdf.addPage();
+        pdf.setFontSize(18);
+        pdf.setTextColor(30, 64, 175);
+        pdf.text("الإحصائيات 📊", 20, 20);
+        
+        pdf.setFontSize(12);
+        pdf.setTextColor(0, 0, 0);
+        
+        pdf.text(`عدد الأطفال: ${backupData.stats.studentsCount}`, 20, 40);
+        pdf.text(`عدد المعلمات: ${backupData.stats.teachersCount}`, 20, 50);
+        pdf.text(`عدد التقارير اليومية: ${backupData.stats.dailyReportsCount}`, 20, 60);
+        pdf.text(`عدد الخطط الشهرية: ${backupData.stats.monthlyPlansCount}`, 20, 70);
+        pdf.text(`عدد الصور: ${backupData.stats.photosCount}`, 20, 80);
+        
+        // صفحة النهاية
+        pdf.addPage();
+        pdf.setFontSize(20);
+        pdf.setTextColor(30, 64, 175);
+        pdf.text("✅ تم إنشاء النسخة الاحتياطية بنجاح", 105, 100, { align: 'center' });
+        
+        pdf.setFontSize(14);
+        pdf.setTextColor(100, 116, 139);
+        pdf.text("Many Circles System", 105, 120, { align: 'center' });
+        pdf.text("نظام متكامل لإدارة رياض الأطفال", 105, 130, { align: 'center' });
+        
+        pdf.text(`إجمالي الصفحات: ${pageNumber + 1}`, 105, 150, { align: 'center' });
+        pdf.text(`تاريخ الإنشاء: ${new Date().toLocaleDateString('ar-EG')}`, 105, 160, { align: 'center' });
+        
+        // حفظ الملف
+        pdf.save(`ManyCircles_Backup_${new Date().getTime()}.pdf`);
+        showToast("تم إنشاء نسخة PDF احتياطية بنجاح! 📄");
+        
+    } catch (error) {
+        console.error("خطأ في إنشاء نسخة PDF:", error);
+        showToast("حدث خطأ أثناء إنشاء النسخة الاحتياطية", "error");
+    }
+}
+
+// ==================== النسخ الاحتياطي JSON ====================
+async function createJSONBackup() {
+    showToast("جاري إنشاء نسخة احتياطية JSON... ⏳");
+    
+    try {
+        // جمع جميع البيانات من Firebase
+        const backupData = await getAllBackupData();
+        
+        // إضافة معلومات النسخة
+        backupData.metadata = {
+            version: "1.0",
+            system: "Many Circles",
+            exportDate: new Date().toISOString(),
+            exportDateArabic: new Date().toLocaleDateString('ar-EG'),
+            exportTime: new Date().toLocaleTimeString('ar-EG'),
+            exportedBy: currentLoginType,
+            totalRecords: backupData.stats.totalRecords
+        };
+        
+        // تحويل إلى JSON
+        const jsonString = JSON.stringify(backupData, null, 2);
+        
+        // إنشاء ملف للتحميل
+        const blob = new Blob([jsonString], { type: 'application/json' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `ManyCircles_Backup_${new Date().getTime()}.json`;
+        
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+        
+        showToast("تم إنشاء نسخة JSON احتياطية بنجاح! 📊");
+        
+    } catch (error) {
+        console.error("خطأ في إنشاء نسخة JSON:", error);
+        showToast("حدث خطأ أثناء إنشاء النسخة الاحتياطية", "error");
+    }
+}
+
+// ==================== جمع جميع البيانات ====================
+async function getAllBackupData() {
+    try {
+        // جلب البيانات من جميع الأقسام
+        const [
+            studentsSnap,
+            teachersSnap,
+            dailyReportsSnap,
+            monthlyPlansSnap,
+            dailyPhotosSnap,
+            trashSnap
+        ] = await Promise.all([
+            db.ref('Students').once('value'),
+            db.ref('Teachers').once('value'),
+            db.ref('DailyReports').once('value'),
+            db.ref('MonthlyPlans').once('value'),
+            db.ref('DailyPhotos').once('value'),
+            db.ref('TrashBin').once('value')
+        ]);
+        
+        // تحويل البيانات
+        const backupData = {
+            students: formatData(studentsSnap),
+            teachers: formatData(teachersSnap),
+            dailyReports: formatData(dailyReportsSnap),
+            monthlyPlans: formatData(monthlyPlansSnap),
+            dailyPhotos: formatData(dailyPhotosSnap),
+            trash: formatData(trashSnap),
+            stats: {
+                studentsCount: Object.keys(studentsSnap.val() || {}).length,
+                teachersCount: Object.keys(teachersSnap.val() || {}).length,
+                dailyReportsCount: countAllRecords(dailyReportsSnap.val()),
+                monthlyPlansCount: countAllRecords(monthlyPlansSnap.val()),
+                photosCount: countAllRecords(dailyPhotosSnap.val()),
+                totalRecords: 0
+            }
+        };
+        
+        // حساب الإجمالي
+        backupData.stats.totalRecords = 
+            backupData.stats.studentsCount +
+            backupData.stats.teachersCount +
+            backupData.stats.dailyReportsCount +
+            backupData.stats.monthlyPlansCount +
+            backupData.stats.photosCount;
+        
+        return backupData;
+        
+    } catch (error) {
+        console.error("خطأ في جمع البيانات:", error);
+        throw error;
+    }
+}
+
+// دالة مساعدة لتحويل البيانات
+function formatData(snapshot) {
+    const data = snapshot.val();
+    if (!data) return {};
+    
+    // تحويل إلى array مع الحفاظ على الـ IDs
+    const result = {};
+    Object.keys(data).forEach(key => {
+        result[key] = data[key];
+    });
+    
+    return result;
+}
+
+// دالة حساب عدد السجلات
+function countAllRecords(data) {
+    if (!data) return 0;
+    
+    let count = 0;
+    
+    function countRecursive(obj) {
+        if (typeof obj === 'object' && obj !== null) {
+            if (obj.id || obj.name || obj.timestamp) {
+                count++;
+            }
+            Object.values(obj).forEach(value => {
+                if (typeof value === 'object') {
+                    countRecursive(value);
+                }
+            });
+        }
+    }
+    
+    countRecursive(data);
+    return count;
+}
+
+// ==================== فتح قائمة الاستعادة ====================
+function openRestoreMenu() {
+    dashboard.classList.add('hidden');
+    document.getElementById('restoreMenu').classList.remove('hidden');
+}
+
+// ==================== إغلاق قائمة الاستعادة ====================
+function closeRestoreMenu() {
+    document.getElementById('restoreMenu').classList.add('hidden');
+    dashboard.classList.remove('hidden');
+}
+
+// ==================== اختيار الملف ====================
+let selectedBackupFile = null;
+
+function handleFileSelect(input) {
+    const file = input.files[0];
+    if (!file) return;
+    
+    if (!file.name.endsWith('.json')) {
+        showToast("يجب اختيار ملف JSON فقط", "error");
+        return;
+    }
+    
+    const reader = new FileReader();
+    
+    reader.onload = function(e) {
+        try {
+            const content = e.target.result;
+            selectedBackupFile = JSON.parse(content);
+            
+            // عرض معاينة
+            showFilePreview(selectedBackupFile);
+            
+            // تفعيل زر الاستعادة
+            document.getElementById('restoreBtn').disabled = false;
+            
+        } catch (error) {
+            console.error("خطأ في قراءة الملف:", error);
+            showToast("ملف غير صالح أو تالف", "error");
+            selectedBackupFile = null;
+        }
+    };
+    
+    reader.onerror = function() {
+        showToast("خطأ في قراءة الملف", "error");
+        selectedBackupFile = null;
+    };
+    
+    reader.readAsText(file);
+}
+
+// ==================== عرض معاينة الملف ====================
+function showFilePreview(data) {
+    const previewDiv = document.getElementById('filePreview');
+    const contentDiv = document.getElementById('previewContent');
+    
+    if (!data.metadata) {
+        contentDiv.innerHTML = '<p class="text-red-500">ملف غير صالح: لا توجد بيانات تعريفية</p>';
+        previewDiv.classList.remove('hidden');
+        return;
+    }
+    
+    let previewHTML = `
+        <div class="space-y-3">
+            <div class="flex justify-between">
+                <span class="text-slate-500">النظام:</span>
+                <span class="font-bold">${data.metadata.system || 'غير معروف'}</span>
+            </div>
+            <div class="flex justify-between">
+                <span class="text-slate-500">تاريخ النسخ:</span>
+                <span>${data.metadata.exportDateArabic || data.metadata.exportDate}</span>
+            </div>
+            <div class="flex justify-between">
+                <span class="text-slate-500">مصدر النسخ:</span>
+                <span>${data.metadata.exportedBy === 'admin' ? 'الإدارة' : 'معلمة'}</span>
+            </div>
+            <hr class="my-2">
+            <div class="flex justify-between">
+                <span class="text-slate-500">عدد الأطفال:</span>
+                <span class="font-bold text-blue-600">${data.stats?.studentsCount || Object.keys(data.students || {}).length}</span>
+            </div>
+            <div class="flex justify-between">
+                <span class="text-slate-500">عدد المعلمات:</span>
+                <span class="font-bold text-emerald-600">${data.stats?.teachersCount || Object.keys(data.teachers || {}).length}</span>
+            </div>
+            <div class="flex justify-between">
+                <span class="text-slate-500">عدد التقارير:</span>
+                <span class="font-bold text-purple-600">${data.stats?.dailyReportsCount || 'متعدد'}</span>
+            </div>
+            <div class="flex justify-between">
+                <span class="text-slate-500">إجمالي السجلات:</span>
+                <span class="font-bold text-indigo-600">${data.stats?.totalRecords || 'غير معروف'}</span>
+            </div>
+        </div>
+    `;
+    
+    contentDiv.innerHTML = previewHTML;
+    previewDiv.classList.remove('hidden');
+}
+
+// ==================== الاستعادة من الملف ====================
+async function restoreFromFile() {
+    if (!selectedBackupFile) {
+        showToast("لم يتم اختيار ملف", "error");
+        return;
+    }
+    
+    if (!confirm("⚠️ **تحذير مهم:**\n\n" +
+                "الاستعادة ستضيف البيانات الجديدة دون حذف القديم.\n" +
+                "هل أنت متأكد من الاستمرار؟")) {
+        return;
+    }
+    
+    showToast("جاري استعادة البيانات... ⏳");
+    
+    try {
+        let restoredCount = 0;
+        let errorCount = 0;
+        
+        // 1. استعادة الأطفال
+        if (selectedBackupFile.students) {
+            for (const [id, studentData] of Object.entries(selectedBackupFile.students)) {
+                try {
+                    await db.ref(`Students/${id}`).set(studentData);
+                    restoredCount++;
+                } catch (error) {
+                    console.error(`خطأ في استعادة الطفل ${id}:`, error);
+                    errorCount++;
+                }
+            }
+        }
+        
+        // 2. استعادة المعلمات
+        if (selectedBackupFile.teachers) {
+            for (const [id, teacherData] of Object.entries(selectedBackupFile.teachers)) {
+                try {
+                    await db.ref(`Teachers/${id}`).set(teacherData);
+                    restoredCount++;
+                } catch (error) {
+                    console.error(`خطأ في استعادة المعلمة ${id}:`, error);
+                    errorCount++;
+                }
+            }
+        }
+        
+        // 3. استعادة التقارير اليومية
+        if (selectedBackupFile.dailyReports) {
+            for (const [studentId, reportsData] of Object.entries(selectedBackupFile.dailyReports)) {
+                for (const [date, reportData] of Object.entries(reportsData)) {
+                    try {
+                        await db.ref(`DailyReports/${studentId}/${date}`).set(reportData);
+                        restoredCount++;
+                    } catch (error) {
+                        console.error(`خطأ في استعادة التقرير ${date}:`, error);
+                        errorCount++;
+                    }
+                }
+            }
+        }
+        
+        // 4. استعادة الخطط الشهرية
+        if (selectedBackupFile.monthlyPlans) {
+            for (const [studentId, plansData] of Object.entries(selectedBackupFile.monthlyPlans)) {
+                for (const [month, monthData] of Object.entries(plansData)) {
+                    for (const [subject, subjectData] of Object.entries(monthData)) {
+                        try {
+                            await db.ref(`MonthlyPlans/${studentId}/${month}/${subject}`).set(subjectData);
+                            restoredCount++;
+                        } catch (error) {
+                            console.error(`خطأ في استعادة الخطة ${month}:`, error);
+                            errorCount++;
+                        }
+                    }
+                }
+            }
+        }
+        
+        // 5. استعادة الصور
+        if (selectedBackupFile.dailyPhotos) {
+            for (const [studentId, photosData] of Object.entries(selectedBackupFile.dailyPhotos)) {
+                for (const [date, dateData] of Object.entries(photosData)) {
+                    for (const [photoId, photoData] of Object.entries(dateData)) {
+                        try {
+                            await db.ref(`DailyPhotos/${studentId}/${date}/${photoId}`).set(photoData);
+                            restoredCount++;
+                        } catch (error) {
+                            console.error(`خطأ في استعادة الصورة ${photoId}:`, error);
+                            errorCount++;
+                        }
+                    }
+                }
+            }
+        }
+        
+        // 6. استعادة السلة
+        if (selectedBackupFile.trash) {
+            for (const [type, trashData] of Object.entries(selectedBackupFile.trash)) {
+                for (const [id, itemData] of Object.entries(trashData)) {
+                    try {
+                        await db.ref(`TrashBin/${type}/${id}`).set(itemData);
+                        restoredCount++;
+                    } catch (error) {
+                        console.error(`خطأ في استعادة السلة ${id}:`, error);
+                        errorCount++;
+                    }
+                }
+            }
+        }
+        
+        // عرض النتيجة
+        let message = `✅ تم استعادة ${restoredCount} سجل بنجاح!`;
+        if (errorCount > 0) {
+            message += `\n❌ فشل استعادة ${errorCount} سجل`;
+        }
+        
+        // إعادة تعيين
+        selectedBackupFile = null;
+        document.getElementById('backupFile').value = '';
+        document.getElementById('filePreview').classList.add('hidden');
+        document.getElementById('restoreBtn').disabled = true;
+        
+        // إعادة تحميل البيانات
+        if (currentLoginType === 'admin') {
+            dashboard.classList.remove('hidden');
+            document.getElementById('restoreMenu').classList.add('hidden');
+        } else {
+            location.reload();
+        }
+        
+        showToast(message);
+        
+    } catch (error) {
+        console.error("خطأ في الاستعادة:", error);
+        showToast("حدث خطأ أثناء الاستعادة", "error");
+    }
+}
+
+// ==================== اختبار صحة الملف ====================
+function validateBackupFile(data) {
+    const requiredSections = ['students', 'teachers', 'dailyReports', 'monthlyPlans'];
+    
+    for (const section of requiredSections) {
+        if (!data[section]) {
+            throw new Error(`القسم ${section} غير موجود في الملف`);
+        }
+    }
+    
+    if (!data.metadata || !data.metadata.system || data.metadata.system !== "Many Circles") {
+        throw new Error("ملف غير صالح أو من نظام مختلف");
+    }
+    
+    return true;
+}
+
 </script>
 </body>
 </html>
