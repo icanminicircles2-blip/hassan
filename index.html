@@ -11,7 +11,6 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.25/jspdf.plugin.autotable.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfkit/0.13.0/pdfkit.min.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700;900&display=swap" rel="stylesheet">
     
     <style>
@@ -34,39 +33,39 @@
         }
         .today-pulse { animation: pulse-yellow 2s infinite; }
         .toast {
-    animation: slideIn 0.5s ease-out forwards;
-    min-width: 250px;
-    display: flex;
-    align-items: center;
-    gap: 12px;
-}
+            animation: slideIn 0.5s ease-out forwards;
+            min-width: 250px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
 
-@keyframes slideIn {
-    from { transform: translateX(100%); opacity: 0; }
-    to { transform: translateX(0); opacity: 1; }
-}
+        @keyframes slideIn {
+            from { transform: translateX(100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
 
-.toast-fade-out {
-    animation: slideOut 0.5s ease-in forwards;
-}
+        .toast-fade-out {
+            animation: slideOut 0.5s ease-in forwards;
+        }
 
-@keyframes slideOut {
-    from { transform: translateX(0); opacity: 1; }
-    to { transform: translateX(100%); opacity: 0; }
-}
-.btn-back {
-    background: #ef4444 !important; /* لون أحمر واضح */
-    color: white !important;
-    padding: 12px 25px !important;
-    border-radius: 50px !important; /* شكل بيضاوي */
-    font-weight: bold !important;
-    font-size: 16px !important;
-    box-shadow: 0 4px 10px rgba(239, 68, 68, 0.3);
-    border: none !important;
-    display: block;
-    margin-bottom: 20px;
-    width: fit-content;
-}
+        @keyframes slideOut {
+            from { transform: translateX(0); opacity: 1; }
+            to { transform: translateX(100%); opacity: 0; }
+        }
+        .btn-back {
+            background: #ef4444 !important;
+            color: white !important;
+            padding: 12px 25px !important;
+            border-radius: 50px !important;
+            font-weight: bold !important;
+            font-size: 16px !important;
+            box-shadow: 0 4px 10px rgba(239, 68, 68, 0.3);
+            border: none !important;
+            display: block;
+            margin-bottom: 20px;
+            width: fit-content;
+        }
     </style>
 </head>
 <body>
@@ -80,8 +79,8 @@
         <h1 class="text-4xl font-black text-blue-600 mb-8 italic">Many Circles</h1>
         <img src="https://i.ibb.co/1f5TfvT0/9a9c7b66-e1a7-4616-aec7-4e5dc39e51c1.jpg" class="w-32 h-32 rounded-full border-4 border-indigo-500 shadow-lg mb-8 mx-auto">
         <div class="space-y-4">
-    <button onclick="showLogin('admin')" class="w-full p-5 bg-blue-600 text-white rounded-2xl font-bold hover:bg-blue-700 transition">?? دخول الإدارة</button>
-    <button onclick="showLogin('teacher')" class="w-full p-5 bg-emerald-600 text-white rounded-2xl font-bold hover:bg-emerald-700 transition">??‍?? دخول المعلمات</button>
+            <button onclick="showLogin('admin')" class="w-full p-5 bg-blue-600 text-white rounded-2xl font-bold hover:bg-blue-700 transition">👑 دخول الإدارة</button>
+            <button onclick="showLogin('teacher')" class="w-full p-5 bg-emerald-600 text-white rounded-2xl font-bold hover:bg-emerald-700 transition">👩‍🏫 دخول المعلمات</button>
         </div>
     </div>
 </div>
@@ -92,122 +91,123 @@
         <input type="text" id="loginName" placeholder="الاسم" class="input-style bg-slate-50 mb-4">
         <input type="password" id="loginPass" placeholder="الكود السري" class="input-style bg-slate-50 mb-6">
         <button id="loginBtn" class="w-full p-4 bg-blue-600 text-white rounded-2xl font-bold">دخول</button>
-        <button onclick="location.reload()" class="mt-4 text-slate-400 text-sm block w-full">إلغاء</button>
+        <button onclick="location.reload()" class="mt-4 text-slate-400 text-sm block w-full">❌ إلغاء</button>
     </div>
 </div>
 
 <div id="dashboard" class="admin-page hidden bg-slate-50 text-center">
     <h2 class="text-3xl font-black mb-10 text-slate-800">لوحة التحكم</h2>
-    <div class="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-8 px-4">
+    <div class="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-8 px-4">
         <div onclick="openStudentsSection()" class="bg-white p-10 rounded-[2.5rem] shadow-xl border-b-8 border-blue-500 cursor-pointer hover:scale-105 transition">
-            <div class="text-6xl mb-4">??</div><h3 class="text-2xl font-black text-blue-600">الأطفال</h3>
+            <div class="text-6xl mb-4">👶</div><h3 class="text-2xl font-black text-blue-600">👶 الأطفال</h3>
         </div>
         <div onclick="openTeachersSection()" class="bg-white p-10 rounded-[2.5rem] shadow-xl border-b-8 border-emerald-500 cursor-pointer hover:scale-105 transition">
-            <div class="text-6xl mb-4">??‍??</div><h3 class="text-2xl font-black text-emerald-600">مدرس جديد</h3>
+            <div class="text-6xl mb-4">👩‍🏫</div><h3 class="text-2xl font-black text-emerald-600">👩‍🏫 مدرس جديد</h3>
         </div>
-        
     </div>
-    <button onclick="location.reload()" class="mt-12 text-red-500 font-bold underline">تسجيل خروج</button>
+    <button onclick="location.reload()" class="mt-12 text-red-500 font-bold underline">🚪 تسجيل خروج</button>
 </div>
 
 <div id="studentsSection" class="admin-page hidden">
     <div class="max-w-4xl mx-auto">
         <div class="flex justify-between items-center mb-8 border-b pb-4">
-            <button id="backBtn" class="text-blue-600 font-bold bg-blue-50 px-4 py-2 rounded-xl">? العودة</button>
-            <button id="trashBtn" onclick="openTrash()" class="bg-red-50 text-red-500 px-4 py-2 rounded-xl font-bold border border-red-200">??? السلة</button>
+            <button id="backBtn" class="text-blue-600 font-bold bg-blue-50 px-4 py-2 rounded-xl">◀️ العودة</button>
+            <button id="trashBtn" onclick="openTrash()" class="bg-red-50 text-red-500 px-4 py-2 rounded-xl font-bold border border-red-200">🗑️ السلة</button>
         </div>
         <div id="addStudentBox" class="bg-slate-50 p-6 rounded-[2.5rem] mb-6 text-center border-2 border-dashed border-slate-300">
             <input type="text" id="newStudentName" placeholder="اسم الطفل الرباعي" class="input-style mb-2 md:w-64">
-            <button onclick="addStudent()" class="bg-blue-600 text-white px-8 py-3 rounded-xl font-bold">إضافة +</button>
+            <button onclick="addStudent()" class="bg-blue-600 text-white px-8 py-3 rounded-xl font-bold">➕ إضافة</button>
         </div>
         <div class="max-w-md mx-auto mb-6 px-4">
-            <input type="text" id="studentSearchInput" onkeyup="searchStudent()" placeholder="?? ابحث عن اسم الطفل..." class="w-full p-3 rounded-2xl border-2 border-blue-100 outline-none text-center font-bold">
+            <input type="text" id="studentSearchInput" onkeyup="searchStudent()" placeholder="🔍 ابحث عن اسم الطفل..." class="w-full p-3 rounded-2xl border-2 border-blue-100 outline-none text-center font-bold">
         </div>
         <div id="studentsList" class="grid grid-cols-2 md:grid-cols-3 gap-6"></div>
     </div>
 </div>
 
 <div id="monthsScreen" class="admin-page hidden text-center">
-    <button onclick="monthsScreen.classList.add('hidden'); studentsSection.classList.remove('hidden')" class="mb-8 text-blue-600 font-bold float-right">? رجوع</button>
+    <button onclick="monthsScreen.classList.add('hidden'); studentsSection.classList.remove('hidden')" class="mb-8 text-blue-600 font-bold float-right">◀️ رجوع</button>
     <div class="max-w-4xl mx-auto pt-10">
         <h2 class="text-3xl font-black mb-10 text-blue-600" id="currentStudentTitle"></h2>
         <div id="monthsGrid" class="grid grid-cols-3 md:grid-cols-4 gap-4"></div>
     </div>
 </div>
 
-<!-- البحث عن هذا القسم في HTML وإضافة الزر الثالث -->
 <div id="choiceScreen" class="admin-page hidden bg-slate-100 text-center">
     <div class="max-w-4xl mx-auto pt-20">
         <button onclick="choiceScreen.classList.add('hidden'); monthsScreen.classList.remove('hidden')" 
-                class="mb-10 text-blue-600 font-bold float-right">? رجوع للشهور</button>
+                class="mb-10 text-blue-600 font-bold float-right">◀️ رجوع للشهور</button>
         
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-8 px-4 w-full">  <!-- تغيير grid-cols-2 إلى grid-cols-3 -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8 px-4 w-full">
             
             <!-- الزر الأول: الخطة الشهرية -->
             <div onclick="openPlanMenu()" 
                  class="bg-white p-12 shadow-2xl rounded-[3rem] border-t-8 border-orange-400 cursor-pointer hover:scale-105 transition">
-                <div class="text-6xl mb-4">??</div>
-                <h3 class="text-2xl font-black text-orange-500">البرنامج الشهري</h3>  <!-- تغيير النص -->
+                <div class="text-6xl mb-4">📅</div>
+                <h3 class="text-2xl font-black text-orange-500">📅 البرنامج الشهري</h3>
             </div>
             
             <!-- الزر الثاني: Follow Up -->
             <div onclick="openFollowUpMenu()" 
                  class="bg-white p-12 shadow-2xl rounded-[3rem] border-t-8 border-blue-500 cursor-pointer hover:scale-105 transition">
-                <div class="text-6xl mb-4">??</div>
-                <h3 class="text-2xl font-black text-blue-600">Follow Up</h3>
+                <div class="text-6xl mb-4">📝</div>
+                <h3 class="text-2xl font-black text-blue-600">📝 Follow Up</h3>
             </div>
             
-            <!-- الزر الثالث: الجدول اليومي (جديد) -->
+            <!-- الزر الثالث: الجدول اليومي -->
             <div onclick="openDailySchedule()" 
                  class="bg-white p-12 shadow-2xl rounded-[3rem] border-t-8 border-emerald-500 cursor-pointer hover:scale-105 transition">
-                <div class="text-6xl mb-4">??</div>
-                <h3 class="text-2xl font-black text-emerald-600">الجدول اليومي</h3>
+                <div class="text-6xl mb-4">📋</div>
+                <h3 class="text-2xl font-black text-emerald-600">📋 الجدول اليومي</h3>
             </div>
             
         </div>
     </div>
 </div>
+
 <div id="subjectsMenu" class="admin-page hidden text-center">
-    <button onclick="subjectsMenu.classList.add('hidden'); choiceScreen.classList.remove('hidden')" class="mb-8 text-blue-600 font-bold float-right">? رجوع</button>
-    <h2 class="text-3xl font-black mb-10 text-orange-500">المواد التعليمية والأنشطة</h2>
+    <button onclick="subjectsMenu.classList.add('hidden'); choiceScreen.classList.remove('hidden')" class="mb-8 text-blue-600 font-bold float-right">◀️ رجوع</button>
+    <h2 class="text-3xl font-black mb-10 text-orange-500">📚 المواد التعليمية والأنشطة</h2>
     
     <div class="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-2xl mx-auto px-4">
-        <div onclick="openGoalEntry('اللغة العربية','#ef4444','??')" class="p-8 bg-red-500 text-white rounded-[2rem] font-black text-xl shadow-lg cursor-pointer hover:scale-105 transition">?? اللغة العربية</div>
-        <div onclick="openGoalEntry('English','#3b82f6','??')" class="p-8 bg-blue-500 text-white rounded-[2rem] font-black text-xl shadow-lg cursor-pointer hover:scale-105 transition">?? English</div>
-        <div onclick="openGoalEntry('Math','#10b981','??')" class="p-8 bg-emerald-500 text-white rounded-[2rem] font-black text-xl shadow-lg cursor-pointer hover:scale-105 transition">?? Math</div>
-        <div onclick="openGoalEntry('التربية الدينية','#f59e0b','??')" class="p-8 bg-amber-500 text-white rounded-[2rem] font-black text-xl shadow-lg cursor-pointer hover:scale-105 transition">?? التربية الدينية</div>
+        <div onclick="openGoalEntry('اللغة العربية','#ef4444','📖')" class="p-8 bg-red-500 text-white rounded-[2rem] font-black text-xl shadow-lg cursor-pointer hover:scale-105 transition">📖 اللغة العربية</div>
+        <div onclick="openGoalEntry('English','#3b82f6','🌍')" class="p-8 bg-blue-500 text-white rounded-[2rem] font-black text-xl shadow-lg cursor-pointer hover:scale-105 transition">🌍 English</div>
+        <div onclick="openGoalEntry('Math','#10b981','➗')" class="p-8 bg-emerald-500 text-white rounded-[2rem] font-black text-xl shadow-lg cursor-pointer hover:scale-105 transition">➗ Math</div>
+        <div onclick="openGoalEntry('التربية الدينية','#f59e0b','🕌')" class="p-8 bg-amber-500 text-white rounded-[2rem] font-black text-xl shadow-lg cursor-pointer hover:scale-105 transition">🕌 التربية الدينية</div>
         
-        <div onclick="openGoalEntry('Montessori','#8b5cf6','??')" class="p-8 bg-purple-500 text-white rounded-[2rem] font-black text-xl shadow-lg cursor-pointer hover:scale-105 transition">?? Montessori</div>
-        <div onclick="openGoalEntry('قرآن إضافي','#047857','??')" class="p-8 bg-emerald-700 text-white rounded-[2rem] font-black text-xl shadow-lg cursor-pointer hover:scale-105 transition">?? قرآن إضافي</div>
-        <div onclick="openGoalEntry('مناسبات','#db2777','??')" class="p-8 bg-pink-600 text-white rounded-[2rem] font-black text-xl shadow-lg cursor-pointer hover:scale-105 transition">?? مناسبات</div>
+        <div onclick="openGoalEntry('Montessori','#8b5cf6','🧩')" class="p-8 bg-purple-500 text-white rounded-[2rem] font-black text-xl shadow-lg cursor-pointer hover:scale-105 transition">🧩 Montessori</div>
+        <div onclick="openGoalEntry('قرآن إضافي','#047857','📗')" class="p-8 bg-emerald-700 text-white rounded-[2rem] font-black text-xl shadow-lg cursor-pointer hover:scale-105 transition">📗 قرآن إضافي</div>
+        <div onclick="openGoalEntry('مناسبات','#db2777','🎉')" class="p-8 bg-pink-600 text-white rounded-[2rem] font-black text-xl shadow-lg cursor-pointer hover:scale-105 transition">🎉 مناسبات</div>
         
-        <div onclick="openGoalEntry('تنمية المهارات','#6366f1','??')" class="p-8 bg-indigo-500 text-white rounded-[2rem] font-black text-xl shadow-lg cursor-pointer hover:scale-105 transition">?? تنمية المهارات</div>
+        <div onclick="openGoalEntry('تنمية المهارات','#6366f1','💡')" class="p-8 bg-indigo-500 text-white rounded-[2rem] font-black text-xl shadow-lg cursor-pointer hover:scale-105 transition">💡 تنمية المهارات</div>
     </div>
     
     <div class="max-w-2xl mx-auto mt-10 px-4">
         <button onclick="exportMonthlyPlanPDF()" class="w-full p-6 bg-slate-800 text-white rounded-[2rem] font-black text-xl shadow-xl hover:bg-black transition-all active:scale-95">
-            ?? تصدير تقرير الخطة الشهرية
+            📄 تصدير تقرير الخطة الشهرية
         </button>
     </div>
 </div>
+
 <div id="goalEntryScreen" class="admin-page hidden overflow-y-auto">
     <div class="max-w-2xl mx-auto pb-20 text-center">
-<button onclick="document.getElementById('goalEntryScreen').classList.add('hidden'); document.getElementById('subjectsMenu').classList.remove('hidden')" class="btn-back">
-    ?? رجوع للخلف
-</button>        
+        <button onclick="document.getElementById('goalEntryScreen').classList.add('hidden'); document.getElementById('subjectsMenu').classList.remove('hidden')" class="btn-back">
+            ◀️ رجوع للخلف
+        </button>
+        
         <div id="entryHeader" class="p-8 rounded-[2rem] text-white text-center mb-8 shadow-xl">
             <h2 id="entryTitle" class="text-2xl font-black"></h2>
         </div>
 
         <div id="goalsContainer" class="mb-8">
             <div id="noGoalsMessage" class="p-10 bg-slate-50 rounded-[2rem] border-2 border-dashed border-slate-200 text-slate-400 font-bold">
-                ?? لا توجد أهداف مضافة حالياً
+                📄 لا توجد أهداف مضافة حالياً
             </div>
             <div id="goalsListContainer" class="space-y-4"></div>
         </div>
 
         <button id="showAddFormBtn" onclick="toggleGoalForm(true)" class="w-full p-5 bg-blue-600 text-white rounded-2xl font-black shadow-lg hover:bg-blue-700 transition">
-            + إضافة هدف جديد
+            ➕ إضافة هدف جديد
         </button>
 
         <div id="goalInputForm" class="hidden mt-6 p-6 bg-white border-2 border-blue-500 rounded-[2rem] shadow-2xl animate-slide-up">
@@ -240,35 +240,36 @@
             </div>
 
             <div class="flex gap-2">
-                <button onclick="saveGoal()" class="flex-1 p-4 bg-emerald-500 text-white rounded-xl font-black">حفظ ?</button>
-                <button onclick="toggleGoalForm(false)" class="flex-1 p-4 bg-slate-100 text-slate-500 rounded-xl font-bold">إلغاء</button>
+                <button onclick="saveGoal()" class="flex-1 p-4 bg-emerald-500 text-white rounded-xl font-black">💾 حفظ</button>
+                <button onclick="toggleGoalForm(false)" class="flex-1 p-4 bg-slate-100 text-slate-500 rounded-xl font-bold">❌ إلغاء</button>
             </div>
         </div>
     </div>
 </div>
 
 <div id="daysScreen" class="admin-page hidden text-center">
-    <button onclick="daysScreen.classList.add('hidden'); choiceScreen.classList.remove('hidden')" class="mb-8 text-blue-600 font-bold float-right">? رجوع</button>
+    <button onclick="daysScreen.classList.add('hidden'); choiceScreen.classList.remove('hidden')" class="mb-8 text-blue-600 font-bold float-right">◀️ رجوع</button>
     <div class="max-w-4xl mx-auto pt-10">
         <h2 class="text-3xl font-black mb-4 text-blue-600" id="currentMonthTitle"></h2>
         <div id="daysGrid" class="grid grid-cols-5 md:grid-cols-7 gap-3 px-4"></div>
     </div>
 </div>
+
 <div id="followUpScreen" class="admin-page hidden overflow-y-auto bg-slate-50">
     <div class="max-w-2xl mx-auto pb-20 p-4">
-        <button onclick="document.getElementById('followUpScreen').classList.add('hidden'); document.getElementById('daysScreen').classList.remove('hidden')" class="text-blue-600 font-bold mb-6 block text-right">? رجوع للأيام</button>
+        <button onclick="document.getElementById('followUpScreen').classList.add('hidden'); document.getElementById('daysScreen').classList.remove('hidden')" class="text-blue-600 font-bold mb-6 block text-right">📅 رجوع للأيام</button>
         
         <div class="bg-white rounded-[2.5rem] shadow-xl p-6 border-t-8 border-blue-600">
-            <h2 class="text-2xl font-black text-center mb-2 text-blue-600 italic">Daily Report ??</h2>
+            <h2 class="text-2xl font-black text-center mb-2 text-blue-600 italic">Daily Report 📝</h2>
             <p id="reportDateDisplay" class="text-center text-slate-400 font-bold mb-6 text-sm"></p>
             
             <div class="follow-up-box">
                 <h3 class="section-title text-purple-600">Mood | الحالة المزاجية</h3>
                 <div class="flex justify-around items-center py-4">
-                    <div onclick="setMood('happy', this)" class="mood-btn">??</div>
-                    <div onclick="setMood('angry', this)" class="mood-btn">??</div>
-                    <div onclick="setMood('sad', this)" class="mood-btn">??</div>
-                    <div onclick="setMood('naughty', this)" class="mood-btn">??</div>
+                    <div onclick="setMood('happy', this)" class="mood-btn">😊</div>
+                    <div onclick="setMood('angry', this)" class="mood-btn">😠</div>
+                    <div onclick="setMood('sad', this)" class="mood-btn">😢</div>
+                    <div onclick="setMood('naughty', this)" class="mood-btn">😈</div>
                 </div>
             </div>
 
@@ -304,12 +305,10 @@
                 <textarea id="daily_notes" placeholder="اكتب ملاحظاتك هنا..." class="input-style h-24 resize-none p-4 text-right border"></textarea>
             </div>
 
-            <button id="saveDailyBtn" onclick="saveDailyReport()" class="w-full p-6 bg-blue-600 text-white rounded-3xl font-black shadow-lg hover:bg-blue-700 transition">حفظ التقرير ?</button>
-        
-        
-        <!-- زر تصدير PDF الجديد -->
+            <button id="saveDailyBtn" onclick="saveDailyReport()" class="w-full p-6 bg-blue-600 text-white rounded-3xl font-black shadow-lg hover:bg-blue-700 transition mb-4">📝 حفظ التقرير</button>
+            
             <button onclick="exportDailyReportPDF()" class="w-full p-6 bg-emerald-600 text-white rounded-3xl font-black shadow-lg hover:bg-emerald-700 transition">
-                ?? تصدير تقرير PDF
+                📊 تصدير تقرير PDF
             </button>
         </div>
     </div>
@@ -317,8 +316,8 @@
 
 <div id="trashScreen" class="admin-page hidden bg-slate-50 text-center">
     <div class="max-w-2xl mx-auto p-4">
-        <button onclick="document.getElementById('trashScreen').classList.add('hidden'); document.getElementById('studentsSection').classList.remove('hidden')" class="font-bold text-blue-600 mb-8 block text-right">? عودة</button>
-        <h2 class="text-3xl font-black text-red-600 mb-8">المحذوفات ???</h2>
+        <button onclick="document.getElementById('trashScreen').classList.add('hidden'); document.getElementById('studentsSection').classList.remove('hidden')" class="font-bold text-blue-600 mb-8 block text-right">🏠 عودة</button>
+        <h2 class="text-3xl font-black text-red-600 mb-8">🗑️ المحذوفات</h2>
         <div id="trashStudentsList" class="space-y-3"></div>
     </div>
 </div>
@@ -326,8 +325,8 @@
 <div id="teachersSection" class="admin-page hidden">
     <div class="max-w-4xl mx-auto p-4">
         <div class="flex justify-between items-center mb-8 border-b pb-4">
-            <button onclick="document.getElementById('teachersSection').classList.add('hidden'); dashboard.classList.remove('hidden')" class="text-emerald-600 font-bold bg-emerald-50 px-4 py-2 rounded-xl">? العودة</button>
-            <h2 class="text-2xl font-black text-emerald-600">إدارة المعلمات ??‍??</h2>
+            <button onclick="document.getElementById('teachersSection').classList.add('hidden'); dashboard.classList.remove('hidden')" class="text-emerald-600 font-bold bg-emerald-50 px-4 py-2 rounded-xl">◀️ العودة</button>
+            <h2 class="text-2xl font-black text-emerald-600">👩‍🏫 إدارة المعلمات</h2>
         </div>
         <div class="bg-white p-6 rounded-[2rem] shadow-lg mb-8 border-2 border-emerald-100 text-center">
             <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
@@ -335,31 +334,12 @@
                 <input type="text" id="teacherSubject" placeholder="المادة" class="input-style">
                 <input type="password" id="teacherPass" placeholder="كود الدخول" class="input-style">
             </div>
-            <button onclick="addTeacher()" class="w-full md:w-auto bg-emerald-600 text-white px-10 py-3 rounded-xl font-bold">إضافة معلمة +</button>
+            <button onclick="addTeacher()" class="w-full md:w-auto bg-emerald-600 text-white px-10 py-3 rounded-xl font-bold">👩‍🏫 إضافة معلمة</button>
         </div>
         <div id="teachersList" class="grid grid-cols-1 md:grid-cols-2 gap-4"></div>
     </div>
 </div>
 
-<div id="parentsSection" class="admin-page hidden">
-    <div class="max-w-4xl mx-auto p-4">
-        <div class="flex justify-between items-center mb-8 border-b pb-4">
-            <button onclick="document.getElementById('parentsSection').classList.add('hidden'); dashboard.classList.remove('hidden')" class="text-indigo-600 font-bold bg-indigo-50 px-4 py-2 rounded-xl">? العودة</button>
-            <h2 class="text-2xl font-black text-indigo-600">إدارة أولياء الأمور ??‍??‍??</h2>
-        </div>
-        <div class="bg-white p-6 rounded-[2rem] shadow-lg mb-8 border-2 border-indigo-100 text-center">
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
-                <input type="text" id="parentName" placeholder="اسم ولي الأمر" class="input-style">
-                <input type="password" id="parentPass" placeholder="كود الدخول" class="input-style">
-                <select id="linkedStudentId" class="input-style bg-white">
-                    <option value="">اختر الطفل</option>
-                </select>
-            </div>
-            <button onclick="addParent()" class="w-full md:w-auto bg-indigo-600 text-white px-10 py-3 rounded-xl font-bold">ربط ولي أمر +</button>
-        </div>
-        <div id="parentsList" class="grid grid-cols-1 md:grid-cols-2 gap-4"></div>
-    </div>
-</div>
 <script>
 // 1. Firebase Setup
 const firebaseConfig = {
@@ -379,9 +359,9 @@ const MASTER_CODE = "2012";
 const ADMINS = ["حسن","علياء","مصطفى","حنان"];
 const monthsArr = ["يناير","فبراير","مارس","أبريل","مايو","يونيو","يوليو","أغسطس","سبتمبر","أكتوبر","نوفمبر","ديسمبر"];
 
-let sId="", sName="", mName="", currentSub="", selectedMood="", selectedDay=0;
+let sId="", sName="", mName="", currentSubject="", selectedMood="", selectedDay=0;
 let currentLoginType = ""; 
-let linkedStudentIdOfParent = "";
+let editingGoalId = null;
 
 // 3. ربط عناصر الواجهة
 const mainScreen = document.getElementById('mainScreen');
@@ -408,20 +388,15 @@ function showLogin(type) {
     loginScreen.classList.remove('hidden');
 
     if (type === 'admin') {
-        loginTitle.innerText = "دخول الإدارة ??";
+        loginTitle.innerText = "دخول الإدارة 👑";
         loginBtn.style.backgroundColor = "#2563eb"; 
         loginBtn.onclick = adminLogin; 
     } else if (type === 'teacher') {
-        loginTitle.innerText = "دخول المعلمات ??‍??";
+        loginTitle.innerText = "دخول المعلمات 👩‍🏫";
         loginBtn.style.backgroundColor = "#059669"; 
         loginBtn.onclick = teacherLogin; 
-    } else if (type === 'parent') {
-        loginTitle.innerText = "دخول أولياء الأمور ??‍??‍??";
-        loginBtn.style.backgroundColor = "#4f46e5";
-        loginBtn.onclick = parentLogin;
     }
 }
-
 
 function adminLogin() {
     const user = loginName.value.trim();
@@ -471,8 +446,6 @@ function loadStudents() {
     db.ref('Students').on('value', snap => {
         studentsList.innerHTML = "";
         snap.forEach(c => {
-            if (currentLoginType === 'parent' && c.key !== linkedStudentIdOfParent) return; 
-
             const d = document.createElement('div');
             d.className = "bg-white p-8 rounded-[2.5rem] shadow-sm font-black card-hover text-center border relative";
             let deleteBtn = currentLoginType === 'admin' ? `<div class="del-btn" onclick="event.stopPropagation(); trashStudent('${c.key}','${c.val().name}')">X</div>` : "";
@@ -501,9 +474,8 @@ function openMonths(){
         const d = document.createElement('div'); 
         
         if (m === currentMonthName) {
-            // إضافة كلاس today-pulse هنا للشهر الحالي
             d.className = "bg-blue-600 text-white p-5 rounded-2xl border-4 border-blue-300 font-black cursor-pointer text-center shadow-lg transform scale-105 relative today-pulse";
-            d.innerHTML = `${m} <br> <span class="text-[10px] text-blue-100">(الشهر الحالي)</span>`;
+            d.innerHTML = `${m} <br> <span class="text-[10px] text-blue-100">(📌 الشهر الحالي)</span>`;
         } else {
             d.className = "bg-white p-5 rounded-2xl border-2 font-bold cursor-pointer text-center hover:bg-blue-50 transition text-slate-700 border-slate-100";
             d.innerText = m; 
@@ -517,38 +489,25 @@ function openMonths(){
         monthsGrid.appendChild(d);
     });
 }
-async function openDays() {
+
+function openDays() {
     daysScreen.classList.remove('hidden');
     document.getElementById('currentMonthTitle').innerText = `أيام شهر ${mName} - ${sName}`;
     
-    // إنشاء زر الرجوع ديناميكيًا
     const backButton = document.createElement('button');
-    
-    if (currentLoginType === 'parent') {
-        // لأولياء الأمور: الرجوع للشهور مباشرة
-        backButton.onclick = () => {
-            daysScreen.classList.add('hidden');
-            monthsScreen.classList.remove('hidden');
-        };
-    } else {
-        // للمعلمين والإدارة: الرجوع لشاشة الاختيار
-        backButton.onclick = () => {
-            daysScreen.classList.add('hidden');
-            choiceScreen.classList.remove('hidden');
-        };
-    }
+    backButton.onclick = () => {
+        daysScreen.classList.add('hidden');
+        choiceScreen.classList.remove('hidden');
+    };
     
     backButton.className = "mb-8 text-blue-600 font-bold float-right";
-    backButton.innerHTML = "? رجوع";
+    backButton.innerHTML = "◀️ رجوع";
     
-    // إزالة أي زر رجوع قديم
     const oldButton = daysScreen.querySelector('button');
     if (oldButton) oldButton.remove();
     
-    // إضافة زر الرجوع الجديد في بداية الصفحة
     daysScreen.insertBefore(backButton, daysScreen.firstChild);
     
-    // باقي الكود كما هو...
     daysGrid.innerHTML = "";
     
     const now = new Date();
@@ -559,61 +518,52 @@ async function openDays() {
     const year = 2026; 
     const monthIdx = monthsArr.indexOf(mName);
 
-    const reportsSnap = await db.ref(`DailyReports/${sId}`).once('value');
-    const reportsData = reportsSnap.val() || {};
+    db.ref(`DailyReports/${sId}`).once('value').then(reportsSnap => {
+        const reportsData = reportsSnap.val() || {};
 
-    for (let i = 1; i <= 31; i++) {
-        let dateCheck = new Date(year, monthIdx, i);
-        if (dateCheck.getMonth() !== monthIdx) break;
+        for (let i = 1; i <= 31; i++) {
+            let dateCheck = new Date(year, monthIdx, i);
+            if (dateCheck.getMonth() !== monthIdx) break;
 
-        let dayOfWeek = dateCheck.getDay(); 
-        if (dayOfWeek === 5 || dayOfWeek === 6) continue;
+            let dayOfWeek = dateCheck.getDay(); 
+            if (dayOfWeek === 5 || dayOfWeek === 6) continue;
 
-        const d = document.createElement('div');
-        const reportDate = `${year}-${(monthIdx + 1).toString().padStart(2, '0')}-${i.toString().padStart(2, '0')}`;
-        const hasReport = reportsData[reportDate] !== undefined;
+            const d = document.createElement('div');
+            const reportDate = `${year}-${(monthIdx + 1).toString().padStart(2, '0')}-${i.toString().padStart(2, '0')}`;
+            const hasReport = reportsData[reportDate] !== undefined;
 
-        const isPast = (dateCheck < new Date(currentYear, currentMonthIdx, currentDay));
-        const isToday = (year === currentYear && monthIdx === currentMonthIdx && i === currentDay);
+            const isPast = (dateCheck < new Date(currentYear, currentMonthIdx, currentDay));
+            const isToday = (year === currentYear && monthIdx === currentMonthIdx && i === currentDay);
 
-        if (isToday) {
-            d.className = "p-4 rounded-xl border-4 border-yellow-400 font-black cursor-pointer text-center bg-yellow-100 text-yellow-900 scale-110 shadow-xl z-10 today-pulse";
-            d.innerHTML = `${i} <br> <span class="text-[10px]">اليوم</span>`;
-        } else if (hasReport) {
-            d.className = "p-4 rounded-xl border-2 border-emerald-200 font-bold cursor-pointer text-center bg-emerald-50 text-emerald-700 hover:bg-emerald-600 hover:text-white transition shadow-sm";
-            d.innerHTML = `${i} <br> <span class="text-[10px]">? تقرير متاح</span>`;
-        } else if (isPast) {
-            d.className = "p-4 rounded-xl border-2 border-red-200 font-bold cursor-pointer text-center bg-red-50 text-red-600 hover:bg-red-600 hover:text-white transition shadow-sm";
-            d.innerHTML = `${i} <br> <span class="text-[10px]">?? لا يوجد تقرير</span>`;
-        } else {
-            d.className = "p-4 rounded-xl border-2 border-slate-100 font-bold cursor-pointer text-center bg-white text-slate-400 hover:border-blue-400 transition";
-            d.innerText = i;
-        }
-
-        d.onclick = () => {
-            selectedDay = i;
-            daysScreen.classList.add('hidden');
-            
-            if (currentLoginType === 'parent') {
-                openParentDailyReportView();
+            if (isToday) {
+                d.className = "p-4 rounded-xl border-4 border-yellow-400 font-black cursor-pointer text-center bg-yellow-100 text-yellow-900 scale-110 shadow-xl z-10 today-pulse";
+                d.innerHTML = `${i} <br> <span class="text-[10px]">⭐ اليوم</span>`;
+            } else if (hasReport) {
+                d.className = "p-4 rounded-xl border-2 border-emerald-200 font-bold cursor-pointer text-center bg-emerald-50 text-emerald-700 hover:bg-emerald-600 hover:text-white transition shadow-sm";
+                d.innerHTML = `${i} <br> <span class="text-[10px]">✅ تقرير متاح</span>`;
+            } else if (isPast) {
+                d.className = "p-4 rounded-xl border-2 border-red-200 font-bold cursor-pointer text-center bg-red-50 text-red-600 hover:bg-red-600 hover:text-white transition shadow-sm";
+                d.innerHTML = `${i} <br> <span class="text-[10px]">❌ لا يوجد تقرير</span>`;
             } else {
-                openFollowUp();
+                d.className = "p-4 rounded-xl border-2 border-slate-100 font-bold cursor-pointer text-center bg-white text-slate-400 hover:border-blue-400 transition";
+                d.innerText = i;
             }
-        };
-        daysGrid.appendChild(d);
-    }
+
+            d.onclick = () => {
+                selectedDay = i;
+                daysScreen.classList.add('hidden');
+                openFollowUp();
+            };
+            daysGrid.appendChild(d);
+        }
+    });
 }
+
 function openFollowUpMenu(){ 
     choiceScreen.classList.add('hidden'); 
-    
-    // إذا كان ولي أمر، نفتح مباشرة على عرض التقارير
-    if (currentLoginType === 'parent') {
-        openDays(); // فتح التقويم مباشرة (للقراءة فقط)
-    } else {
-        openDays(); // للمعلمين والإدارة: فتح التقويم للاختيار
-    }
+    openDays();
 }
-// --- 1. إدارة المدرسين ---
+
 function openTeachersSection(){ 
     dashboard.classList.add('hidden'); 
     document.getElementById('teachersSection').classList.remove('hidden'); 
@@ -631,7 +581,7 @@ function addTeacher() {
             document.getElementById('newTeacherName').value = "";
             document.getElementById('teacherSubject').value = "";
             document.getElementById('teacherPass').value = "";
-            alert("تم إضافة المعلمة بنجاح ?");
+            alert("تم إضافة المعلمة بنجاح ✅");
         });
     } else { alert("برجاء ملء جميع البيانات"); }
 }
@@ -649,95 +599,12 @@ function loadTeachers(){
                         <p class="text-xs text-slate-500">${data.subject}</p>
                         <p class="text-xs font-bold text-emerald-600">Pass: ${data.password}</p>
                     </div>
-                    <button onclick="db.ref('Teachers/${t.key}').remove()" class="text-red-500 font-bold">حذف</button>
+                    <button onclick="db.ref('Teachers/${t.key}').remove()" class="text-red-500 font-bold">🗑️ حذف</button>
                 </div>`;
         });
     });
 }
 
-// --- 2. إدارة أولياء الأمور ---
-function openParentsSection(){ 
-    dashboard.classList.add('hidden'); 
-    document.getElementById('parentsSection').classList.remove('hidden'); 
-    loadParents();
-    fillStudentsSelect(); 
-}
-
-
-
-
-
-// --- 3. الخطة التعليمية ---
-function openPlanMenu(){ 
-    choiceScreen.classList.add('hidden'); 
-    document.getElementById('subjectsMenu').classList.remove('hidden'); 
-}
-function openGoalEntry(subject, color, icon) {
-    // 1. تحديد المادة الحالية
-    currentSubject = subject;
-    
-    // 2. تحديث العنوان واللون في صفحة الإدخال
-    const titleEl = document.getElementById('entryTitle');
-    const headerEl = document.getElementById('entryHeader');
-    
-    if (titleEl && headerEl) {
-        titleEl.innerText = `${icon} إضافة: ${subject}`;
-        headerEl.style.backgroundColor = color; // تغيير لون الهيدر حسب المادة
-    }
-
-    // 3. إخفاء أو إظهار خانات التقييم (المساعدة والدرجة)
-    const scoreFields = document.getElementById('scoreFieldsContainer');
-    if (scoreFields) {
-        if (subject === 'مناسبات') {
-            scoreFields.style.display = 'none'; // اخفيها في المناسبات
-        } else {
-            scoreFields.style.display = 'block'; // اظهرها في باقي المواد
-        }
-    }
-
-    // 4. تصفير الخانات عشان تكون فاضية للإدخال الجديد
-    document.getElementById('goalName').value = "";
-    if (document.getElementById('goalScore')) {
-        document.getElementById('goalScore').value = "";
-    }
-
-    // 5. إخفاء قائمة المواد وإظهار شاشة الإدخال
-    // تأكد إن الأسماء دي (subjectsMenu) و (goalEntryScreen) هي اللي موجودة في الـ HTML
-    document.getElementById('subjectsMenu').classList.add('hidden');
-    document.getElementById('goalEntryScreen').classList.remove('hidden');
-
-    // 6. تحميل الأهداف اللي انضافت قبل كدة للمادة دي (لو عندك دالة بتعمل كدة)
-    if (typeof loadGoals === "function") {
-        loadGoals(); 
-    }
-}
-function addNewGoalRow(data = null) {
-    if (currentLoginType === 'parent' && data === null) return;
-    const isParent = (currentLoginType === 'parent'); // فحص نوع المستخدم
-    const d = document.createElement('div');
-    d.className = "goal-card shadow-sm p-3 bg-slate-50 rounded-lg mb-2";
-    
-    // أضفنا خاصية disabled لكل حقل بناءً على نوع المستخدم
-    d.innerHTML = `
-        <input class="goal-name w-full p-2 mb-2 rounded border" 
-               placeholder="اسم الهدف" value="${data ? data.name : ''}" 
-               ${isParent ? 'disabled' : ''}> 
-        <div class="flex gap-2">
-            <select class="goal-help w-1/2 p-2 border rounded text-xs" ${isParent ? 'disabled' : ''}>
-                <option ${data?.help == 'بدون مساعدة' ? 'selected' : ''}>بدون مساعدة</option>
-                <option ${data?.help == 'مساعدة بسيطة' ? 'selected' : ''}>مساعدة بسيطة</option>
-                <option ${data?.help == 'مساعدة كبيرة' ? 'selected' : ''}>مساعدة كبيرة</option>
-            </select>
-            <select class="goal-score w-1/2 p-2 border rounded text-xs" ${isParent ? 'disabled' : ''}>
-                <option ${data?.score == '0%' ? 'selected' : ''}>0%</option>
-                <option ${data?.score == '50%' ? 'selected' : ''}>50%</option>
-                <option ${data?.score == '100%' ? 'selected' : ''}>100%</option>
-            </select>
-        </div>
-        ${!isParent ? '<button onclick="this.parentElement.remove()" class="text-red-400 text-xs mt-2 underline">حذف السطر</button>' : ''}`;
-    
-    document.getElementById('goalsListContainer').appendChild(d);
-}
 function trashStudent(id, name) {
     if (confirm(`نقل ${name} للسلة؟`)) {
         db.ref('Students/' + id).once('value', s => {
@@ -759,7 +626,7 @@ function openTrash() {
             list.innerHTML += `
                 <div class="bg-white p-4 rounded-xl flex justify-between border mb-2">
                     <span>${c.val().name}</span>
-                    <button onclick="restoreStudent('${c.key}')" class="text-blue-600 font-bold">استعادة</button>
+                    <button onclick="restoreStudent('${c.key}')" class="text-blue-600 font-bold">🔄 استعادة</button>
                 </div>`;
         });
     });
@@ -769,7 +636,7 @@ function restoreStudent(id) {
     db.ref('TrashBin/Students/' + id).once('value', s => {
         db.ref('Students/' + id).set(s.val()).then(() => {
             db.ref('TrashBin/Students/' + id).remove();
-            alert("تمت الاستعادة بنجاح");
+            alert("تمت الاستعادة بنجاح 🔄");
         });
     });
 }
@@ -782,7 +649,7 @@ function addStudent() {
         });
     }
 }
-// دالة لفتح/إغلاق مستطيل الإضافة
+
 function toggleGoalForm(show) {
     const form = document.getElementById('goalInputForm');
     const addBtn = document.getElementById('showAddFormBtn');
@@ -793,12 +660,10 @@ function toggleGoalForm(show) {
     } else {
         form.classList.add('hidden');
         addBtn.classList.remove('hidden');
-        // تصفير الخانات عند الإغلاق
         document.getElementById('goalName').value = "";
     }
 }
 
-// تعديل دالة فتح المادة
 function openGoalEntry(subject, color, icon) {
     currentSubject = subject;
     
@@ -811,21 +676,18 @@ function openGoalEntry(subject, color, icon) {
         headerEl.style.backgroundColor = color;
     }
 
-    // إخفاء التقييمات لو المادة مناسبات
     if (scoreFields) {
         scoreFields.style.display = (subject === 'مناسبات') ? 'none' : 'block';
     }
 
-    toggleGoalForm(false); // تأكد أن النموذج مخفي في البداية
+    toggleGoalForm(false);
     
-    // إخفاء القائمة وإظهار شاشة المادة
     document.getElementById('subjectsMenu').classList.add('hidden');
     document.getElementById('goalEntryScreen').classList.remove('hidden');
 
-    loadGoals(); // دالة لعرض الأهداف الموجودة حالياً
+    loadGoals();
 }
 
-// دالة عرض الأهداف مع رسالة "لا توجد أهداف"
 function loadGoals() {
     const container = document.getElementById('goalsListContainer');
     const msg = document.getElementById('noGoalsMessage');
@@ -851,8 +713,8 @@ function loadGoals() {
 
                 div.innerHTML = `
                     <div class="flex gap-3">
-                        <button onclick="editGoal('${key}', '${goal.name}', '${goal.score}', '${goal.help}')" class="text-blue-500 text-sm font-bold">تعديل ??</button>
-                        <button onclick="deleteGoal('${key}')" class="text-red-400 text-sm">حذف ???</button>
+                        <button onclick="editGoal('${key}', '${goal.name}', '${goal.score}', '${goal.help}')" class="text-blue-500 text-sm font-bold">✏️ تعديل</button>
+                        <button onclick="deleteGoal('${key}')" class="text-red-400 text-sm">🗑️ حذف</button>
                     </div>
                     ${info}
                 `;
@@ -861,6 +723,7 @@ function loadGoals() {
         }
     });
 }
+
 function searchStudent() {
     const query = document.getElementById('studentSearchInput').value.toLowerCase();
     const cards = studentsList.querySelectorAll('div');
@@ -890,25 +753,21 @@ function saveGoal() {
         finalData.help = help;
     }
 
-    // تحديد مسار الحفظ (إما ID جديد أو الـ ID اللي بنعدله)
     let ref;
     if (editingGoalId) {
-        // لو بنعدل
         ref = db.ref(`MonthlyPlans/${sId}/${mName}/${currentSubject}/${editingGoalId}`);
     } else {
-        // لو إضافة جديدة
         ref = db.ref(`MonthlyPlans/${sId}/${mName}/${currentSubject}`).push();
     }
 
     ref.set(finalData)
     .then(() => {
-        showToast(editingGoalId ? "تم التحديث بنجاح ?" : "تم الحفظ بنجاع ?");
-        resetGoalForm(); // دالة لتصفير الفورم
+        showToast(editingGoalId ? "تم التحديث بنجاح ✨" : "تم الحفظ بنجاح ✅");
+        resetGoalForm();
     })
     .catch(e => showToast("خطأ في الاتصال", "error"));
 }
 
-// دالة لتصفير الفورم ورجوع الزرار لأصله
 function resetGoalForm() {
     editingGoalId = null;
     toggleGoalForm(false);
@@ -916,30 +775,50 @@ function resetGoalForm() {
     
     const saveBtn = document.querySelector('#goalInputForm button');
     if (saveBtn) {
-        saveBtn.innerText = "حفظ ?";
+        saveBtn.innerText = "💾 حفظ";
         saveBtn.className = "flex-1 p-4 bg-emerald-500 text-white rounded-xl font-black";
     }
 }
+
 function deleteGoal(goalId) {
     if (confirm("هل أنت متأكد من حذف هذا الهدف؟")) {
         db.ref(`MonthlyPlans/${sId}/${mName}/${currentSubject}/${goalId}`).remove()
         .then(() => {
-            showToast("تم الحذف بنجاح ???");
+            showToast("تم الحذف بنجاح 🗑️");
         })
         .catch((error) => {
             showToast("حدث خطأ أثناء الحذف", "error");
         });
     }
 }
+
+function editGoal(id, name, score, help) {
+    editingGoalId = id;
+    
+    toggleGoalForm(true);
+    
+    document.getElementById('goalName').value = name;
+    
+    if (currentSubject !== 'مناسبات') {
+        let cleanScore = score ? score.replace('%', '') : "0";
+        document.getElementById('goalScore').value = cleanScore;
+        document.getElementById('helpLevel').value = help;
+    }
+
+    const saveBtn = document.querySelector('#goalInputForm button');
+    if (saveBtn) {
+        saveBtn.innerText = "🔄 تحديث الهدف";
+        saveBtn.classList.replace('bg-emerald-500', 'bg-blue-600');
+    }
+}
+
 function openFollowUp() {
     choiceScreen.classList.add('hidden');
     followUpScreen.classList.remove('hidden');
     
-    // قائمة الأنشطة من التقرير الورقي
     const activitiesList = ["Montessori", "Garden", "Colouring", "Art", "Swimming", "Puzzle", "Moral Values", "Songs", "Etiquette", "Circle Time", "Dancing", "P.E"];
     const grid = document.getElementById('activitiesGrid');
     
-    // رسم شبكة الأنشطة
     grid.innerHTML = activitiesList.map(act => `
         <label class="flex items-center justify-between bg-slate-50 p-2 rounded-lg border border-pink-100">
             <span>${act}</span>
@@ -955,31 +834,17 @@ function openFollowUp() {
 
     db.ref(`DailyReports/${sId}/${reportDate}`).once('value', snap => {
         const data = snap.val() || {};
-        const isParent = (currentLoginType === 'parent');
 
-        // تحميل القيلولة والحمام والملاحظات
         document.getElementById('nap_from').value = data.nap_from || "";
         document.getElementById('nap_to').value = data.nap_to || "";
-        document.getElementById('potty_urine').checked = data.potty_urine || false;
-        document.getElementById('potty_stool').checked = data.potty_stool || false;
+        document.getElementById('potty_status').value = data.potty_status || "Clean";
         document.getElementById('daily_notes').value = data.notes || "";
 
-        // تحميل الأنشطة المختارة
         const savedActivities = data.activities || [];
         document.querySelectorAll('.activity-checkbox').forEach(cb => {
             cb.checked = savedActivities.includes(cb.value);
-            cb.disabled = isParent;
         });
 
-        // قفل الحقول لو المستخدم ولي أمر
-        document.getElementById('nap_from').disabled = isParent;
-        document.getElementById('nap_to').disabled = isParent;
-        document.getElementById('potty_urine').disabled = isParent;
-        document.getElementById('potty_stool').disabled = isParent;
-        document.getElementById('daily_notes').disabled = isParent;
-        document.getElementById('saveDailyBtn').style.display = isParent ? 'none' : 'block';
-
-        // ضبط الحالة المزاجية
         selectedMood = data.mood || "";
         document.querySelectorAll('.mood-btn').forEach(btn => {
             btn.classList.remove('active');
@@ -987,20 +852,19 @@ function openFollowUp() {
         });
     });
 }
+
 function setMood(mood, el) {
     if (currentLoginType === 'parent') return; 
     selectedMood = mood;
-    // حذف active من كل الأزرار
     document.querySelectorAll('.mood-btn').forEach(btn => btn.classList.remove('active'));
-    // إضافة active للعنصر الذي تم الضغط عليه مباشرة
     el.classList.add('active'); 
 }
+
 function saveDailyReport() {
     const year = 2026;
     const monthIdx = (monthsArr.indexOf(mName) + 1).toString().padStart(2, '0');
     const reportDate = `${year}-${monthIdx}-${selectedDay.toString().padStart(2, '0')}`;
 
-    // تجميع الأنشطة المختارة في Array
     const selectedActivities = [];
     document.querySelectorAll('.activity-checkbox:checked').forEach(cb => {
         selectedActivities.push(cb.value);
@@ -1010,21 +874,21 @@ function saveDailyReport() {
         mood: selectedMood,
         nap_from: document.getElementById('nap_from').value,
         nap_to: document.getElementById('nap_to').value,
-        potty_urine: document.getElementById('potty_urine').checked,
-        potty_stool: document.getElementById('potty_stool').checked,
+        potty_status: document.getElementById('potty_status').value,
         activities: selectedActivities,
         notes: document.getElementById('daily_notes').value
     };
 
     db.ref(`DailyReports/${sId}/${reportDate}`).update(reportData).then(() => {
-        showToast("تم حفظ تقرير يوم " + selectedDay + " بنجاح ?");
+        showToast("تم حفظ تقرير يوم " + selectedDay + " بنجاح 📝");
         followUpScreen.classList.add('hidden');
         daysScreen.classList.remove('hidden');
-        openDays(); // لتحديث لون اليوم في التقويم لـ "أخضر"
+        openDays();
     });
 }
+
 async function exportMonthlyPlanPDF() {
-    showToast("جاري تحضير تقرير Many Circles... ?");
+    showToast("جاري تحضير تقرير Many Circles... ⏳");
 
     try {
         const snapshot = await db.ref(`MonthlyPlans/${sId}/${mName}`).once('value');
@@ -1035,7 +899,6 @@ async function exportMonthlyPlanPDF() {
             return;
         }
 
-        // إنشاء حاوية التقرير المؤقتة لتصويرها
         const element = document.createElement('div');
         element.style.width = '700px';
         element.style.padding = '30px';
@@ -1056,11 +919,9 @@ async function exportMonthlyPlanPDF() {
             const color = subjectStyles[subject] || '#444';
             const cleanGoals = Array.isArray(goals) ? goals : Object.values(goals);
             
-            // معالجة الأسطر لكل مادة مع شرط "المناسبات"
             let goalsRows = cleanGoals.map(g => {
                 if (!g.name) return "";
                 
-                // إذا كانت المادة "مناسبات" تظهر فقط اسم المناسبة بدون مربعات الدرجات
                 if (subject === 'مناسبات') {
                     return `
                         <div style="padding:12px; border-bottom:1px solid #eee; font-family: Arial; text-align:right;">
@@ -1068,7 +929,6 @@ async function exportMonthlyPlanPDF() {
                         </div>`;
                 } 
                 
-                // باقي المواد تظهر بالتنسيق الكامل (اسم الهدف + المساعدة + الدرجة)
                 return `
                     <div style="display:flex; justify-content:space-between; padding:12px; border-bottom:1px solid #eee; font-family: Arial; align-items:center;">
                         <span style="font-weight:bold; color:#333; font-size:16px;">• ${g.name}</span>
@@ -1091,19 +951,18 @@ async function exportMonthlyPlanPDF() {
                 <h1 style="color:#1e40af; font-size:42px; margin:0; letter-spacing:1px;">Many Circles</h1>
                 <p style="font-size:20px; color:#64748b; margin:5px 0;">تقرير حصاد الأنشطة والمهارات - شهر ${mName}</p>
                 <div style="display:inline-block; border:2px solid #e2e8f0; padding:10px 40px; border-radius:20px; margin-top:15px; background:#f8fafc;">
-                    <span style="font-size:26px; font-weight:bold; color:#1e293b;">البطل: ${sName} ?</span>
+                    <span style="font-size:26px; font-weight:bold; color:#1e293b;">البطل: ${sName} 👶</span>
                 </div>
-                <p style="color:#0369a1; font-weight:bold; margin-top:20px; font-size:18px;">?? "فخورين جداً بتطورك يا بطل.. استمر في التألق!" ??</p>
+                <p style="color:#0369a1; font-weight:bold; margin-top:20px; font-size:18px;">✨ "فخورين جداً بتطورك يا بطل.. استمر في التألق!" ✨</p>
             </div>
             ${subjectsHTML}
             <div style="text-align:center; color:#94a3b8; font-size:14px; margin-top:30px; border-top:1px solid #f1f5f9; padding-top:10px;">
-                صنع بكل حب في فريق Many Circles ??
+                صنع بكل حب في فريق Many Circles ❤️
             </div>
         `;
 
         document.body.appendChild(element);
 
-        // انتظار بسيط لضمان تحميل المتصفح للتنسيقات
         await new Promise(resolve => setTimeout(resolve, 800));
 
         const canvas = await html2canvas(element, {
@@ -1122,7 +981,6 @@ async function exportMonthlyPlanPDF() {
         let heightLeft = imgHeight;
         let position = 0;
 
-        // إضافة الصفحة الأولى والصفحات التالية تلقائياً
         pdf.addImage(imgData, 'JPEG', 0, position, imgWidth, imgHeight);
         heightLeft -= pageHeight;
 
@@ -1135,198 +993,25 @@ async function exportMonthlyPlanPDF() {
 
         pdf.save(`ManyCircles_Report_${sName}.pdf`);
         document.body.removeChild(element);
-        showToast("تم تحميل التقرير بنجاح! ?");
+        showToast("تم تحميل التقرير بنجاح! ✅");
 
     } catch (e) {
         console.error("PDF Export Error:", e);
         showToast("عذراً، حدث خطأ في استخراج الملف", "error");
     }
 }
-function showToast(message, type = 'success') {
-    const container = document.getElementById('toastContainer');
-    const toast = document.createElement('div');
-    
-    // تحديد الألوان بناءً على النوع
-    const bg = type === 'success' ? 'bg-emerald-600' : 'bg-red-600';
-    const icon = type === 'success' ? '?' : '??';
 
-    toast.className = `${bg} text-white px-6 py-4 rounded-2xl shadow-2xl toast flex items-center font-bold`;
-    toast.innerHTML = `<span>${icon}</span> <span>${message}</span>`;
-
-    container.appendChild(toast);
-
-    // إخفاء الإشعار بعد 3 ثوانٍ
-    setTimeout(() => {
-        toast.classList.add('toast-fade-out');
-        setTimeout(() => toast.remove(), 500);
-    }, 3000);
-}
-let editingGoalId = null; // متغير لحفظ ID الهدف اللي بنعدله حالياً
-
-function editGoal(id, name, score, help) {
-    editingGoalId = id; // حفظ الـ ID
-    
-    // 1. فتح مستطيل الإدخال
-    toggleGoalForm(true);
-    
-    // 2. تعبئة الخانات بالبيانات القديمة
-    document.getElementById('goalName').value = name;
-    
-    if (currentSubject !== 'مناسبات') {
-        // تنظيف النسبة المئوية من الرمز % قبل وضعها في السيلكت
-        let cleanScore = score ? score.replace('%', '') : "0";
-        document.getElementById('goalScore').value = cleanScore;
-        document.getElementById('helpLevel').value = help;
-    }
-
-    // 3. تغيير نص زر الحفظ ليصبح "تحديث"
-    const saveBtn = document.querySelector('#goalInputForm button[onclick="saveGoal()"]');
-    if (saveBtn) {
-        saveBtn.innerText = "تحديث الهدف ??";
-        saveBtn.classList.replace('bg-emerald-500', 'bg-blue-600');
-    }
-}
-// أضف هذه الدالة في قسم الدوال (Functions)
-function openDailySchedule() {
-    // إخفاء شاشة الاختيار
-    choiceScreen.classList.add('hidden');
-    
-    // تحديد التنسيق بناءً على نوع المستخدم
-    const isParent = (currentLoginType === 'parent');
-    
-    if (isParent) {
-        // لو ولي الأمر: عرض جدول خاص للقراءة فقط
-        showParentDailySchedule();
-    } else {
-        // لو معلمة أو إدارة: فتح الأيام للاختيار (الوضع الحالي)
-        openDays();
-    }
-}
-
-// دالة لعرض الجدول اليومي لأولياء الأمور
-function showParentDailySchedule() {
-    // هنا يمكنك بناء واجهة عرض الجدول اليومي
-    // في الوقت الحالي سأعرض رسالة مع أزرار للمحتوى
-    const html = `
-        <div class="admin-page bg-slate-100 text-center p-6">
-            <button onclick="location.reload()" class="text-blue-600 font-bold float-right mb-6">? رجوع</button>
-            
-            <div class="bg-white rounded-[2.5rem] shadow-xl p-8 max-w-4xl mx-auto">
-                <h2 class="text-3xl font-black text-emerald-600 mb-6">الجدول اليومي لـ ${sName}</h2>
-                <p class="text-slate-500 mb-8">شهر ${mName} - يمكنك متابعة الأنشطة اليومية لطفلك</p>
-                
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
-                    <div onclick="openPlanMenu()" class="bg-emerald-50 p-6 rounded-2xl border-2 border-emerald-200 cursor-pointer">
-                        <div class="text-4xl mb-3">??</div>
-                        <h4 class="font-bold text-emerald-700">عرض البرنامج الشهري</h4>
-                        <p class="text-sm text-slate-500 mt-2">الأنشطة والأهداف المخطط لها</p>
-                    </div>
-                    
-                    <div onclick="openDays()" class="bg-blue-50 p-6 rounded-2xl border-2 border-blue-200 cursor-pointer">
-                        <div class="text-4xl mb-3">??</div>
-                        <h4 class="font-bold text-blue-700">عرض التقارير اليومية</h4>
-                        <p class="text-sm text-slate-500 mt-2">متابعة الحالة اليومية لطفلك</p>
-                    </div>
-                </div>
-                
-                <div class="bg-slate-50 p-6 rounded-2xl text-right">
-                    <h4 class="font-bold text-slate-700 mb-3">?? ملاحظة:</h4>
-                    <p class="text-slate-600">كـ ولي أمر، يمكنك فقط <span class="font-bold text-blue-600">قراءة</span> محتوى البرنامج والتقارير ولا يمكنك التعديل عليها.</p>
-                </div>
-            </div>
-        </div>
-    `;
-    
-    // إنشاء عنصر جديد وعرضه
-    const tempDiv = document.createElement('div');
-    tempDiv.innerHTML = html;
-    document.body.appendChild(tempDiv.firstElementChild);
-}
-function openParentDailyReportView() {
-    const year = 2026;
-    const monthIdx = (monthsArr.indexOf(mName) + 1).toString().padStart(2, '0');
-    const reportDate = `${year}-${monthIdx}-${selectedDay.toString().padStart(2, '0')}`;
-    
-    db.ref(`DailyReports/${sId}/${reportDate}`).once('value', snap => {
-        const data = snap.val() || {};
-        
-        const html = `
-            <div class="admin-page bg-slate-100 p-6" id="parentReportView">
-                <button onclick="document.getElementById('parentReportView').remove(); daysScreen.classList.remove('hidden')" 
-                        class="text-blue-600 font-bold mb-6 float-right">? رجوع للأيام</button>
-                
-                <div class="bg-white rounded-[2.5rem] shadow-xl p-8 max-w-2xl mx-auto">
-                    <div class="text-center mb-8">
-                        <h2 class="text-2xl font-black text-blue-600">تقرير يوم ${selectedDay}/${monthIdx}/${year}</h2>
-                        <p class="text-slate-400">${sName}</p>
-                    </div>
-                    
-                    <div class="space-y-6">
-                        ${data.mood ? `
-                        <div class="bg-slate-50 p-4 rounded-xl">
-                            <h3 class="font-bold text-slate-700 mb-2">الحالة المزاجية:</h3>
-                            <div class="text-4xl">${getMoodEmoji(data.mood)}</div>
-                        </div>` : ''}
-                        
-                        ${data.nap_from || data.nap_to ? `
-                        <div class="bg-slate-50 p-4 rounded-xl">
-                            <h3 class="font-bold text-slate-700 mb-2">القيلولة:</h3>
-                            <p>${data.nap_from || '--'} إلى ${data.nap_to || '--'}</p>
-                        </div>` : ''}
-                        
-                        ${data.activities && data.activities.length > 0 ? `
-                        <div class="bg-slate-50 p-4 rounded-xl">
-                            <h3 class="font-bold text-slate-700 mb-2">الأنشطة:</h3>
-                            <div class="flex flex-wrap gap-2">
-                                ${data.activities.map(act => `<span class="bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-sm">${act}</span>`).join('')}
-                            </div>
-                        </div>` : ''}
-                        
-                        ${data.notes ? `
-                        <div class="bg-slate-50 p-4 rounded-xl">
-                            <h3 class="font-bold text-slate-700 mb-2">ملاحظات المعلمة:</h3>
-                            <p class="text-slate-600">${data.notes}</p>
-                        </div>` : ''}
-                        
-                        ${!data.mood && !data.notes && (!data.activities || data.activities.length === 0) ? `
-                        <div class="text-center p-8 text-slate-400">
-                            <div class="text-5xl mb-4">??</div>
-                            <p class="font-bold">لا يوجد تقرير لهذا اليوم بعد</p>
-                            <p class="text-sm mt-2">سيتم إضافة التقرير من قبل المعلمة قريباً</p>
-                        </div>` : ''}
-                    </div>
-                </div>
-            </div>
-        `;
-        
-        const tempDiv = document.createElement('div');
-        tempDiv.innerHTML = html;
-        document.body.appendChild(tempDiv.firstElementChild);
-    });
-}
-// دالة مساعدة للحصول على الإيموجي المناسب
-function getMoodEmoji(mood) {
-    const emojis = {
-        'happy': '??',
-        'angry': '??', 
-        'sad': '??',
-        'naughty': '??'
-    };
-    return emojis[mood] || '??';
-}
 async function exportDailyReportPDF() {
-    showToast("جاري تحضير التقرير اليومي... ?");
+    showToast("جاري تحضير التقرير اليومي... ⏳");
 
     try {
         const year = 2026;
         const monthIdx = (monthsArr.indexOf(mName) + 1).toString().padStart(2, '0');
         const reportDate = `${year}-${monthIdx}-${selectedDay.toString().padStart(2, '0')}`;
         
-        // جلب بيانات التقرير من Firebase
         const reportSnapshot = await db.ref(`DailyReports/${sId}/${reportDate}`).once('value');
         const reportData = reportSnapshot.val() || {};
         
-        // إنشاء حاوية التقرير المؤقتة لتصويرها
         const element = document.createElement('div');
         element.style.width = '700px';
         element.style.padding = '30px';
@@ -1336,36 +1021,49 @@ async function exportDailyReportPDF() {
         element.style.left = '-2000px';
         element.setAttribute('dir', 'rtl');
 
-        // تحديد إيموجي الحالة المزاجية
         const moodEmojis = {
-            'happy': '??',
-            'angry': '??',
-            'sad': '??',
-            'naughty': '??'
+            'happy': '😊',
+            'angry': '😠',
+            'sad': '😢',
+            'naughty': '😈'
         };
         
-        // بناء محتوى التقرير
+        const moodTexts = {
+            'happy': 'سعيد ومبتهج',
+            'angry': 'غاضب أو متوتر',
+            'sad': 'حزين أو منزعج',
+            'naughty': 'مشاغب ونشيط'
+        };
+
+        const pottyColors = {
+            'Clean': '#10b981',
+            'Diaper Change': '#f59e0b',
+            'Success': '#3b82f6'
+        };
+
         let reportContent = `
             <div style="text-align:center; border-bottom:4px solid #1e40af; padding-bottom:20px; margin-bottom:25px;">
                 <h1 style="color:#1e40af; font-size:36px; margin:0; font-family: 'Cairo', sans-serif;">Many Circles</h1>
                 <p style="font-size:18px; color:#64748b; margin:5px 0; font-family: 'Cairo', sans-serif;">تقرير يومي - ${selectedDay} ${mName} ${year}</p>
                 <div style="display:inline-block; border:2px solid #e2e8f0; padding:8px 30px; border-radius:15px; margin-top:10px; background:#f8fafc;">
-                    <span style="font-size:22px; font-weight:bold; color:#1e293b; font-family: 'Cairo', sans-serif;">${sName} ?</span>
+                    <span style="font-size:22px; font-weight:bold; color:#1e293b; font-family: 'Cairo', sans-serif;">${sName} 👶</span>
                 </div>
-            </div>
-            
+            </div>`;
+
+        reportContent += `
             <div style="margin-bottom:20px;">
-                <h3 style="color:#4f46e5; border-right:4px solid #4f46e5; padding-right:10px; font-family: 'Cairo', sans-serif;">?? الحالة المزاجية</h3>
+                <h3 style="color:#4f46e5; border-right:4px solid #4f46e5; padding-right:10px; font-family: 'Cairo', sans-serif;">😊 الحالة المزاجية</h3>
                 <div style="text-align:center; padding:15px; background:#f8fafc; border-radius:10px; margin-top:10px;">
-                    <span style="font-size:50px;">${reportData.mood ? moodEmojis[reportData.mood] : '??'}</span>
+                    <span style="font-size:50px;">${reportData.mood ? moodEmojis[reportData.mood] : '😊'}</span>
                     <p style="color:#64748b; font-weight:bold; margin-top:5px; font-family: 'Cairo', sans-serif;">
-                        ${reportData.mood ? getMoodText(reportData.mood) : 'لم يتم تحديد'}
+                        ${reportData.mood ? moodTexts[reportData.mood] || reportData.mood : 'لم يتم تحديد'}
                     </p>
                 </div>
-            </div>
-            
+            </div>`;
+
+        reportContent += `
             <div style="margin-bottom:20px;">
-                <h3 style="color:#0ea5e9; border-right:4px solid #0ea5e9; padding-right:10px; font-family: 'Cairo', sans-serif;">?? القيلولة</h3>
+                <h3 style="color:#0ea5e9; border-right:4px solid #0ea5e9; padding-right:10px; font-family: 'Cairo', sans-serif;">😴 القيلولة</h3>
                 <div style="display:flex; gap:15px; padding:15px; background:#f0f9ff; border-radius:10px; margin-top:10px; justify-content:center;">
                     <div style="text-align:center;">
                         <div style="font-size:12px; color:#64748b; margin-bottom:5px;">من</div>
@@ -1379,17 +1077,10 @@ async function exportDailyReportPDF() {
                 </div>
             </div>`;
 
-        // إضافة قسم العناية
         if (reportData.potty_status) {
-            const pottyColors = {
-                'Clean': '#10b981',
-                'Diaper Change': '#f59e0b',
-                'Success': '#3b82f6'
-            };
-            
             reportContent += `
                 <div style="margin-bottom:20px;">
-                    <h3 style="color:#3b82f6; border-right:4px solid #3b82f6; padding-right:10px; font-family: 'Cairo', sans-serif;">?? العناية</h3>
+                    <h3 style="color:#3b82f6; border-right:4px solid #3b82f6; padding-right:10px; font-family: 'Cairo', sans-serif;">🚽 العناية</h3>
                     <div style="padding:15px; background:#eff6ff; border-radius:10px; margin-top:10px;">
                         <div style="display:inline-block; padding:5px 15px; background:${pottyColors[reportData.potty_status] || '#64748b'}; color:white; border-radius:20px; font-weight:bold;">
                             ${reportData.potty_status}
@@ -1398,11 +1089,10 @@ async function exportDailyReportPDF() {
                 </div>`;
         }
 
-        // إضافة قسم الأنشطة
         if (reportData.activities && reportData.activities.length > 0) {
             reportContent += `
                 <div style="margin-bottom:20px;">
-                    <h3 style="color:#db2777; border-right:4px solid #db2777; padding-right:10px; font-family: 'Cairo', sans-serif;">?? الأنشطة</h3>
+                    <h3 style="color:#db2777; border-right:4px solid #db2777; padding-right:10px; font-family: 'Cairo', sans-serif;">🎨 الأنشطة</h3>
                     <div style="padding:15px; background:#fdf2f8; border-radius:10px; margin-top:10px; display:flex; flex-wrap:wrap; gap:8px;">
                         ${reportData.activities.map(activity => `
                             <span style="background:#fce7f3; color:#db2777; padding:5px 12px; border-radius:15px; font-weight:bold; font-size:14px;">
@@ -1413,11 +1103,10 @@ async function exportDailyReportPDF() {
                 </div>`;
         }
 
-        // إضافة قسم الملاحظات
         if (reportData.notes) {
             reportContent += `
                 <div style="margin-bottom:20px;">
-                    <h3 style="color:#f59e0b; border-right:4px solid #f59e0b; padding-right:10px; font-family: 'Cairo', sans-serif;">?? الملاحظات</h3>
+                    <h3 style="color:#f59e0b; border-right:4px solid #f59e0b; padding-right:10px; font-family: 'Cairo', sans-serif;">📝 الملاحظات</h3>
                     <div style="padding:15px; background:#fffbeb; border-radius:10px; margin-top:10px; border-right:3px solid #fbbf24;">
                         <p style="color:#92400e; font-size:16px; line-height:1.6; text-align:right; margin:0;">
                             ${reportData.notes}
@@ -1426,7 +1115,6 @@ async function exportDailyReportPDF() {
                 </div>`;
         }
 
-        // تذييل التقرير
         reportContent += `
             <div style="text-align:center; margin-top:40px; padding-top:20px; border-top:1px solid #e2e8f0;">
                 <div style="color:#94a3b8; font-size:14px; margin-bottom:10px; font-family: 'Cairo', sans-serif;">
@@ -1438,17 +1126,15 @@ async function exportDailyReportPDF() {
                     <span style="background:#8b5cf6; color:white; padding:3px 10px; border-radius:10px; font-size:12px;">${year}</span>
                 </div>
                 <p style="color:#64748b; font-size:12px; margin-top:15px;">
-                    ?? صنع بكل حب في فريق Many Circles
+                    ❤️ صنع بكل حب في فريق Many Circles
                 </p>
             </div>`;
 
         element.innerHTML = reportContent;
         document.body.appendChild(element);
 
-        // انتظار لضمان تحميل التنسيقات
         await new Promise(resolve => setTimeout(resolve, 800));
 
-        // تحويل HTML إلى Canvas ثم إلى PDF
         const canvas = await html2canvas(element, {
             scale: 2,
             useCORS: true,
@@ -1466,11 +1152,9 @@ async function exportDailyReportPDF() {
         let heightLeft = imgHeight;
         let position = 0;
 
-        // إضافة الصفحة الأولى
         pdf.addImage(imgData, 'JPEG', 0, position, imgWidth, imgHeight);
         heightLeft -= pageHeight;
 
-        // إضافة صفحات إضافية إذا كان المحتوى طويلاً
         while (heightLeft >= 0) {
             position = heightLeft - imgHeight;
             pdf.addPage();
@@ -1478,13 +1162,10 @@ async function exportDailyReportPDF() {
             heightLeft -= pageHeight;
         }
 
-        // حفظ الملف
         pdf.save(`ManyCircles_Daily_${sName}_${selectedDay}_${mName}.pdf`);
         
-        // تنظيف العنصر المؤقت
         document.body.removeChild(element);
-        
-        showToast("تم تحميل التقرير اليومي بنجاح! ?");
+        showToast("تم تحميل التقرير اليومي بنجاح! ✅");
 
     } catch (error) {
         console.error("خطأ في تصدير التقرير:", error);
@@ -1492,15 +1173,120 @@ async function exportDailyReportPDF() {
     }
 }
 
-// دالة مساعدة لتحويل الحالة المزاجية إلى نص عربي
-function getMoodText(mood) {
-    const moodTexts = {
-        'happy': 'سعيد ومبتهج',
-        'angry': 'غاضب أو متوتر',
-        'sad': 'حزين أو منزعج',
-        'naughty': 'مشاغب ونشيط'
-    };
-    return moodTexts[mood] || mood;
+function openDailySchedule() {
+    choiceScreen.classList.add('hidden');
+    openDays();
+}
+
+function showToast(message, type = 'success') {
+    const container = document.getElementById('toastContainer');
+    const toast = document.createElement('div');
+    
+    const bg = type === 'success' ? 'bg-emerald-600' : 'bg-red-600';
+    const icon = type === 'success' ? '✅' : '❌';
+
+    toast.className = `${bg} text-white px-6 py-4 rounded-2xl shadow-2xl toast flex items-center font-bold`;
+    toast.innerHTML = `<span>${icon}</span> <span>${message}</span>`;
+
+    container.appendChild(toast);
+
+    setTimeout(() => {
+        toast.classList.add('toast-fade-out');
+        setTimeout(() => toast.remove(), 500);
+    }, 3000);
+}
+function openPlanMenu(){ 
+    // إخفاء شاشة الاختيار
+    choiceScreen.classList.add('hidden'); 
+    
+    // إظهار قائمة المواد التعليمية
+    document.getElementById('subjectsMenu').classList.remove('hidden'); 
+    
+    // في حالة أنك تريد تحميل خطط سابقة للمادة المحددة:
+    // loadMonthlyPlan();
+}
+
+// دالة لتحميل الخطة الشهرية (إذا كنت تريد عرض بيانات سابقة)
+function loadMonthlyPlan() {
+    // هنا يمكنك جلب البيانات من Firebase للمادة الحالية
+    // مثلاً: db.ref(`MonthlyPlans/${sId}/${mName}`).once('value'...
+}
+
+// يمكنك إضافة دالة لفتح كل مادة
+function openSubject(subject) {
+    currentSubject = subject;
+    // يمكنك هنا تحميل الأهداف السابقة لهذه المادة
+    loadGoalsForSubject(subject);
+}
+
+// دالة لتحميل أهداف مادة معينة
+function loadGoalsForSubject(subject) {
+    db.ref(`MonthlyPlans/${sId}/${mName}/${subject}`).once('value')
+    .then(snapshot => {
+        const goals = snapshot.val();
+        // عرض الأهداف في الواجهة
+        displayGoals(goals);
+    });
+}
+
+// دالة لعرض الأهداف
+function displayGoals(goals) {
+    const container = document.getElementById('goalsContainer');
+    container.innerHTML = '';
+    
+    if (!goals) {
+        container.innerHTML = '<div class="text-center text-gray-500">لا توجد أهداف مسجلة</div>';
+        return;
+    }
+    
+    Object.entries(goals).forEach(([key, goal]) => {
+        const goalElement = document.createElement('div');
+        goalElement.className = 'goal-item p-3 border rounded-lg mb-2';
+        goalElement.innerHTML = `
+            <div class="flex justify-between">
+                <span>${goal.name}</span>
+                <div class="flex gap-2">
+                    <button onclick="editGoal('${key}')" class="text-blue-500">✏️</button>
+                    <button onclick="deleteGoal('${key}')" class="text-red-500">🗑️</button>
+                </div>
+            </div>
+            <div class="text-sm text-gray-600">
+                ${goal.score ? `النسبة: ${goal.score}` : ''}
+                ${goal.help ? ` | المساعدة: ${goal.help}` : ''}
+            </div>
+        `;
+        container.appendChild(goalElement);
+    });
+}
+
+// دالة لإضافة هدف جديد
+function addNewGoal(subject, goalData) {
+    const goalRef = db.ref(`MonthlyPlans/${sId}/${mName}/${subject}`).push();
+    goalRef.set(goalData)
+    .then(() => {
+        showToast("تم إضافة الهدف بنجاح ✅");
+        loadGoalsForSubject(subject);
+    })
+    .catch(error => {
+        showToast("حدث خطأ أثناء الإضافة ❌", "error");
+    });
+}
+
+// دالة لتعديل هدف
+function editGoal(goalId) {
+    // يمكنك هنا فتح نموذج التعديل
+    // وتعبئته بالبيانات الحالية
+}
+
+// دالة لحذف هدف
+function deleteGoal(goalId) {
+    if (confirm("هل أنت متأكد من حذف هذا الهدف؟")) {
+        db.ref(`MonthlyPlans/${sId}/${mName}/${currentSubject}/${goalId}`).remove()
+        .then(() => {
+            showToast("تم الحذف بنجاح 🗑️");
+            loadGoalsForSubject(currentSubject);
+        });
+    }
 }
 </script>
 </body>
