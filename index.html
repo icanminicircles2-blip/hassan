@@ -13,7 +13,6 @@
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700;900&display=swap" rel="stylesheet">
     
     <style>
-    
         body { font-family: 'Cairo', sans-serif; background-color: #f1f5f9; overflow-x: hidden; }
         .admin-page { background-color: #ffffff; min-height: 100vh; width: 100%; position: absolute; top: 0; left: 0; padding: 20px; z-index: 50; }
         .hidden { display: none !important; }
@@ -66,77 +65,31 @@
             margin-bottom: 20px;
             width: fit-content;
         }
-        <style>
-/* أضف هذه الأنماط */
-#cameraModal {
-    z-index: 9999;
-}
-
-#simpleCamera {
-    max-height: 70vh;
-    object-fit: cover;
-}
-
-@media (max-width: 768px) {
-    #simpleCamera {
-        max-height: 60vh;
-    }
-}
-
-/* زر التقاط للموبايل */
-.capture-btn {
-    width: 70px;
-    height: 70px;
-    background: white;
-    border-radius: 50%;
-    border: 4px solid #8b5cf6;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
-}
-
-.capture-btn:active {
-    transform: scale(0.95);
-}
-
-.capture-inner {
-    width: 50px;
-    height: 50px;
-    background: #ef4444;
-    border-radius: 50%;
-}
-
-/* رسائل للجهاز */
-.device-message {
-    display: none;
-    background: #fef3c7;
-    border: 2px solid #f59e0b;
-    border-radius: 1rem;
-    padding: 1rem;
-    margin: 1rem 0;
-    text-align: center;
-}
-
-.mobile-only {
-    display: none;
-}
-
-.desktop-only {
-    display: block;
-}
-
-@media (max-width: 768px) {
-    .mobile-only {
-        display: block;
-    }
-    
-    .desktop-only {
-        display: none;
-    }
-}
-</style>
+        #simpleCamera {
+            max-height: 70vh;
+            object-fit: cover;
+        }
+        .capture-btn {
+            width: 70px;
+            height: 70px;
+            background: white;
+            border-radius: 50%;
+            border: 4px solid #8b5cf6;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+        }
+        .capture-btn:active {
+            transform: scale(0.95);
+        }
+        .capture-inner {
+            width: 50px;
+            height: 50px;
+            background: #ef4444;
+            border-radius: 50%;
+        }
     </style>
 </head>
 <body>
@@ -442,21 +395,11 @@
             <!-- معرض صور بسيط -->
             <div id="simpleGallery" class="grid grid-cols-2 md:grid-cols-3 gap-4 mb-8 hidden"></div>
             
-            <!-- الأزرار -->
-            <div class="flex flex-col gap-4">
-                <!-- زر الكاميرا -->
-                <button onclick="openCamera()" class="p-6 bg-purple-600 text-white rounded-2xl font-bold shadow-lg hover:bg-purple-700 transition flex items-center justify-center gap-3">
-                    <span class="text-2xl">📷</span>
-                    <span>فتح الكاميرا</span>
-                </button>
-                
-                <!-- زر فتح الملفات -->
-                <button onclick="smartOpenCamera()" class="p-6 bg-purple-600 text-white rounded-2xl font-bold shadow-lg hover:bg-purple-700 transition flex items-center justify-center gap-3">
-    <span class="text-2xl">📷</span>
-    <span>فتح الكاميرا</span>
-</button>
-
-            </div>
+            <!-- زر الكاميرا فقط -->
+            <button onclick="openCamera()" class="p-6 bg-purple-600 text-white rounded-2xl font-bold shadow-lg hover:bg-purple-700 transition flex items-center justify-center gap-3 w-full">
+                <span class="text-2xl">📷</span>
+                <span>فتح الكاميرا</span>
+            </button>
         </div>
     </div>
 </div>
@@ -471,8 +414,8 @@
         <video id="simpleCamera" class="w-full max-w-2xl rounded-2xl bg-black" autoplay playsinline></video>
         
         <div class="mt-8">
-            <button onclick="takePhoto()" class="w-16 h-16 bg-white rounded-full flex items-center justify-center">
-                <div class="w-12 h-12 bg-red-500 rounded-full"></div>
+            <button onclick="takePhoto()" class="capture-btn">
+                <div class="capture-inner"></div>
             </button>
         </div>
     </div>
@@ -491,6 +434,25 @@ const firebaseConfig = {
 };
 firebase.initializeApp(firebaseConfig);
 const db = firebase.database();
+
+// رسالة المساعدة للموبايل (أول مرة فقط)
+if (!localStorage.getItem('cameraHelpShown')) {
+    setTimeout(() => {
+        const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+        
+        if (isMobile) {
+            alert("📱 **مهم للموبايل:**\n\n" +
+                  "للاتقاط صور على الموبايل:\n" +
+                  "1. اضغط 'فتح الكاميرا'\n" +
+                  "2. سيتحقق المتصفح من الصلاحيات\n" +
+                  "3. اضغط 'السماح' للكاميرا\n" +
+                  "4. إذا رفضت، اذهب لإعدادات المتصفح\n\n" +
+                  "بديل: استخدم زر الكاميرا فقط");
+        }
+        
+        localStorage.setItem('cameraHelpShown', 'true');
+    }, 2000);
+}
 
 // التعريفات الأساسية
 const MASTER_CODE = "2012";
@@ -526,7 +488,9 @@ function adminLogin() {
     if (ADMINS.includes(user) && pass === MASTER_CODE) {
         loginScreen.classList.add('hidden');
         dashboard.classList.remove('hidden');
-    } else { alert("بيانات الإدارة غير صحيحة"); }
+    } else { 
+        alert("بيانات الإدارة غير صحيحة"); 
+    }
 }
 
 // دالة دخول المعلمات
@@ -560,7 +524,10 @@ function openStudentsSection() {
 
     const backBtn = document.getElementById('backBtn');
     if (currentLoginType === 'admin') {
-        backBtn.onclick = () => { dashboard.classList.remove('hidden'); studentsSection.classList.add('hidden'); };
+        backBtn.onclick = () => { 
+            dashboard.classList.remove('hidden'); 
+            studentsSection.classList.add('hidden'); 
+        };
     } else {
         backBtn.onclick = () => location.reload();
     }
@@ -702,7 +669,7 @@ function openPlanMenu(){
 }
 
 // دالة فتح الصور اليومية
-async function openDailyCameraDirect() {
+function openDailyCameraDirect() {
     choiceScreen.classList.add('hidden');
     document.getElementById('dailyCameraSimple').classList.remove('hidden');
     
@@ -711,30 +678,10 @@ async function openDailyCameraDirect() {
     document.getElementById('simpleDate').textContent = 
         `${sName} - ${today.toLocaleDateString('ar-EG')}`;
     
-    // نضيف رسالة حسب الجهاز
-    const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
-    
-    if (isMobile) {
-        // نضيف نص إرشادي للموبايل
-        const helpDiv = document.createElement('div');
-        helpDiv.className = 'bg-blue-50 text-blue-800 p-4 rounded-xl mb-6 text-sm text-center';
-        helpDiv.innerHTML = `
-            📱 <strong>إرشادات الموبايل:</strong><br>
-            1. اضغط "فتح الكاميرا" للتصوير المباشر<br>
-            2. أو "فتح معرض الصور" لاختيار صورة<br>
-            3. تأكد من السماح باستخدام الكاميرا
-        `;
-        
-        const container = document.querySelector('#dailyCameraSimple .bg-white');
-        const existingHelp = container.querySelector('.bg-blue-50');
-        if (!existingHelp) {
-            container.insertBefore(helpDiv, container.querySelector('#noPhotosSimple'));
-        }
-    }
-    
     // تحميل صور اليوم
     loadTodayPhotos();
 }
+
 // دالة تحميل صور اليوم
 async function loadTodayPhotos() {
     const today = new Date();
@@ -788,8 +735,7 @@ async function loadTodayPhotos() {
     }
 }
 
-// دالة فتح الكاميرا
-// دالة فتح الكاميرا - النسخة المعدلة للموبايل واللابتوب
+// دالة فتح الكاميرا الذكية (تعمل على جميع الأجهزة)
 async function openCamera() {
     document.getElementById('cameraModal').classList.remove('hidden');
     
@@ -829,7 +775,7 @@ async function openCamera() {
     } catch (error) {
         console.error('خطأ في تشغيل الكاميرا:', error);
         
-        // رسائل خطأ مختلفة للموبايل واللابتوب
+        // رسائل خطأ
         if (error.name === 'NotAllowedError' || error.name === 'PermissionDeniedError') {
             alert("⛔ تم رفض الإذن!\n\n" +
                   "على الموبايل:\n" +
@@ -838,8 +784,7 @@ async function openCamera() {
                   "3. أذن باستخدام الكاميرا\n\n" +
                   "على الكمبيوتر:\n" +
                   "1. اضغط على أيقونة الكاميرا في شريط العنوان\n" +
-                  "2. اختر 'السماح'\n" +
-                  "3. أو اذهب لإعدادات المتصفح");
+                  "2. اختر 'السماح'");
         } else if (error.name === 'NotFoundError' || error.name === 'DevicesNotFoundError') {
             alert("📷 لم يتم العثور على كاميرا!\n\n" +
                   "تأكد من:\n" +
@@ -853,16 +798,13 @@ async function openCamera() {
                   "2. المتصفح نفسه في تبويب آخر\n" +
                   "3. أغلقت التطبيقات الأخرى وحاول مرة أخرى");
         } else {
-            alert("❌ خطأ تقني: " + error.message + "\n\n" +
-                  "جرب:\n" +
-                  "1. تحديث الصفحة (F5)\n" +
-                  "2. إعادة تشغيل المتصفح\n" +
-                  "3. استخدام متصفح آخر");
+            alert("❌ خطأ تقني: " + error.message);
         }
         
         closeCameraModal();
     }
 }
+
 // دالة التقاط صورة
 function takePhoto() {
     const video = document.getElementById('simpleCamera');
@@ -924,26 +866,6 @@ function deleteSimplePhoto(date, photoId) {
     }
 }
 
-// دالة فتح معرض الصور
-function openGallery() {
-    const input = document.createElement('input');
-    input.type = 'file';
-    input.accept = 'image/*';
-    
-    input.onchange = (event) => {
-        const file = event.target.files[0];
-        if (file) {
-            const reader = new FileReader();
-            reader.onload = (e) => {
-                saveSimplePhoto(e.target.result);
-            };
-            reader.readAsDataURL(file);
-        }
-    };
-    
-    input.click();
-}
-
 // دالة إغلاق نافذة الكاميرا
 function closeCameraModal() {
     document.getElementById('cameraModal').classList.add('hidden');
@@ -981,7 +903,9 @@ function addTeacher() {
             document.getElementById('teacherPass').value = "";
             alert("تم إضافة المعلمة بنجاح ✅");
         });
-    } else { alert("برجاء ملء جميع البيانات"); }
+    } else { 
+        alert("برجاء ملء جميع البيانات"); 
+    }
 }
 
 // دالة تحميل المعلمات
@@ -1604,110 +1528,6 @@ function toggleGoalForm(show) {
         form.classList.add('hidden');
         addBtn.classList.remove('hidden');
         document.getElementById('goalName').value = "";
-    }
-}
-// دالة ذكية لفتح الكاميرا أو المعرض حسب الجهاز
-function smartOpenCamera() {
-    // التحقق إذا كان على موبايل
-    const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
-    
-    if (isMobile) {
-        // على الموبايل: نعطي خيارين
-        const choice = confirm("📱 على الموبايل:\n\n" +
-                              "• 'موافق' لفتح الكاميرا\n" +
-                              "• 'إلغاء' لفتح المعرض\n\n" +
-                              "اختر الطريقة المناسبة:");
-        
-        if (choice) {
-            openCamera(); // فتح الكاميرا
-        } else {
-            openGalleryMobile(); // فتح المعرض بطريقة الموبايل
-        }
-    } else {
-        // على الكمبيوتر: نفتح مباشرة
-        openCamera();
-    }
-}
-
-// دالة فتح المعرض للموبايل
-function openGalleryMobile() {
-    const input = document.createElement('input');
-    input.type = 'file';
-    input.accept = 'image/*';
-    
-    // للموبايل نضيف capture للكاميرا
-    if (/iPhone|iPad|iPod/i.test(navigator.userAgent)) {
-        // iOS
-        input.setAttribute('capture', 'environment'); // كاميرا خلفية
-    } else if (/Android/i.test(navigator.userAgent)) {
-        // أندرويد
-        input.setAttribute('capture', 'environment');
-    }
-    
-    input.onchange = (event) => {
-        const file = event.target.files[0];
-        if (file) {
-            // نعرض معاينة الصورة
-            const reader = new FileReader();
-            reader.onload = (e) => {
-                previewAndSavePhoto(e.target.result);
-            };
-            reader.readAsDataURL(file);
-        }
-    };
-    
-    input.click();
-}
-
-// دالة معاينة وحفظ الصورة
-function previewAndSavePhoto(photoUrl) {
-    // نعرض معاينة للصورة
-    const preview = confirm("هل تريد حفظ هذه الصورة؟\n\n" +
-                          "• 'موافق' للحفظ\n" +
-                          "• 'إلغاء' للاختيار صورة أخرى");
-    
-    if (preview) {
-        saveSimplePhoto(photoUrl);
-    } else {
-        openGalleryMobile(); // نعيد فتح المعرض
-    }
-}
-// دالة للتحقق من صلاحيات الكاميرا
-async function checkCameraPermission() {
-    try {
-        // نتحقق من صلاحيات الكاميرا
-        const permissionStatus = await navigator.permissions.query({ name: 'camera' });
-        
-        if (permissionStatus.state === 'granted') {
-            console.log('الكاميرا مسموحة ✅');
-            return true;
-        } else if (permissionStatus.state === 'prompt') {
-            console.log('يجب طلب إذن الكاميرا');
-            return false;
-        } else {
-            console.log('الكاميرا مرفوضة ❌');
-            showToast("يجب السماح باستخدام الكاميرا من إعدادات المتصفح", "error");
-            return false;
-        }
-    } catch (error) {
-        console.log('لا يمكن التحقق من الصلاحيات:', error);
-        return false;
-    }
-}
-
-// دالة طلب إذن الكاميرا
-async function requestCameraPermission() {
-    try {
-        // نطلب إذن باستخدام كاميرا وهمية
-        const stream = await navigator.mediaDevices.getUserMedia({ 
-            video: { width: 1, height: 1 } 
-        });
-        
-        // نتوقف فوراً
-        stream.getTracks().forEach(track => track.stop());
-        return true;
-    } catch (error) {
-        return false;
     }
 }
 </script>
