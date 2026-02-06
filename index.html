@@ -90,6 +90,27 @@
             background: #ef4444;
             border-radius: 50%;
         }
+        /* إضافة في الـ style */
+.month-report-btn {
+    background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
+    color: white;
+    font-weight: bold;
+    padding: 1rem 2rem;
+    border-radius: 1rem;
+    border: none;
+    cursor: pointer;
+    transition: all 0.3s;
+    box-shadow: 0 4px 15px rgba(79, 70, 229, 0.3);
+}
+
+.month-report-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(79, 70, 229, 0.4);
+}
+
+.month-report-btn:active {
+    transform: translateY(0);
+}
     </style>
 </head>
 <body>
@@ -280,14 +301,23 @@
 </div>
 
 <!-- الأيام -->
+<!-- في ملف HTML، بعد زر الرجوع في شاشة الأيام -->
 <div id="daysScreen" class="admin-page hidden text-center">
-    <button onclick="daysScreen.classList.add('hidden'); choiceScreen.classList.remove('hidden')" class="mb-8 text-blue-600 font-bold float-right">◀️ رجوع</button>
     <div class="max-w-4xl mx-auto pt-10">
+        <button onclick="daysScreen.classList.add('hidden'); choiceScreen.classList.remove('hidden')" class="mb-8 text-blue-600 font-bold float-right">◀️ رجوع</button>
+        
+        <!-- إضافة زر تصدير تقرير الشهر -->
+        <div class="text-center mb-8">
+            <button onclick="exportMonthReportPDF()" class="p-6 bg-indigo-600 text-white rounded-2xl font-bold shadow-lg hover:bg-indigo-700 transition inline-flex items-center gap-3">
+                <span class="text-2xl">📊</span>
+                <span>تصدير تقرير الشهر كاملاً</span>
+            </button>
+        </div>
+        
         <h2 class="text-3xl font-black mb-4 text-blue-600" id="currentMonthTitle"></h2>
         <div id="daysGrid" class="grid grid-cols-5 md:grid-cols-7 gap-3 px-4"></div>
     </div>
 </div>
-
 <!-- Follow Up -->
 <div id="followUpScreen" class="admin-page hidden overflow-y-auto bg-slate-50">
     <div class="max-w-2xl mx-auto pb-20 p-4">
@@ -1528,6 +1558,343 @@ function toggleGoalForm(show) {
         form.classList.add('hidden');
         addBtn.classList.remove('hidden');
         document.getElementById('goalName').value = "";
+    }
+}
+// دالة تصدير تقرير الشهر كاملاً
+async function exportMonthReportPDF() {
+    showToast("جاري تجميع تقارير شهر " + mName + "... ⏳");
+
+    try {
+        const year = 2026;
+        const monthIdx = monthsArr.indexOf(mName);
+        const monthNum = (monthIdx + 1).toString().padStart(2, '0');
+        
+        // جلب جميع تقارير الشهر
+        const snapshot = await db.ref(`DailyReports/${sId}`).once('value');
+        const allReports = snapshot.val() || {};
+        
+        // تصفية تقارير الشهر الحالي فقط
+        const monthReports = {};
+        Object.keys(allReports).forEach(date => {
+            if (date.startsWith(`${year}-${monthNum}`)) {
+                monthReports[date] = allReports[date];
+            }
+        });
+        
+        if (Object.keys(monthReports).length === 0) {
+            showToast("لا توجد تقارير لهذا الشهر!", "error");
+            return;
+        }
+        
+        // إنشاء حاوية التقرير الشهري
+        const element = document.createElement('div');
+        element.style.width = '800px';
+        element.style.padding = '30px';
+        element.style.backgroundColor = 'white';
+        element.style.position = 'absolute';
+        element.style.top = '0';
+        element.style.left = '-2000px';
+        element.setAttribute('dir', 'rtl');
+        
+        // رأس التقرير
+        let reportContent = `
+            <div style="text-align:center; border-bottom:4px solid #1e40af; padding-bottom:20px; margin-bottom:30px;">
+                <h1 style="color:#1e40af; font-size:42px; margin:0; font-family: 'Cairo', sans-serif;">Many Circles</h1>
+                <p style="font-size:22px; color:#64748b; margin:5px 0; font-weight:bold;">تقرير شهري شامل</p>
+                <p style="font-size:18px; color:#94a3b8; margin:5px 0;">شهر ${mName} ${year}</p>
+                <div style="display:inline-block; border:2px solid #e2e8f0; padding:12px 50px; border-radius:25px; margin-top:15px; background:#f8fafc;">
+                    <span style="font-size:28px; font-weight:bold; color:#1e293b;">${sName} 👶</span>
+                </div>
+            </div>
+            
+            <div style="display:flex; justify-content:space-between; background:#f1f5f9; padding:15px; border-radius:15px; margin-bottom:25px;">
+                <div style="text-align:center;">
+                    <p style="font-size:14px; color:#64748b; margin:0;">عدد الأيام</p>
+                    <p style="font-size:24px; font-weight:bold; color:#3b82f6;">${Object.keys(monthReports).length}</p>
+                </div>
+                <div style="text-align:center;">
+                    <p style="font-size:14px; color:#64748b; margin:0;">الفترة</p>
+                    <p style="font-size:18px; font-weight:bold; color:#10b981;">01/${monthNum} - ${Object.keys(monthReports).length}/${monthNum}</p>
+                </div>
+                <div style="text-align:center;">
+                    <p style="font-size:14px; color:#64748b; margin:0;">تاريخ الإصدار</p>
+                    <p style="font-size:16px; font-weight:bold; color:#8b5cf6;">${new Date().toLocaleDateString('ar-EG')}</p>
+                </div>
+            </div>`;
+        
+        // ترتيب الأيام تصاعدياً
+        const sortedDates = Object.keys(monthReports).sort();
+        
+        // إحصائيات شهرية
+        let happyDays = 0, angryDays = 0, sadDays = 0, naughtyDays = 0;
+        let totalActivities = 0;
+        const activitiesCount = {};
+        
+        sortedDates.forEach(date => {
+            const report = monthReports[date];
+            const day = date.split('-')[2];
+            
+            // عد الحالات المزاجية
+            if (report.mood === 'happy') happyDays++;
+            else if (report.mood === 'angry') angryDays++;
+            else if (report.mood === 'sad') sadDays++;
+            else if (report.mood === 'naughty') naughtyDays++;
+            
+            // عد الأنشطة
+            if (report.activities) {
+                totalActivities += report.activities.length;
+                report.activities.forEach(activity => {
+                    activitiesCount[activity] = (activitiesCount[activity] || 0) + 1;
+                });
+            }
+        });
+        
+        // قسم الإحصائيات
+        reportContent += `
+            <div style="margin-bottom:30px; background:#fef3c7; border:2px solid #f59e0b; border-radius:15px; padding:20px;">
+                <h3 style="color:#92400e; border-right:4px solid #d97706; padding-right:10px; margin-bottom:15px; font-family: 'Cairo', sans-serif;">📊 إحصائيات شهرية</h3>
+                <div style="display:grid; grid-template-columns:repeat(4, 1fr); gap:10px; text-align:center;">
+                    <div style="background:white; padding:10px; border-radius:10px;">
+                        <p style="color:#3b82f6; font-size:18px; font-weight:bold; margin:0;">${happyDays}</p>
+                        <p style="color:#64748b; font-size:12px; margin:0;">😊 أيام سعيدة</p>
+                    </div>
+                    <div style="background:white; padding:10px; border-radius:10px;">
+                        <p style="color:#ef4444; font-size:18px; font-weight:bold; margin:0;">${angryDays}</p>
+                        <p style="color:#64748b; font-size:12px; margin:0;">😠 أيام غاضبة</p>
+                    </div>
+                    <div style="background:white; padding:10px; border-radius:10px;">
+                        <p style="color:#8b5cf6; font-size:18px; font-weight:bold; margin:0;">${sadDays}</p>
+                        <p style="color:#64748b; font-size:12px; margin:0;">😢 أيام حزينة</p>
+                    </div>
+                    <div style="background:white; padding:10px; border-radius:10px;">
+                        <p style="color:#db2777; font-size:18px; font-weight:bold; margin:0;">${naughtyDays}</p>
+                        <p style="color:#64748b; font-size:12px; margin:0;">😈 أيام مشاغبة</p>
+                    </div>
+                </div>
+                <div style="margin-top:15px; text-align:center;">
+                    <p style="color:#64748b; font-size:14px; margin:5px 0;">إجمالي الأنشطة: <span style="font-weight:bold; color:#059669;">${totalActivities}</span></p>
+                </div>
+            </div>`;
+        
+        // الأنشطة الأكثر تكراراً
+        if (Object.keys(activitiesCount).length > 0) {
+            const sortedActivities = Object.entries(activitiesCount)
+                .sort((a, b) => b[1] - a[1])
+                .slice(0, 5); // أول 5 أنشطة
+            
+            reportContent += `
+                <div style="margin-bottom:30px; background:#ecfdf5; border:2px solid #10b981; border-radius:15px; padding:20px;">
+                    <h3 style="color:#047857; border-right:4px solid #10b981; padding-right:10px; margin-bottom:15px; font-family: 'Cairo', sans-serif;">🏆 الأنشطة الأكثر تكراراً</h3>
+                    <div style="display:grid; grid-template-columns:repeat(2, 1fr); gap:10px;">`;
+            
+            sortedActivities.forEach(([activity, count]) => {
+                const percentage = Math.round((count / Object.keys(monthReports).length) * 100);
+                reportContent += `
+                    <div style="background:white; padding:12px; border-radius:10px; display:flex; justify-content:space-between; align-items:center;">
+                        <span style="font-weight:bold; color:#1e293b;">${activity}</span>
+                        <div style="text-align:left;">
+                            <span style="font-size:20px; font-weight:bold; color:#059669;">${count}</span>
+                            <span style="font-size:12px; color:#94a3b8; margin-right:5px;">مرة</span>
+                        </div>
+                    </div>`;
+            });
+            
+            reportContent += `</div></div>`;
+        }
+        
+        // تقارير الأيام المفصلة
+        reportContent += `
+            <div style="margin-bottom:30px;">
+                <h3 style="color:#1e40af; border-right:4px solid #3b82f6; padding-right:10px; margin-bottom:20px; font-family: 'Cairo', sans-serif; font-size:22px;">📅 التقارير اليومية المفصلة</h3>`;
+        
+        // ترتيب الإيموجي حسب الحالة المزاجية
+        const moodEmojis = {
+            'happy': '😊',
+            'angry': '😠', 
+            'sad': '😢',
+            'naughty': '😈'
+        };
+        
+        const moodColors = {
+            'happy': '#10b981',
+            'angry': '#ef4444',
+            'sad': '#8b5cf6',
+            'naughty': '#db2777'
+        };
+        
+        // عرض كل يوم
+        sortedDates.forEach((date, index) => {
+            const report = monthReports[date];
+            const day = date.split('-')[2];
+            const moodColor = report.mood ? moodColors[report.mood] : '#94a3b8';
+            
+            reportContent += `
+                <div style="margin-bottom:25px; border:2px solid ${moodColor}; border-radius:15px; overflow:hidden; background:white; page-break-inside: avoid;">
+                    <div style="background:${moodColor}; color:white; padding:15px; display:flex; justify-content:space-between; align-items:center;">
+                        <div>
+                            <h4 style="margin:0; font-size:20px; font-weight:bold;">يوم ${day} ${mName}</h4>
+                            <p style="margin:0; font-size:12px; opacity:0.9;">${date}</p>
+                        </div>
+                        <div style="text-align:center;">
+                            <div style="font-size:40px;">${report.mood ? moodEmojis[report.mood] : '😊'}</div>
+                            <p style="margin:0; font-size:12px;">${getMoodArabic(report.mood)}</p>
+                        </div>
+                    </div>
+                    
+                    <div style="padding:20px;">
+                        <div style="display:grid; grid-template-columns:repeat(2, 1fr); gap:15px; margin-bottom:15px;">`;
+            
+            // القيلولة
+            if (report.nap_from || report.nap_to) {
+                reportContent += `
+                    <div style="background:#f0f9ff; padding:12px; border-radius:10px;">
+                        <p style="margin:0 0 5px 0; color:#0369a1; font-weight:bold;">😴 القيلولة</p>
+                        <p style="margin:0; color:#0c4a6e;">${report.nap_from || '--'} → ${report.nap_to || '--'}</p>
+                    </div>`;
+            }
+            
+            // العناية
+            if (report.potty_status) {
+                const pottyColors = {
+                    'Clean': '#10b981',
+                    'Diaper Change': '#f59e0b',
+                    'Success': '#3b82f6'
+                };
+                reportContent += `
+                    <div style="background:#eff6ff; padding:12px; border-radius:10px;">
+                        <p style="margin:0 0 5px 0; color:#1d4ed8; font-weight:bold;">🚽 العناية</p>
+                        <div style="display:inline-block; padding:3px 10px; background:${pottyColors[report.potty_status] || '#64748b'}; color:white; border-radius:15px; font-size:12px;">
+                            ${report.potty_status}
+                        </div>
+                    </div>`;
+            }
+            
+            reportContent += `</div>`;
+            
+            // الأنشطة
+            if (report.activities && report.activities.length > 0) {
+                reportContent += `
+                    <div style="background:#fdf2f8; padding:15px; border-radius:10px; margin-bottom:15px;">
+                        <p style="margin:0 0 8px 0; color:#db2777; font-weight:bold;">🎨 الأنشطة</p>
+                        <div style="display:flex; flex-wrap:wrap; gap:8px;">`;
+                
+                report.activities.forEach(activity => {
+                    reportContent += `
+                        <span style="background:#fce7f3; color:#db2777; padding:5px 12px; border-radius:15px; font-size:12px; font-weight:bold;">
+                            ${activity}
+                        </span>`;
+                });
+                
+                reportContent += `</div></div>`;
+            }
+            
+            // الملاحظات
+            if (report.notes) {
+                reportContent += `
+                    <div style="background:#fffbeb; padding:15px; border-radius:10px; border-right:3px solid #fbbf24;">
+                        <p style="margin:0 0 8px 0; color:#92400e; font-weight:bold;">📝 ملاحظات المعلمة</p>
+                        <p style="margin:0; color:#78350f; line-height:1.6; text-align:right;">
+                            ${report.notes}
+                        </p>
+                    </div>`;
+            }
+            
+            reportContent += `</div></div>`;
+            
+            // فاصل بين الأيام
+            if (index < sortedDates.length - 1) {
+                reportContent += `<div style="border-bottom:1px dashed #e2e8f0; margin:20px 0;"></div>`;
+            }
+        });
+        
+        // تذييل التقرير
+        reportContent += `
+            <div style="text-align:center; margin-top:40px; padding-top:20px; border-top:2px solid #e2e8f0;">
+                <div style="display:inline-block; background:#f8fafc; padding:15px 30px; border-radius:20px; margin-bottom:15px;">
+                    <p style="margin:0; color:#475569; font-weight:bold; font-size:16px;">ملخص أداء ${sName} في شهر ${mName}</p>
+                    <p style="margin:5px 0 0 0; color:#94a3b8; font-size:14px;">${getPerformanceSummary(happyDays, Object.keys(monthReports).length)}</p>
+                </div>
+                <div style="color:#64748b; font-size:14px; margin-top:20px;">
+                    <p style="margin:5px 0;">📅 تاريخ الإنشاء: ${new Date().toLocaleDateString('ar-EG')} ${new Date().toLocaleTimeString('ar-EG')}</p>
+                    <p style="margin:5px 0;">📊 عدد التقارير: ${Object.keys(monthReports).length} تقرير</p>
+                    <p style="margin:5px 0;">👨‍🏫 تم الإنشاء بواسطة: ${currentLoginType === 'admin' ? 'الإدارة' : 'المعلمة'}</p>
+                </div>
+                <div style="background:#1e40af; color:white; padding:10px; border-radius:10px; margin-top:15px; display:inline-block;">
+                    <p style="margin:0; font-weight:bold;">✨ فريق Many Circles ✨</p>
+                </div>
+            </div>`;
+        
+        element.innerHTML = reportContent;
+        document.body.appendChild(element);
+        
+        // انتظار تحميل المحتوى
+        await new Promise(resolve => setTimeout(resolve, 1000));
+        
+        // تحويل إلى PDF
+        const canvas = await html2canvas(element, {
+            scale: 2,
+            useCORS: true,
+            backgroundColor: "#ffffff",
+            logging: false
+        });
+        
+        const imgData = canvas.toDataURL('image/jpeg', 1.0);
+        const { jsPDF } = window.jspdf;
+        const pdf = new jsPDF('p', 'mm', 'a4');
+        
+        const imgWidth = 210;
+        const pageHeight = 295;
+        const imgHeight = (canvas.height * imgWidth) / canvas.width;
+        let heightLeft = imgHeight;
+        let position = 0;
+        
+        pdf.addImage(imgData, 'JPEG', 0, position, imgWidth, imgHeight);
+        heightLeft -= pageHeight;
+        
+        // إضافة صفحات إضافية
+        while (heightLeft >= 0) {
+            position = heightLeft - imgHeight;
+            pdf.addPage();
+            pdf.addImage(imgData, 'JPEG', 0, position, imgWidth, imgHeight);
+            heightLeft -= pageHeight;
+        }
+        
+        // حفظ الملف
+        pdf.save(`ManyCircles_Monthly_Report_${sName}_${mName}_${year}.pdf`);
+        
+        // تنظيف
+        document.body.removeChild(element);
+        showToast("تم تصدير تقرير الشهر بنجاح! 📊");
+        
+    } catch (error) {
+        console.error("خطأ في تصدير تقرير الشهر:", error);
+        showToast("حدث خطأ أثناء إنشاء التقرير الشهري", "error");
+    }
+}
+
+// دالة مساعدة للحصول على اسم الحالة المزاجية بالعربي
+function getMoodArabic(mood) {
+    const moods = {
+        'happy': 'سعيد ومبتهج',
+        'angry': 'غاضب أو متوتر',
+        'sad': 'حزين أو منزعج',
+        'naughty': 'مشاغب ونشيط'
+    };
+    return moods[mood] || 'لم يتم التحديد';
+}
+
+// دالة للحصول على ملخص الأداء
+function getPerformanceSummary(happyDays, totalDays) {
+    const percentage = Math.round((happyDays / totalDays) * 100);
+    
+    if (percentage >= 80) {
+        return `أداء ممتاز! ${percentage}% من الأيام كانت سعيدة 🎉`;
+    } else if (percentage >= 60) {
+        return `أداء جيد جداً! ${percentage}% من الأيام كانت سعيدة 😊`;
+    } else if (percentage >= 40) {
+        return `أداء متوسط! ${percentage}% من الأيام كانت سعيدة 👍`;
+    } else {
+        return `يحتاج إلى تحسين! ${percentage}% من الأيام كانت سعيدة 🤔`;
     }
 }
 </script>
