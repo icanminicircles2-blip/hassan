@@ -137,6 +137,61 @@
     background: linear-gradient(135deg, #ddd6fe 0%, #c4b5fd 100%);
     transform: scale(1.02);
 }
+/* أضف في الـ style */
+.trash-empty-btn {
+    background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+    color: white;
+    font-weight: bold;
+    padding: 1.5rem 2rem;
+    border-radius: 1.5rem;
+    border: none;
+    cursor: pointer;
+    transition: all 0.3s;
+    box-shadow: 0 4px 15px rgba(239, 68, 68, 0.3);
+    width: 100%;
+}
+
+.trash-empty-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(239, 68, 68, 0.4);
+    background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%);
+}
+
+.trash-empty-btn:active {
+    transform: translateY(0);
+}
+
+.trash-empty-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    transform: none;
+}
+
+.trash-item {
+    transition: all 0.3s;
+    animation: slideInRight 0.5s ease-out;
+}
+
+@keyframes slideInRight {
+    from {
+        transform: translateX(30px);
+        opacity: 0;
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+.empty-trash-animation {
+    animation: pulseRed 2s infinite;
+}
+
+@keyframes pulseRed {
+    0% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.7); }
+    70% { box-shadow: 0 0 0 10px rgba(239, 68, 68, 0); }
+    100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); }
+}
     </style>
 </head>
 <body>
@@ -179,33 +234,26 @@
             <div class="text-6xl mb-4">👩‍🏫</div><h3 class="text-2xl font-black text-emerald-600">👩‍🏫 مدرس جديد</h3>
         </div>
     </div>
-    <div class="max-w-4xl mx-auto bg-white rounded-[2.5rem] shadow-xl p-8 mb-8 border-t-8 border-indigo-500">
-        <h3 class="text-2xl font-black mb-6 text-indigo-600">📦 النسخ الاحتياطي والاستعادة</h3>
-        
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <!-- زر 1: نسخ احتياطي PDF -->
-            <button onclick="createPDFBackup()" class="p-8 bg-gradient-to-br from-blue-500 to-indigo-600 text-white rounded-2xl font-bold shadow-lg hover:scale-105 transition flex flex-col items-center justify-center gap-3">
-                <span class="text-4xl">📄</span>
-                <span>نسخ احتياطي PDF</span>
-                <span class="text-sm opacity-80">حفظ كملف PDF</span>
-            </button>
-            
-            <!-- زر 2: نسخ احتياطي JSON -->
-            <button onclick="createJSONBackup()" class="p-8 bg-gradient-to-br from-emerald-500 to-green-600 text-white rounded-2xl font-bold shadow-lg hover:scale-105 transition flex flex-col items-center justify-center gap-3">
-                <span class="text-4xl">📊</span>
-                <span>نسخ احتياطي JSON</span>
-                <span class="text-sm opacity-80">حفظ كملف JSON</span>
-            </button>
-            
-            <!-- زر 3: استعادة -->
-            <button onclick="openRestoreMenu()" class="p-8 bg-gradient-to-br from-purple-500 to-pink-600 text-white rounded-2xl font-bold shadow-lg hover:scale-105 transition flex flex-col items-center justify-center gap-3">
-                <span class="text-4xl">🔄</span>
-                <span>استعادة البيانات</span>
-                <span class="text-sm opacity-80">تحميل من ملف</span>
-            </button>
-        </div>
-    </div>
+    <!-- قسم النسخ الاحتياطي المعدل -->
+<div class="max-w-4xl mx-auto bg-white rounded-[2.5rem] shadow-xl p-8 mb-8 border-t-8 border-indigo-500">
+    <h3 class="text-2xl font-black mb-6 text-indigo-600">📦 النسخ الاحتياطي والاستعادة</h3>
     
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <!-- نسخ احتياطي JSON فقط -->
+        <button onclick="createJSONBackup()" class="p-8 bg-gradient-to-br from-emerald-500 to-green-600 text-white rounded-2xl font-bold shadow-lg hover:scale-105 transition flex flex-col items-center justify-center gap-3">
+            <span class="text-4xl">📊</span>
+            <span>نسخ احتياطي JSON</span>
+            <span class="text-sm opacity-80">حفظ جميع البيانات في ملف واحد</span>
+        </button>
+        
+        <!-- استعادة -->
+        <button onclick="openRestoreMenu()" class="p-8 bg-gradient-to-br from-purple-500 to-pink-600 text-white rounded-2xl font-bold shadow-lg hover:scale-105 transition flex flex-col items-center justify-center gap-3">
+            <span class="text-4xl">🔄</span>
+            <span>استعادة البيانات</span>
+            <span class="text-sm opacity-80">تحميل من ملف JSON</span>
+        </button>
+    </div>
+</div>
     <button onclick="location.reload()" class="mt-12 text-red-500 font-bold underline">🚪 تسجيل خروج</button>
 </div>
     <button onclick="location.reload()" class="mt-12 text-red-500 font-bold underline">🚪 تسجيل خروج</button>
@@ -434,11 +482,30 @@
 </div>
 
 <!-- السلة -->
+<!-- شاشة السلة المعدلة -->
 <div id="trashScreen" class="admin-page hidden bg-slate-50 text-center">
     <div class="max-w-2xl mx-auto p-4">
         <button onclick="document.getElementById('trashScreen').classList.add('hidden'); document.getElementById('studentsSection').classList.remove('hidden')" class="font-bold text-blue-600 mb-8 block text-right">🏠 عودة</button>
         <h2 class="text-3xl font-black text-red-600 mb-8">🗑️ المحذوفات</h2>
+        
+        <!-- زر مسح السلة بالكامل -->
+        <div class="mb-8">
+            <button onclick="emptyTrash()" class="p-6 bg-gradient-to-br from-red-500 to-rose-600 text-white rounded-2xl font-bold shadow-lg hover:scale-105 transition flex items-center justify-center gap-3 w-full">
+                <span class="text-2xl">🔥</span>
+                <span>مسح السلة بالكامل</span>
+            </button>
+            <p class="text-slate-500 text-sm mt-2">سيتم حذف جميع المحذوفات نهائياً ولا يمكن استعادتها</p>
+        </div>
+        
+        <!-- قائمة المحذوفات -->
         <div id="trashStudentsList" class="space-y-3"></div>
+        
+        <!-- رسالة إذا كانت السلة فارغة -->
+        <div id="emptyTrashMessage" class="hidden p-8 text-center">
+            <div class="text-5xl mb-4">✅</div>
+            <p class="text-slate-600 font-bold text-lg">السلة فارغة</p>
+            <p class="text-slate-400 mt-2">لا توجد عناصر محذوفة</p>
+        </div>
     </div>
 </div>
 
@@ -2106,8 +2173,9 @@ async function createPDFBackup() {
 }
 
 // ==================== النسخ الاحتياطي JSON ====================
+// دالة نسخ احتياطي JSON محسنة
 async function createJSONBackup() {
-    showToast("جاري إنشاء نسخة احتياطية JSON... ⏳");
+    showToast("جاري إنشاء نسخة احتياطية شاملة... ⏳");
     
     try {
         // جمع جميع البيانات من Firebase
@@ -2115,39 +2183,55 @@ async function createJSONBackup() {
         
         // إضافة معلومات النسخة
         backupData.metadata = {
-            version: "1.0",
+            version: "2.0",
             system: "Many Circles",
             exportDate: new Date().toISOString(),
             exportDateArabic: new Date().toLocaleDateString('ar-EG'),
             exportTime: new Date().toLocaleTimeString('ar-EG'),
             exportedBy: currentLoginType,
-            totalRecords: backupData.stats.totalRecords
+            totalRecords: backupData.stats.totalRecords,
+            notes: "نسخة احتياطية شاملة - أنشئت تلقائياً"
         };
         
-        // تحويل إلى JSON
-        const jsonString = JSON.stringify(backupData, null, 2);
+        // تحسين تنسيق JSON
+        const jsonString = JSON.stringify(backupData, (key, value) => {
+            // إزالة القيم الفارغة
+            if (value === null || value === undefined) return undefined;
+            return value;
+        }, 2);
         
         // إنشاء ملف للتحميل
         const blob = new Blob([jsonString], { type: 'application/json' });
         const url = URL.createObjectURL(blob);
         const a = document.createElement('a');
         a.href = url;
-        a.download = `ManyCircles_Backup_${new Date().getTime()}.json`;
+        
+        // اسم الملف مع التاريخ والوقت
+        const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
+        a.download = `ManyCircles_Backup_${timestamp}.json`;
         
         document.body.appendChild(a);
         a.click();
         document.body.removeChild(a);
         URL.revokeObjectURL(url);
         
-        showToast("تم إنشاء نسخة JSON احتياطية بنجاح! 📊");
+        // تسجيل عملية النسخ الاحتياطي
+        await db.ref('SystemLogs/backups').push({
+            timestamp: new Date().getTime(),
+            createdBy: currentLoginType,
+            recordsCount: backupData.stats.totalRecords,
+            fileName: a.download
+        });
+        
+        showToast(`✅ تم إنشاء نسخة احتياطية بنجاح!\nتم حفظ ${backupData.stats.totalRecords} سجل 📊`);
         
     } catch (error) {
         console.error("خطأ في إنشاء نسخة JSON:", error);
         showToast("حدث خطأ أثناء إنشاء النسخة الاحتياطية", "error");
     }
 }
-
 // ==================== جمع جميع البيانات ====================
+// دالة جمع البيانات المحسنة
 async function getAllBackupData() {
     try {
         // جلب البيانات من جميع الأقسام
@@ -2157,14 +2241,16 @@ async function getAllBackupData() {
             dailyReportsSnap,
             monthlyPlansSnap,
             dailyPhotosSnap,
-            trashSnap
+            trashSnap,
+            systemLogsSnap
         ] = await Promise.all([
             db.ref('Students').once('value'),
             db.ref('Teachers').once('value'),
             db.ref('DailyReports').once('value'),
             db.ref('MonthlyPlans').once('value'),
             db.ref('DailyPhotos').once('value'),
-            db.ref('TrashBin').once('value')
+            db.ref('TrashBin').once('value'),
+            db.ref('SystemLogs').once('value')
         ]);
         
         // تحويل البيانات
@@ -2175,12 +2261,15 @@ async function getAllBackupData() {
             monthlyPlans: formatData(monthlyPlansSnap),
             dailyPhotos: formatData(dailyPhotosSnap),
             trash: formatData(trashSnap),
+            systemLogs: formatData(systemLogsSnap),
             stats: {
                 studentsCount: Object.keys(studentsSnap.val() || {}).length,
                 teachersCount: Object.keys(teachersSnap.val() || {}).length,
                 dailyReportsCount: countAllRecords(dailyReportsSnap.val()),
                 monthlyPlansCount: countAllRecords(monthlyPlansSnap.val()),
                 photosCount: countAllRecords(dailyPhotosSnap.val()),
+                trashCount: countAllRecords(trashSnap.val()),
+                logsCount: countAllRecords(systemLogsSnap.val()),
                 totalRecords: 0
             }
         };
@@ -2191,7 +2280,9 @@ async function getAllBackupData() {
             backupData.stats.teachersCount +
             backupData.stats.dailyReportsCount +
             backupData.stats.monthlyPlansCount +
-            backupData.stats.photosCount;
+            backupData.stats.photosCount +
+            backupData.stats.trashCount +
+            backupData.stats.logsCount;
         
         return backupData;
         
@@ -2200,7 +2291,6 @@ async function getAllBackupData() {
         throw error;
     }
 }
-
 // دالة مساعدة لتحويل البيانات
 function formatData(snapshot) {
     const data = snapshot.val();
@@ -2492,7 +2582,123 @@ function validateBackupFile(data) {
     
     return true;
 }
+// دالة مسح السلة بالكامل
+async function emptyTrash() {
+    // تأكيد من المستخدم
+    if (!confirm("⚠️ **تحذير شديد:**\n\n" +
+                "سيتم حذف جميع المحذوفات نهائياً!\n" +
+                "• لا يمكن استعادتها بعد الحذف\n" +
+                "• سيتم فقدان البيانات للأبد\n" +
+                "• تأكد من عدم حاجتك لهذه البيانات\n\n" +
+                "هل أنت متأكد تماماً من مسح السلة بالكامل؟")) {
+        return;
+    }
+    
+    // تأكيد إضافي
+    const finalConfirm = prompt("للتأكيد النهائي، اكتب 'نعم' للمواصلة:");
+    if (finalConfirm !== 'نعم') {
+        showToast("تم إلغاء عملية مسح السلة", "error");
+        return;
+    }
+    
+    showToast("جاري مسح السلة بالكامل... ⏳");
+    
+    try {
+        // جلب جميع عناصر السلة أولاً لعرضها
+        const trashSnapshot = await db.ref('TrashBin').once('value');
+        const trashData = trashSnapshot.val();
+        
+        if (!trashData) {
+            showToast("السلة فارغة بالفعل", "info");
+            return;
+        }
+        
+        let totalDeleted = 0;
+        
+        // حذف جميع العناصر في السلة
+        await db.ref('TrashBin').remove();
+        
+        // عد العناصر المحذوفة
+        if (trashData.Students) {
+            totalDeleted += Object.keys(trashData.Students).length;
+        }
+        
+        // رسالة النجاح
+        showToast(`✅ تم مسح السلة بنجاح!\nتم حذف ${totalDeleted} عنصر نهائياً`);
+        
+        // تحديث عرض السلة
+        document.getElementById('trashStudentsList').innerHTML = '';
+        document.getElementById('emptyTrashMessage').classList.remove('hidden');
+        
+        // سجل الحذف
+        await db.ref('SystemLogs/trashCleared').push({
+            timestamp: new Date().getTime(),
+            clearedBy: currentLoginType,
+            deletedCount: totalDeleted,
+            date: new Date().toLocaleDateString('ar-EG'),
+            time: new Date().toLocaleTimeString('ar-EG')
+        });
+        
+    } catch (error) {
+        console.error("خطأ في مسح السلة:", error);
+        showToast("حدث خطأ أثناء مسح السلة", "error");
+    }
+}
 
+// دالة تحديث عرض السلة
+function updateTrashDisplay() {
+    db.ref('TrashBin/Students').once('value').then(snap => {
+        const trashList = document.getElementById('trashStudentsList');
+        const emptyMsg = document.getElementById('emptyTrashMessage');
+        
+        if (!snap.exists()) {
+            trashList.innerHTML = '';
+            emptyMsg.classList.remove('hidden');
+            return;
+        }
+        
+        emptyMsg.classList.add('hidden');
+        trashList.innerHTML = '';
+        
+        snap.forEach(c => {
+            trashList.innerHTML += `
+                <div class="bg-white p-4 rounded-xl flex justify-between border mb-2 shadow-sm">
+                    <div class="flex items-center gap-3">
+                        <div class="w-10 h-10 bg-red-100 rounded-full flex items-center justify-center">
+                            <span class="text-red-500 font-bold">👶</span>
+                        </div>
+                        <div>
+                            <p class="font-bold">${c.val().name}</p>
+                            <p class="text-xs text-slate-500">تاريخ الحذف: ${new Date().toLocaleDateString('ar-EG')}</p>
+                        </div>
+                    </div>
+                    <button onclick="restoreStudent('${c.key}')" class="text-blue-600 font-bold bg-blue-50 px-4 py-2 rounded-xl hover:bg-blue-100 transition">🔄 استعادة</button>
+                </div>`;
+        });
+    });
+}
+
+// تعديل دالة فتح السلة
+function openTrash() {
+    studentsSection.classList.add('hidden');
+    document.getElementById('trashScreen').classList.remove('hidden');
+    
+    // تحديث عرض السلة
+    updateTrashDisplay();
+}
+
+// تعديل دالة استعادة الطفل لتحديث العرض
+function restoreStudent(id) {
+    if (confirm("هل تريد استعادة هذا الطفل؟")) {
+        db.ref('TrashBin/Students/' + id).once('value', s => {
+            db.ref('Students/' + id).set(s.val()).then(() => {
+                db.ref('TrashBin/Students/' + id).remove();
+                showToast("تمت الاستعادة بنجاح 🔄");
+                updateTrashDisplay(); // تحديث العرض
+            });
+        });
+    }
+}
 </script>
 </body>
 </html>
