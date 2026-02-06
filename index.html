@@ -7,404 +7,361 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.25/jspdf.plugin.autotable.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfkit/0.13.0/pdfkit.min.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700;900&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
     <style>
-        body { 
-            font-family: 'Cairo', sans-serif; 
-            background-color: #f1f5f9; 
-            overflow-x: hidden; 
-        }
-        .admin-page { 
-            background-color: #ffffff; 
-            min-height: 100vh; 
-            width: 100%; 
-            position: absolute; 
-            top: 0; 
-            left: 0; 
-            padding: 20px; 
-            z-index: 50; 
-        }
+        body { font-family: 'Cairo', sans-serif; background-color: #f1f5f9; overflow-x: hidden; }
+        .admin-page { background-color: #ffffff; min-height: 100vh; width: 100%; position: absolute; top: 0; left: 0; padding: 20px; z-index: 50; }
         .hidden { display: none !important; }
-        .card-hover { 
-            transition: 0.3s; 
-            cursor: pointer; 
-            border-radius: 2rem; 
-            border: 2px solid #f1f5f9; 
-            position: relative; 
-        }
-        .card-hover:hover { 
-            transform: translateY(-3px); 
-            border-color: #3b82f6; 
-        }
-        .del-btn { 
-            position: absolute; 
-            top: -10px; 
-            left: -10px; 
-            background: #ef4444; 
-            color: white; 
-            width: 25px; 
-            height: 25px; 
-            border-radius: 50%; 
-            display: flex; 
-            align-items: center; 
-            justify-content: center; 
-            font-size: 12px; 
-            border: 2px solid white; 
-            cursor: pointer; 
-            z-index: 20; 
-        }
-        .section-title { 
-            font-weight: 900; 
-            color: #1e293b; 
-            border-right: 5px solid #3b82f6; 
-            padding-right: 10px; 
-            margin-bottom: 15px; 
-            margin-top: 20px; 
-            text-align: right; 
-        }
-        .follow-up-box { 
-            background: #fff; 
-            border: 2px solid #e2e8f0; 
-            border-radius: 1.5rem; 
-            padding: 20px; 
-            margin-bottom: 20px; 
-        }
-        .mood-btn { 
-            font-size: 2.5rem; 
-            filter: grayscale(1); 
-            transition: 0.3s; 
-            cursor: pointer; 
-            opacity: 0.4; 
-        }
-        .mood-btn.active { 
-            filter: grayscale(0); 
-            transform: scale(1.2); 
-            opacity: 1; 
-        }
-        .input-style { 
-            width: 100%; 
-            padding: 12px; 
-            border-radius: 12px; 
-            border: 1px solid #cbd5e1; 
-            outline: none; 
-            margin-bottom: 8px; 
-            font-size: 14px; 
-            font-weight: bold; 
-            text-align: center; 
-        }
-        .goal-card { 
-            background: #fff; 
-            padding: 15px; 
-            border-radius: 1.5rem; 
-            border: 1px solid #e2e8f0; 
-            margin-bottom: 10px; 
-            border-right: 5px solid #f97316; 
-        }
+        .card-hover { transition: 0.3s; cursor: pointer; border-radius: 2rem; border: 2px solid #f1f5f9; position: relative; }
+        .card-hover:hover { transform: translateY(-3px); border-color: #3b82f6; }
+        .del-btn { position: absolute; top: -10px; left: -10px; background: #ef4444; color: white; width: 25px; height: 25px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 12px; border: 2px solid white; cursor: pointer; z-index: 20; }
+        .section-title { font-weight: 900; color: #1e293b; border-right: 5px solid #3b82f6; padding-right: 10px; margin-bottom: 15px; margin-top: 20px; text-align: right; }
+        .follow-up-box { background: #fff; border: 2px solid #e2e8f0; border-radius: 1.5rem; padding: 20px; margin-bottom: 20px; }
+        .mood-btn { font-size: 2.5rem; filter: grayscale(1); transition: 0.3s; cursor: pointer; opacity: 0.4; }
+        .mood-btn.active { filter: grayscale(0); transform: scale(1.2); opacity: 1; }
+        .input-style { width: 100%; padding: 12px; border-radius: 12px; border: 1px solid #cbd5e1; outline: none; margin-bottom: 8px; font-size: 14px; font-weight: bold; text-align: center; }
+        .goal-card { background: #fff; padding: 15px; border-radius: 1.5rem; border: 1px solid #e2e8f0; margin-bottom: 10px; border-right: 5px solid #f97316; }
         @keyframes pulse-yellow {
             0% { box-shadow: 0 0 0 0 rgba(250, 204, 21, 0.7); }
             70% { box-shadow: 0 0 0 10px rgba(250, 204, 21, 0); }
             100% { box-shadow: 0 0 0 0 rgba(250, 204, 21, 0); }
         }
         .today-pulse { animation: pulse-yellow 2s infinite; }
-        
         .toast {
-            animation: slideIn 0.5s ease-out forwards;
-            min-width: 250px;
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-        
-        @keyframes slideIn {
-            from { transform: translateX(100%); opacity: 0; }
-            to { transform: translateX(0); opacity: 1; }
-        }
-        
-        .toast-fade-out {
-            animation: slideOut 0.5s ease-in forwards;
-        }
-        
-        @keyframes slideOut {
-            from { transform: translateX(0); opacity: 1; }
-            to { transform: translateX(100%); opacity: 0; }
-        }
-        
-        .btn-back {
-            background: #ef4444 !important;
-            color: white !important;
-            padding: 12px 25px !important;
-            border-radius: 50px !important;
-            font-weight: bold !important;
-            font-size: 16px !important;
-            box-shadow: 0 4px 10px rgba(239, 68, 68, 0.3);
-            border: none !important;
-            display: block;
-            margin-bottom: 20px;
-            width: fit-content;
-        }
-        
-        /* تحسينات جديدة */
-        .loading-spinner {
-            border: 3px solid #f3f3f3;
-            border-top: 3px solid #3b82f6;
-            border-radius: 50%;
-            width: 40px;
-            height: 40px;
-            animation: spin 1s linear infinite;
-            margin: 20px auto;
-        }
-        
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-        
-        .error-message {
-            background: #fee;
-            color: #c33;
-            padding: 12px;
-            border-radius: 10px;
-            border: 1px solid #fcc;
-            margin: 10px 0;
-        }
-        
-        .success-message {
-            background: #efe;
-            color: #2a7;
-            padding: 12px;
-            border-radius: 10px;
-            border: 1px solid #cfc;
-            margin: 10px 0;
-        }
-        
-        .login-container {
-            background: white;
-            padding: 30px;
-            border-radius: 25px;
-            box-shadow: 0 10px 40px rgba(0,0,0,0.1);
-            max-width: 400px;
-            width: 90%;
-        }
-        
-        .main-screen {
-            min-height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 20px;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-        }
-        
-        .role-card {
-            transition: all 0.3s ease;
-            cursor: pointer;
-            padding: 25px;
-            border-radius: 20px;
-            margin-bottom: 15px;
-            border: 2px solid transparent;
-            background: white;
-        }
-        
-        .role-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 10px 30px rgba(0,0,0,0.15);
-            border-color: #3b82f6;
-        }
-        
-        /* تنسيقات للشهور */
-        .month-card {
-            transition: all 0.3s ease;
-            cursor: pointer;
-            padding: 25px;
-            border-radius: 20px;
-            margin: 10px;
-            text-align: center;
-            font-weight: bold;
-            border: 3px solid transparent;
-        }
-        
-        .month-card.current {
-            border-color: #3b82f6;
-            background: linear-gradient(135deg, #3b82f6, #1d4ed8);
-            color: white;
-            transform: scale(1.05);
-        }
-        
-        .month-card.past {
-            background: #f3f4f6;
-            color: #9ca3af;
-        }
-        
-        .month-card.future {
-            background: white;
-            color: #1f2937;
-            border-color: #e5e7eb;
-        }
-        
-        /* تنسيقات المواد */
-        .subject-card {
-            transition: all 0.3s ease;
-            cursor: pointer;
-            padding: 30px 20px;
-            border-radius: 20px;
-            margin: 15px;
-            text-align: center;
-            color: white;
-            font-weight: bold;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-        }
-        
-        .subject-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
-        }
-        
-        /* تنسيقات المتابعة اليومية */
-        .day-card {
-            transition: all 0.3s ease;
-            cursor: pointer;
-            padding: 20px;
-            border-radius: 15px;
-            margin: 8px;
-            text-align: center;
-            font-weight: bold;
-            width: 60px;
-            height: 60px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-        
-        .day-card.today {
-            background: linear-gradient(135deg, #f59e0b, #d97706);
-            color: white;
-            transform: scale(1.1);
-        }
-        
-        .day-card.has-report {
-            background: linear-gradient(135deg, #10b981, #059669);
-            color: white;
-        }
-        
-        .day-card.no-report {
-            background: #f3f4f6;
-            color: #9ca3af;
-        }
-        
-        .day-card.future {
-            background: white;
-            color: #1f2937;
-            border: 2px solid #e5e7eb;
-        }
-        
-        .activity-check {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 12px;
-            background: #f8fafc;
-            border-radius: 12px;
-            margin-bottom: 8px;
-            border: 1px solid #e2e8f0;
-        }
+    animation: slideIn 0.5s ease-out forwards;
+    min-width: 250px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+@keyframes slideIn {
+    from { transform: translateX(100%); opacity: 0; }
+    to { transform: translateX(0); opacity: 1; }
+}
+
+.toast-fade-out {
+    animation: slideOut 0.5s ease-in forwards;
+}
+
+@keyframes slideOut {
+    from { transform: translateX(0); opacity: 1; }
+    to { transform: translateX(100%); opacity: 0; }
+}
+.btn-back {
+    background: #ef4444 !important; /* لون أحمر واضح */
+    color: white !important;
+    padding: 12px 25px !important;
+    border-radius: 50px !important; /* شكل بيضاوي */
+    font-weight: bold !important;
+    font-size: 16px !important;
+    box-shadow: 0 4px 10px rgba(239, 68, 68, 0.3);
+    border: none !important;
+    display: block;
+    margin-bottom: 20px;
+    width: fit-content;
+}
     </style>
 </head>
 <body>
-<!-- شاشة الأدوار الرئيسية -->
-<div id="mainScreen" class="main-screen">
-    <div class="login-container text-center">
-        <div class="mb-10">
-            <div class="w-24 h-24 mx-auto bg-gradient-to-br from-blue-600 to-purple-600 rounded-full flex items-center justify-center shadow-2xl mb-6">
-                <span class="text-white text-2xl font-black">MC</span>
-            </div>
-            <h1 class="text-3xl font-black text-slate-800 mb-2">Many Circles</h1>
-            <p class="text-slate-500">النظام التعليمي المتكامل</p>
-        </div>
-        
+<div id="toastContainer" class="fixed bottom-5 right-5 z-[200] space-y-3"></div>
+<div class="fixed top-2 left-2 z-[100]">
+    <img src="https://i.ibb.co/1f5TfvT0/9a9c7b66-e1a7-4616-aec7-4e5dc39e51c1.jpg" class="w-16 h-16 rounded-full border-2 border-white shadow-md">
+</div>
+
+<div id="mainScreen" class="min-h-screen flex items-center justify-center p-4">
+    <div class="w-full max-w-md bg-white p-10 rounded-[3rem] shadow-2xl text-center border">
+        <h1 class="text-4xl font-black text-blue-600 mb-8 italic">Many Circles</h1>
+        <img src="https://i.ibb.co/1f5TfvT0/9a9c7b66-e1a7-4616-aec7-4e5dc39e51c1.jpg" class="w-32 h-32 rounded-full border-4 border-indigo-500 shadow-lg mb-8 mx-auto">
         <div class="space-y-4">
-            <div onclick="openLogin('admin')" class="role-card">
-                <div class="text-4xl mb-3">💼</div>
-                <h3 class="text-xl font-bold text-blue-600 mb-1">مدير النظام</h3>
-                <p class="text-sm text-slate-500">التحكم الكامل والإدارة الشاملة</p>
-            </div>
-            
-            <div onclick="openLogin('teacher')" class="role-card">
-                <div class="text-4xl mb-3">👩‍🏫</div>
-                <h3 class="text-xl font-bold text-emerald-600 mb-1">معلمة</h3>
-                <p class="text-sm text-slate-500">إدخال الدروس والتقارير اليومية</p>
-            </div>
-            
-            <div onclick="openLogin('parent')" class="role-card">
-                <div class="text-4xl mb-3">👨‍👩‍👧</div>
-                <h3 class="text-xl font-bold text-amber-600 mb-1">ولي أمر</h3>
-                <p class="text-sm text-slate-500">متابعة وتطور الطفل</p>
-            </div>
-        </div>
-        
-        <div class="mt-10 text-sm text-slate-400">
-            © 2026 Many Circles. جميع الحقوق محفوظة
+    <button onclick="showLogin('admin')" class="w-full p-5 bg-blue-600 text-white rounded-2xl font-bold hover:bg-blue-700 transition">?? دخول الإدارة</button>
+    <button onclick="showLogin('teacher')" class="w-full p-5 bg-emerald-600 text-white rounded-2xl font-bold hover:bg-emerald-700 transition">??‍?? دخول المعلمات</button>
         </div>
     </div>
 </div>
 
-<!-- نافذة تسجيل الدخول -->
-<div id="loginScreen" class="admin-page hidden">
-    <div class="flex justify-center items-center min-h-screen">
-        <div class="login-container">
-            <button onclick="goBackToMain()" class="text-blue-600 font-bold mb-6 float-right">← العودة</button>
-            <h2 id="loginTitle" class="text-xl font-black mb-8 text-slate-700 text-center">تسجيل دخول</h2>
-            <input type="text" id="loginName" placeholder="اسم المستخدم" class="input-style bg-slate-50 mb-4" autocomplete="username">
-            <input type="password" id="loginPass" placeholder="كلمة المرور" class="input-style bg-slate-50 mb-6" autocomplete="current-password">
-            <button id="loginBtn" class="w-full p-4 bg-blue-600 text-white rounded-2xl font-bold hover:bg-blue-700 transition">
-                دخول
-            </button>
-            <div id="loginError" class="error-message hidden mt-4"></div>
-            <div class="mt-6 text-sm text-slate-400 text-center">
-                للمساعدة: تواصل مع الدعم الفني
-            </div>
-        </div>
+<div id="loginScreen" class="min-h-screen flex items-center justify-center p-4 hidden">
+    <div class="w-full max-w-md bg-white p-8 rounded-[2.5rem] shadow-2xl text-center border">
+        <h2 id="loginTitle" class="text-xl font-black mb-6 text-slate-700">تسجيل دخول</h2>
+        <input type="text" id="loginName" placeholder="الاسم" class="input-style bg-slate-50 mb-4">
+        <input type="password" id="loginPass" placeholder="الكود السري" class="input-style bg-slate-50 mb-6">
+        <button id="loginBtn" class="w-full p-4 bg-blue-600 text-white rounded-2xl font-bold">دخول</button>
+        <button onclick="location.reload()" class="mt-4 text-slate-400 text-sm block w-full">إلغاء</button>
     </div>
 </div>
 
-<!-- لوحة تحكم الإدارة -->
 <div id="dashboard" class="admin-page hidden bg-slate-50 text-center">
-    <div class="max-w-6xl mx-auto py-8 px-4">
-        <h2 class="text-3xl font-black mb-6 text-slate-800">لوحة تحكم الإدارة</h2>
-        <p class="text-slate-600 mb-10">مرحباً <span id="adminName"></span></p>
-        
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-8 px-4">
-            <div onclick="openStudentsSection()" class="bg-white p-10 rounded-[2.5rem] shadow-xl border-b-8 border-blue-500 cursor-pointer hover:scale-105 transition">
-                <div class="text-6xl mb-4">👶</div>
-                <h3 class="text-2xl font-black text-blue-600">الأطفال</h3>
-                <p class="text-slate-500 mt-2">إدارة الأطفال والملفات</p>
-            </div>
-            
-            <div onclick="openTeachersSection()" class="bg-white p-10 rounded-[2.5rem] shadow-xl border-b-8 border-emerald-500 cursor-pointer hover:scale-105 transition">
-                <div class="text-6xl mb-4">👩‍🏫</div>
-                <h3 class="text-2xl font-black text-emerald-600">المعلمات</h3>
-                <p class="text-slate-500 mt-2">إدارة فريق المعلمات</p>
-            </div>
-            
-            <div onclick="openParentsSection()" class="bg-white p-10 rounded-[2.5rem] shadow-xl border-b-8 border-indigo-500 cursor-pointer hover:scale-105 transition">
-                <div class="text-6xl mb-4">👨‍👩‍👧</div>
-                <h3 class="text-2xl font-black text-indigo-600">أولياء الأمور</h3>
-                <p class="text-slate-500 mt-2">إدارة حسابات الأولياء</p>
-            </div>
+    <h2 class="text-3xl font-black mb-10 text-slate-800">لوحة التحكم</h2>
+    <div class="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-8 px-4">
+        <div onclick="openStudentsSection()" class="bg-white p-10 rounded-[2.5rem] shadow-xl border-b-8 border-blue-500 cursor-pointer hover:scale-105 transition">
+            <div class="text-6xl mb-4">??</div><h3 class="text-2xl font-black text-blue-600">الأطفال</h3>
+        </div>
+        <div onclick="openTeachersSection()" class="bg-white p-10 rounded-[2.5rem] shadow-xl border-b-8 border-emerald-500 cursor-pointer hover:scale-105 transition">
+            <div class="text-6xl mb-4">??‍??</div><h3 class="text-2xl font-black text-emerald-600">مدرس جديد</h3>
         </div>
         
-        <button onclick="logout()" class="mt-12 px-6 py-3 bg-red-500 text-white rounded-xl font-bold hover:bg-red-600 transition">
-            تسجيل الخروج
+    </div>
+    <button onclick="location.reload()" class="mt-12 text-red-500 font-bold underline">تسجيل خروج</button>
+</div>
+
+<div id="studentsSection" class="admin-page hidden">
+    <div class="max-w-4xl mx-auto">
+        <div class="flex justify-between items-center mb-8 border-b pb-4">
+            <button id="backBtn" class="text-blue-600 font-bold bg-blue-50 px-4 py-2 rounded-xl">? العودة</button>
+            <button id="trashBtn" onclick="openTrash()" class="bg-red-50 text-red-500 px-4 py-2 rounded-xl font-bold border border-red-200">??? السلة</button>
+        </div>
+        <div id="addStudentBox" class="bg-slate-50 p-6 rounded-[2.5rem] mb-6 text-center border-2 border-dashed border-slate-300">
+            <input type="text" id="newStudentName" placeholder="اسم الطفل الرباعي" class="input-style mb-2 md:w-64">
+            <button onclick="addStudent()" class="bg-blue-600 text-white px-8 py-3 rounded-xl font-bold">إضافة +</button>
+        </div>
+        <div class="max-w-md mx-auto mb-6 px-4">
+            <input type="text" id="studentSearchInput" onkeyup="searchStudent()" placeholder="?? ابحث عن اسم الطفل..." class="w-full p-3 rounded-2xl border-2 border-blue-100 outline-none text-center font-bold">
+        </div>
+        <div id="studentsList" class="grid grid-cols-2 md:grid-cols-3 gap-6"></div>
+    </div>
+</div>
+
+<div id="monthsScreen" class="admin-page hidden text-center">
+    <button onclick="monthsScreen.classList.add('hidden'); studentsSection.classList.remove('hidden')" class="mb-8 text-blue-600 font-bold float-right">? رجوع</button>
+    <div class="max-w-4xl mx-auto pt-10">
+        <h2 class="text-3xl font-black mb-10 text-blue-600" id="currentStudentTitle"></h2>
+        <div id="monthsGrid" class="grid grid-cols-3 md:grid-cols-4 gap-4"></div>
+    </div>
+</div>
+
+<!-- البحث عن هذا القسم في HTML وإضافة الزر الثالث -->
+<div id="choiceScreen" class="admin-page hidden bg-slate-100 text-center">
+    <div class="max-w-4xl mx-auto pt-20">
+        <button onclick="choiceScreen.classList.add('hidden'); monthsScreen.classList.remove('hidden')" 
+                class="mb-10 text-blue-600 font-bold float-right">? رجوع للشهور</button>
+        
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8 px-4 w-full">  <!-- تغيير grid-cols-2 إلى grid-cols-3 -->
+            
+            <!-- الزر الأول: الخطة الشهرية -->
+            <div onclick="openPlanMenu()" 
+                 class="bg-white p-12 shadow-2xl rounded-[3rem] border-t-8 border-orange-400 cursor-pointer hover:scale-105 transition">
+                <div class="text-6xl mb-4">??</div>
+                <h3 class="text-2xl font-black text-orange-500">البرنامج الشهري</h3>  <!-- تغيير النص -->
+            </div>
+            
+            <!-- الزر الثاني: Follow Up -->
+            <div onclick="openFollowUpMenu()" 
+                 class="bg-white p-12 shadow-2xl rounded-[3rem] border-t-8 border-blue-500 cursor-pointer hover:scale-105 transition">
+                <div class="text-6xl mb-4">??</div>
+                <h3 class="text-2xl font-black text-blue-600">Follow Up</h3>
+            </div>
+            
+            <!-- الزر الثالث: الجدول اليومي (جديد) -->
+            <div onclick="openDailySchedule()" 
+                 class="bg-white p-12 shadow-2xl rounded-[3rem] border-t-8 border-emerald-500 cursor-pointer hover:scale-105 transition">
+                <div class="text-6xl mb-4">??</div>
+                <h3 class="text-2xl font-black text-emerald-600">الجدول اليومي</h3>
+            </div>
+            
+        </div>
+    </div>
+</div>
+<div id="subjectsMenu" class="admin-page hidden text-center">
+    <button onclick="subjectsMenu.classList.add('hidden'); choiceScreen.classList.remove('hidden')" class="mb-8 text-blue-600 font-bold float-right">? رجوع</button>
+    <h2 class="text-3xl font-black mb-10 text-orange-500">المواد التعليمية والأنشطة</h2>
+    
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-2xl mx-auto px-4">
+        <div onclick="openGoalEntry('اللغة العربية','#ef4444','??')" class="p-8 bg-red-500 text-white rounded-[2rem] font-black text-xl shadow-lg cursor-pointer hover:scale-105 transition">?? اللغة العربية</div>
+        <div onclick="openGoalEntry('English','#3b82f6','??')" class="p-8 bg-blue-500 text-white rounded-[2rem] font-black text-xl shadow-lg cursor-pointer hover:scale-105 transition">?? English</div>
+        <div onclick="openGoalEntry('Math','#10b981','??')" class="p-8 bg-emerald-500 text-white rounded-[2rem] font-black text-xl shadow-lg cursor-pointer hover:scale-105 transition">?? Math</div>
+        <div onclick="openGoalEntry('التربية الدينية','#f59e0b','??')" class="p-8 bg-amber-500 text-white rounded-[2rem] font-black text-xl shadow-lg cursor-pointer hover:scale-105 transition">?? التربية الدينية</div>
+        
+        <div onclick="openGoalEntry('Montessori','#8b5cf6','??')" class="p-8 bg-purple-500 text-white rounded-[2rem] font-black text-xl shadow-lg cursor-pointer hover:scale-105 transition">?? Montessori</div>
+        <div onclick="openGoalEntry('قرآن إضافي','#047857','??')" class="p-8 bg-emerald-700 text-white rounded-[2rem] font-black text-xl shadow-lg cursor-pointer hover:scale-105 transition">?? قرآن إضافي</div>
+        <div onclick="openGoalEntry('مناسبات','#db2777','??')" class="p-8 bg-pink-600 text-white rounded-[2rem] font-black text-xl shadow-lg cursor-pointer hover:scale-105 transition">?? مناسبات</div>
+        
+        <div onclick="openGoalEntry('تنمية المهارات','#6366f1','??')" class="p-8 bg-indigo-500 text-white rounded-[2rem] font-black text-xl shadow-lg cursor-pointer hover:scale-105 transition">?? تنمية المهارات</div>
+    </div>
+    
+    <div class="max-w-2xl mx-auto mt-10 px-4">
+        <button onclick="exportMonthlyPlanPDF()" class="w-full p-6 bg-slate-800 text-white rounded-[2rem] font-black text-xl shadow-xl hover:bg-black transition-all active:scale-95">
+            ?? تصدير تقرير الخطة الشهرية
         </button>
     </div>
 </div>
+<div id="goalEntryScreen" class="admin-page hidden overflow-y-auto">
+    <div class="max-w-2xl mx-auto pb-20 text-center">
+<button onclick="document.getElementById('goalEntryScreen').classList.add('hidden'); document.getElementById('subjectsMenu').classList.remove('hidden')" class="btn-back">
+    ?? رجوع للخلف
+</button>        
+        <div id="entryHeader" class="p-8 rounded-[2rem] text-white text-center mb-8 shadow-xl">
+            <h2 id="entryTitle" class="text-2xl font-black"></h2>
+        </div>
 
-<!-- بقية الصفحات ستنشأ ديناميكياً -->
-<!-- حاوية الإشعارات -->
-<div id="toastContainer" class="fixed bottom-5 right-5 z-[200] space-y-3"></div>
+        <div id="goalsContainer" class="mb-8">
+            <div id="noGoalsMessage" class="p-10 bg-slate-50 rounded-[2rem] border-2 border-dashed border-slate-200 text-slate-400 font-bold">
+                ?? لا توجد أهداف مضافة حالياً
+            </div>
+            <div id="goalsListContainer" class="space-y-4"></div>
+        </div>
 
+        <button id="showAddFormBtn" onclick="toggleGoalForm(true)" class="w-full p-5 bg-blue-600 text-white rounded-2xl font-black shadow-lg hover:bg-blue-700 transition">
+            + إضافة هدف جديد
+        </button>
+
+        <div id="goalInputForm" class="hidden mt-6 p-6 bg-white border-2 border-blue-500 rounded-[2rem] shadow-2xl animate-slide-up">
+            <h3 class="text-lg font-black text-blue-600 mb-4">تفاصيل الهدف الجديد</h3>
+            
+            <input type="text" id="goalName" placeholder="اسم الهدف أو النشاط" class="w-full p-4 border rounded-xl mb-4 text-center font-bold border-slate-200 focus:border-blue-500 outline-none">
+
+            <div id="scoreFieldsContainer">
+                <label class="block text-right text-sm font-bold text-slate-500 mb-2">نسبة الإنجاز:</label>
+                <select id="goalScore" class="w-full p-4 border rounded-xl mb-4 font-bold text-center outline-none">
+                    <option value="0">0%</option>
+                    <option value="10">10%</option>
+                    <option value="20">20%</option>
+                    <option value="30">30%</option>
+                    <option value="40">40%</option>
+                    <option value="50">50%</option>
+                    <option value="60">60%</option>
+                    <option value="70">70%</option>
+                    <option value="80">80%</option>
+                    <option value="90">90%</option>
+                    <option value="100">100%</option>
+                </select>
+
+                <label class="block text-right text-sm font-bold text-slate-500 mb-2">مستوى المساعدة:</label>
+                <select id="helpLevel" class="w-full p-4 border rounded-xl mb-4 font-bold text-center outline-none">
+                    <option value="بدون مساعدة">بدون مساعدة</option>
+                    <option value="مساعدة بسيطة">مساعدة بسيطة</option>
+                    <option value="مساعدة كبيرة">مساعدة كبيرة</option>
+                </select>
+            </div>
+
+            <div class="flex gap-2">
+                <button onclick="saveGoal()" class="flex-1 p-4 bg-emerald-500 text-white rounded-xl font-black">حفظ ?</button>
+                <button onclick="toggleGoalForm(false)" class="flex-1 p-4 bg-slate-100 text-slate-500 rounded-xl font-bold">إلغاء</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="daysScreen" class="admin-page hidden text-center">
+    <button onclick="daysScreen.classList.add('hidden'); choiceScreen.classList.remove('hidden')" class="mb-8 text-blue-600 font-bold float-right">? رجوع</button>
+    <div class="max-w-4xl mx-auto pt-10">
+        <h2 class="text-3xl font-black mb-4 text-blue-600" id="currentMonthTitle"></h2>
+        <div id="daysGrid" class="grid grid-cols-5 md:grid-cols-7 gap-3 px-4"></div>
+    </div>
+</div>
+<div id="followUpScreen" class="admin-page hidden overflow-y-auto bg-slate-50">
+    <div class="max-w-2xl mx-auto pb-20 p-4">
+        <button onclick="document.getElementById('followUpScreen').classList.add('hidden'); document.getElementById('daysScreen').classList.remove('hidden')" class="text-blue-600 font-bold mb-6 block text-right">? رجوع للأيام</button>
+        
+        <div class="bg-white rounded-[2.5rem] shadow-xl p-6 border-t-8 border-blue-600">
+            <h2 class="text-2xl font-black text-center mb-2 text-blue-600 italic">Daily Report ??</h2>
+            <p id="reportDateDisplay" class="text-center text-slate-400 font-bold mb-6 text-sm"></p>
+            
+            <div class="follow-up-box">
+                <h3 class="section-title text-purple-600">Mood | الحالة المزاجية</h3>
+                <div class="flex justify-around items-center py-4">
+                    <div onclick="setMood('happy', this)" class="mood-btn">??</div>
+                    <div onclick="setMood('angry', this)" class="mood-btn">??</div>
+                    <div onclick="setMood('sad', this)" class="mood-btn">??</div>
+                    <div onclick="setMood('naughty', this)" class="mood-btn">??</div>
+                </div>
+            </div>
+
+            <div class="follow-up-box">
+                <h3 class="section-title text-sky-600">Nap | القيلولة</h3>
+                <div class="grid grid-cols-2 gap-4">
+                    <input type="time" id="nap_from" class="input-style" title="من">
+                    <input type="time" id="nap_to" class="input-style" title="إلى">
+                </div>
+            </div>
+
+            <div class="follow-up-box">
+                <h3 class="section-title text-blue-500">Care | العناية</h3>
+                <div class="grid grid-cols-1 gap-4">
+                    <div class="flex items-center justify-between bg-slate-50 p-3 rounded-xl border">
+                        <span class="font-black">Toilet:</span>
+                        <select id="potty_status" class="bg-white border p-2 rounded-lg font-bold">
+                            <option>Clean</option>
+                            <option>Diaper Change</option>
+                            <option>Success</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <div class="follow-up-box">
+                <h3 class="section-title text-pink-600">Activities | الأنشطة</h3>
+                <div id="activitiesGrid" class="grid grid-cols-2 gap-2 text-xs font-bold text-right"></div>
+            </div>
+
+            <div class="follow-up-box">
+                <h3 class="section-title text-orange-500">Notes | ملاحظات</h3>
+                <textarea id="daily_notes" placeholder="اكتب ملاحظاتك هنا..." class="input-style h-24 resize-none p-4 text-right border"></textarea>
+            </div>
+
+            <button id="saveDailyBtn" onclick="saveDailyReport()" class="w-full p-6 bg-blue-600 text-white rounded-3xl font-black shadow-lg hover:bg-blue-700 transition">حفظ التقرير ?</button>
+        
+        
+        <!-- زر تصدير PDF الجديد -->
+            <button onclick="exportDailyReportPDF()" class="w-full p-6 bg-emerald-600 text-white rounded-3xl font-black shadow-lg hover:bg-emerald-700 transition">
+                ?? تصدير تقرير PDF
+            </button>
+        </div>
+    </div>
+</div>
+
+<div id="trashScreen" class="admin-page hidden bg-slate-50 text-center">
+    <div class="max-w-2xl mx-auto p-4">
+        <button onclick="document.getElementById('trashScreen').classList.add('hidden'); document.getElementById('studentsSection').classList.remove('hidden')" class="font-bold text-blue-600 mb-8 block text-right">? عودة</button>
+        <h2 class="text-3xl font-black text-red-600 mb-8">المحذوفات ???</h2>
+        <div id="trashStudentsList" class="space-y-3"></div>
+    </div>
+</div>
+
+<div id="teachersSection" class="admin-page hidden">
+    <div class="max-w-4xl mx-auto p-4">
+        <div class="flex justify-between items-center mb-8 border-b pb-4">
+            <button onclick="document.getElementById('teachersSection').classList.add('hidden'); dashboard.classList.remove('hidden')" class="text-emerald-600 font-bold bg-emerald-50 px-4 py-2 rounded-xl">? العودة</button>
+            <h2 class="text-2xl font-black text-emerald-600">إدارة المعلمات ??‍??</h2>
+        </div>
+        <div class="bg-white p-6 rounded-[2rem] shadow-lg mb-8 border-2 border-emerald-100 text-center">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
+                <input type="text" id="newTeacherName" placeholder="اسم المعلمة" class="input-style">
+                <input type="text" id="teacherSubject" placeholder="المادة" class="input-style">
+                <input type="password" id="teacherPass" placeholder="كود الدخول" class="input-style">
+            </div>
+            <button onclick="addTeacher()" class="w-full md:w-auto bg-emerald-600 text-white px-10 py-3 rounded-xl font-bold">إضافة معلمة +</button>
+        </div>
+        <div id="teachersList" class="grid grid-cols-1 md:grid-cols-2 gap-4"></div>
+    </div>
+</div>
+
+<div id="parentsSection" class="admin-page hidden">
+    <div class="max-w-4xl mx-auto p-4">
+        <div class="flex justify-between items-center mb-8 border-b pb-4">
+            <button onclick="document.getElementById('parentsSection').classList.add('hidden'); dashboard.classList.remove('hidden')" class="text-indigo-600 font-bold bg-indigo-50 px-4 py-2 rounded-xl">? العودة</button>
+            <h2 class="text-2xl font-black text-indigo-600">إدارة أولياء الأمور ??‍??‍??</h2>
+        </div>
+        <div class="bg-white p-6 rounded-[2rem] shadow-lg mb-8 border-2 border-indigo-100 text-center">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
+                <input type="text" id="parentName" placeholder="اسم ولي الأمر" class="input-style">
+                <input type="password" id="parentPass" placeholder="كود الدخول" class="input-style">
+                <select id="linkedStudentId" class="input-style bg-white">
+                    <option value="">اختر الطفل</option>
+                </select>
+            </div>
+            <button onclick="addParent()" class="w-full md:w-auto bg-indigo-600 text-white px-10 py-3 rounded-xl font-bold">ربط ولي أمر +</button>
+        </div>
+        <div id="parentsList" class="grid grid-cols-1 md:grid-cols-2 gap-4"></div>
+    </div>
+</div>
 <script>
-// ===================== الإعدادات الأساسية =====================
+// 1. Firebase Setup
 const firebaseConfig = {
     apiKey: "AIzaSyC4K55wOZy3w44cCNX1i_cmk4-g4P-L40",
     authDomain: "many-circles.firebaseapp.com",
@@ -414,1006 +371,1137 @@ const firebaseConfig = {
     messagingSenderId: "905475370717",
     appId: "1:905475370717:web:587b788750f31a1d26f534"
 };
-
 firebase.initializeApp(firebaseConfig);
 const db = firebase.database();
 
-// ===================== المتغيرات العامة =====================
+// 2. التعريفات الأساسية
 const MASTER_CODE = "2012";
 const ADMINS = ["حسن","علياء","مصطفى","حنان"];
 const monthsArr = ["يناير","فبراير","مارس","أبريل","مايو","يونيو","يوليو","أغسطس","سبتمبر","أكتوبر","نوفمبر","ديسمبر"];
-const activitiesList = ["Montessori", "Garden", "Colouring", "Art", "Swimming", "Puzzle", "Moral Values", "Songs", "Etiquette", "Circle Time", "Dancing", "P.E"];
 
-let sId = "", sName = "", mName = "", currentSub = "", selectedMood = "", selectedDay = 0;
-let currentLoginType = "";
+let sId="", sName="", mName="", currentSub="", selectedMood="", selectedDay=0;
+let currentLoginType = ""; 
 let linkedStudentIdOfParent = "";
-let editingGoalId = null;
 
-// ===================== دوال الأساسية =====================
-function openLogin(type) {
-    currentLoginType = type;
+// 3. ربط عناصر الواجهة
+const mainScreen = document.getElementById('mainScreen');
+const loginScreen = document.getElementById('loginScreen');
+const dashboard = document.getElementById('dashboard');
+const loginTitle = document.getElementById('loginTitle');
+const loginBtn = document.getElementById('loginBtn');
+const loginName = document.getElementById('loginName');
+const loginPass = document.getElementById('loginPass');
+const studentsSection = document.getElementById('studentsSection');
+const studentsList = document.getElementById('studentsList');
+const monthsScreen = document.getElementById('monthsScreen');
+const monthsGrid = document.getElementById('monthsGrid');
+const daysScreen = document.getElementById('daysScreen');
+const daysGrid = document.getElementById('daysGrid');
+const choiceScreen = document.getElementById('choiceScreen');
+const followUpScreen = document.getElementById('followUpScreen');
+
+// --- الدوال (Functions) ---
+
+function showLogin(type) {
+    currentLoginType = type; 
     mainScreen.classList.add('hidden');
     loginScreen.classList.remove('hidden');
-    
-    const titles = {
-        'admin': { title: "دخول الإدارة 👑", color: "#2563eb" },
-        'teacher': { title: "دخول المعلمات 👩‍🏫", color: "#059669" },
-        'parent': { title: "دخول أولياء الأمور 👨‍👩‍👧", color: "#4f46e5" }
-    };
-    
-    const config = titles[type];
-    loginTitle.innerText = config.title;
-    loginBtn.style.backgroundColor = config.color;
-    
-    document.getElementById('loginError').classList.add('hidden');
-    document.getElementById('loginName').value = '';
-    document.getElementById('loginPass').value = '';
-    document.getElementById('loginName').focus();
-}
 
-function goBackToMain() {
-    loginScreen.classList.add('hidden');
-    mainScreen.classList.remove('hidden');
-}
-
-// ===================== معالجة تسجيل الدخول =====================
-document.getElementById('loginBtn').addEventListener('click', handleLogin);
-document.getElementById('loginPass').addEventListener('keypress', function(e) {
-    if (e.key === 'Enter') handleLogin(e);
-});
-
-function handleLogin(event) {
-    event.preventDefault();
-    
-    const username = document.getElementById('loginName').value.trim();
-    const password = document.getElementById('loginPass').value.trim();
-    const errorDiv = document.getElementById('loginError');
-    
-    if (!username || !password) {
-        errorDiv.textContent = "الرجاء إدخال اسم المستخدم وكلمة المرور";
-        errorDiv.classList.remove('hidden');
-        return;
-    }
-    
-    const loginBtn = document.getElementById('loginBtn');
-    const originalText = loginBtn.textContent;
-    loginBtn.textContent = "جاري التحقق...";
-    loginBtn.disabled = true;
-    
-    if (currentLoginType === 'admin') {
-        handleAdminLogin(username, password, errorDiv, loginBtn, originalText);
-    } else if (currentLoginType === 'teacher') {
-        handleTeacherLogin(username, password, errorDiv, loginBtn, originalText);
-    } else if (currentLoginType === 'parent') {
-        handleParentLogin(username, password, errorDiv, loginBtn, originalText);
+    if (type === 'admin') {
+        loginTitle.innerText = "دخول الإدارة ??";
+        loginBtn.style.backgroundColor = "#2563eb"; 
+        loginBtn.onclick = adminLogin; 
+    } else if (type === 'teacher') {
+        loginTitle.innerText = "دخول المعلمات ??‍??";
+        loginBtn.style.backgroundColor = "#059669"; 
+        loginBtn.onclick = teacherLogin; 
+    } else if (type === 'parent') {
+        loginTitle.innerText = "دخول أولياء الأمور ??‍??‍??";
+        loginBtn.style.backgroundColor = "#4f46e5";
+        loginBtn.onclick = parentLogin;
     }
 }
 
-function handleAdminLogin(username, password, errorDiv, loginBtn, originalText) {
-    if (ADMINS.includes(username) && password === MASTER_CODE) {
-        sessionStorage.setItem('adminUser', username);
-        sessionStorage.setItem('loginType', 'admin');
-        
+
+function adminLogin() {
+    const user = loginName.value.trim();
+    const pass = loginPass.value.trim();
+    if (ADMINS.includes(user) && pass === MASTER_CODE) {
         loginScreen.classList.add('hidden');
         dashboard.classList.remove('hidden');
-        document.getElementById('adminName').textContent = username;
-        showToast("مرحباً بك " + username);
-    } else {
-        errorDiv.textContent = "بيانات الدخول غير صحيحة";
-        errorDiv.classList.remove('hidden');
-        loginBtn.textContent = originalText;
-        loginBtn.disabled = false;
-    }
+    } else { alert("بيانات الإدارة غير صحيحة"); }
 }
 
-function handleTeacherLogin(username, password, errorDiv, loginBtn, originalText) {
-    db.ref('Teachers').once('value')
-        .then(snap => {
-            let found = false;
-            snap.forEach(t => {
-                const data = t.val();
-                if (data.name === username && data.password === password) {
-                    found = true;
-                    sessionStorage.setItem('teacherUser', username);
-                    sessionStorage.setItem('loginType', 'teacher');
-                    
-                    loginScreen.classList.add('hidden');
-                    openStudentsSection();
-                    showToast("مرحباً بك " + username);
-                }
-            });
-            
-            if (!found) {
-                errorDiv.textContent = "اسم المعلمة أو كلمة المرور غير صحيحة";
-                errorDiv.classList.remove('hidden');
-                loginBtn.textContent = originalText;
-                loginBtn.disabled = false;
+function teacherLogin() {
+    const user = loginName.value.trim();
+    const pass = loginPass.value.trim();
+    db.ref('Teachers').once('value', snap => {
+        let found = false;
+        snap.forEach(t => {
+            const data = t.val();
+            if (data.name === user && data.password === pass) {
+                found = true;
+                alert("أهلاً بكِ يا مس " + user);
+                loginScreen.classList.add('hidden');
+                openStudentsSection();
             }
-        })
-        .catch(error => {
-            errorDiv.textContent = "خطأ في الاتصال بالخادم";
-            errorDiv.classList.remove('hidden');
-            loginBtn.textContent = originalText;
-            loginBtn.disabled = false;
-            console.error("Firebase error:", error);
         });
+        if (!found) alert("اسم المعلمة أو الكود غير صحيح");
+    });
 }
 
-function handleParentLogin(username, password, errorDiv, loginBtn, originalText) {
-    db.ref('Parents').once('value')
-        .then(snap => {
-            let found = false;
-            snap.forEach(p => {
-                const data = p.val();
-                if (data.name === username && data.password === password) {
-                    found = true;
-                    linkedStudentIdOfParent = data.studentId;
-                    sessionStorage.setItem('parentUser', username);
-                    sessionStorage.setItem('loginType', 'parent');
-                    sessionStorage.setItem('linkedStudent', data.studentId);
-                    
-                    loginScreen.classList.add('hidden');
-                    openStudentsSection();
-                    showToast("مرحباً بك " + username);
-                }
-            });
-            
-            if (!found) {
-                errorDiv.textContent = "بيانات الدخول غير صحيحة";
-                errorDiv.classList.remove('hidden');
-                loginBtn.textContent = originalText;
-                loginBtn.disabled = false;
-            }
-        })
-        .catch(error => {
-            errorDiv.textContent = "خطأ في الاتصال بالخادم";
-            errorDiv.classList.remove('hidden');
-            loginBtn.textContent = originalText;
-            loginBtn.disabled = false;
-        });
-}
-
-// ===================== الأطفال =====================
 function openStudentsSection() {
-    hideAllScreens();
-    createOrShowScreen('studentsSection', createStudentsSectionHTML);
+    dashboard.classList.add('hidden');
+    studentsSection.classList.remove('hidden');
     loadStudents();
-}
 
-function createStudentsSectionHTML() {
-    return `
-        <div class="max-w-4xl mx-auto py-8 px-4">
-            <div class="flex justify-between items-center mb-8 border-b pb-4">
-                <button onclick="goBackToDashboard()" class="text-blue-600 font-bold bg-blue-50 px-4 py-2 rounded-xl">
-                    ← العودة
-                </button>
-                <h2 class="text-2xl font-black text-blue-600">قائمة الأطفال</h2>
-                ${sessionStorage.getItem('loginType') === 'admin' ? 
-                    `<button onclick="openTrash()" class="bg-red-50 text-red-500 px-4 py-2 rounded-xl font-bold border border-red-200">
-                        🗑️ السلة
-                    </button>` : ''}
-            </div>
-            
-            ${sessionStorage.getItem('loginType') === 'admin' ? `
-            <div class="bg-slate-50 p-6 rounded-[2.5rem] mb-6 text-center border-2 border-dashed border-slate-300">
-                <input type="text" id="newStudentName" placeholder="اسم الطفل الرباعي" class="input-style mb-4 md:w-96">
-                <button onclick="addStudent()" class="bg-blue-600 text-white px-8 py-3 rounded-xl font-bold hover:bg-blue-700 transition">
-                    إضافة طفل جديد +
-                </button>
-            </div>
-            ` : ''}
-            
-            <div class="max-w-md mx-auto mb-6 px-4">
-                <input type="text" id="studentSearchInput" onkeyup="searchStudent()" placeholder="🔍 ابحث عن اسم الطفل..." 
-                       class="w-full p-3 rounded-2xl border-2 border-blue-100 outline-none text-center font-bold">
-            </div>
-            
-            <div id="studentsList" class="grid grid-cols-2 md:grid-cols-3 gap-6"></div>
-        </div>
-    `;
+    const isAdmin = (currentLoginType === 'admin');
+    document.getElementById('trashBtn').style.display = isAdmin ? 'block' : 'none';
+    document.getElementById('addStudentBox').style.display = isAdmin ? 'block' : 'none';
+
+    const backBtn = document.getElementById('backBtn');
+    if (currentLoginType === 'admin') {
+        backBtn.onclick = () => { dashboard.classList.remove('hidden'); studentsSection.classList.add('hidden'); };
+    } else {
+        backBtn.onclick = () => location.reload();
+    }
 }
 
 function loadStudents() {
-    const studentsList = document.getElementById('studentsList');
-    if (!studentsList) return;
-    
-    studentsList.innerHTML = '<div class="col-span-3"><div class="loading-spinner"></div></div>';
-    
     db.ref('Students').on('value', snap => {
         studentsList.innerHTML = "";
-        
-        if (!snap.exists()) {
-            studentsList.innerHTML = `
-                <div class="col-span-3 text-center py-10">
-                    <div class="text-5xl mb-4">👶</div>
-                    <h3 class="text-xl font-bold text-slate-600 mb-2">لا يوجد أطفال مسجلين</h3>
-                    <p class="text-slate-400">ابدأ بإضافة أول طفل في النظام</p>
-                </div>
-            `;
-            return;
-        }
-        
-        const loginType = sessionStorage.getItem('loginType');
-        const linkedStudent = sessionStorage.getItem('linkedStudent');
-        
         snap.forEach(c => {
-            if (loginType === 'parent' && c.key !== linkedStudent) return;
+            if (currentLoginType === 'parent' && c.key !== linkedStudentIdOfParent) return; 
+
+            const d = document.createElement('div');
+            d.className = "bg-white p-8 rounded-[2.5rem] shadow-sm font-black card-hover text-center border relative";
+            let deleteBtn = currentLoginType === 'admin' ? `<div class="del-btn" onclick="event.stopPropagation(); trashStudent('${c.key}','${c.val().name}')">X</div>` : "";
+            d.innerHTML = `${deleteBtn} ${c.val().name}`;
             
-            const child = c.val();
-            const card = document.createElement('div');
-            card.className = "bg-white p-8 rounded-[2.5rem] shadow-sm font-black card-hover text-center border relative";
-            
-            let deleteBtn = '';
-            if (loginType === 'admin') {
-                deleteBtn = `<div class="del-btn" onclick="event.stopPropagation(); trashStudent('${c.key}','${child.name}')">X</div>`;
-            }
-            
-            card.innerHTML = `
-                ${deleteBtn}
-                <div class="text-4xl mb-4">👶</div>
-                <h3 class="text-lg font-bold text-slate-700">${child.name}</h3>
-            `;
-            
-            card.onclick = () => {
-                sId = c.key;
-                sName = child.name;
-                openMonths();
+            d.onclick = () => { 
+                sId = c.key; 
+                sName = c.val().name; 
+                openMonths(); 
             };
-            
-            studentsList.appendChild(card);
+            studentsList.appendChild(d);
         });
     });
 }
 
-function addStudent() {
-    const name = document.getElementById('newStudentName').value.trim();
-    if (!name) {
-        showToast("الرجاء إدخال اسم الطفل", "error");
-        return;
-    }
-    
-    db.ref('Students').push({ 
-        name: name,
-        createdAt: new Date().getTime()
-    })
-    .then(() => {
-        document.getElementById('newStudentName').value = "";
-        showToast("تم إضافة الطفل بنجاح ✅");
-    })
-    .catch(error => {
-        showToast("حدث خطأ أثناء الإضافة", "error");
-        console.error(error);
-    });
-}
-
-// ===================== الشهور =====================
-function openMonths() {
-    hideAllScreens();
-    createOrShowScreen('monthsScreen', createMonthsScreenHTML);
-    
-    const monthsGrid = document.getElementById('monthsGrid');
+function openMonths(){
+    studentsSection.classList.add('hidden'); 
+    monthsScreen.classList.remove('hidden');
+    document.getElementById('currentStudentTitle').innerText = sName; 
     monthsGrid.innerHTML = "";
     
     const now = new Date();
-    const currentMonthName = monthsArr[now.getMonth()];
-    
-    monthsArr.forEach(month => {
-        const monthCard = document.createElement('div');
-        monthCard.className = "month-card";
+    const currentMonthName = monthsArr[now.getMonth()]; 
+
+    monthsArr.forEach(m => {
+        const d = document.createElement('div'); 
         
-        if (month === currentMonthName) {
-            monthCard.classList.add('current');
-            monthCard.innerHTML = `
-                <div class="text-3xl mb-2">📅</div>
-                <h3 class="text-xl font-bold">${month}</h3>
-                <p class="text-sm opacity-90">(الشهر الحالي)</p>
-            `;
+        if (m === currentMonthName) {
+            // إضافة كلاس today-pulse هنا للشهر الحالي
+            d.className = "bg-blue-600 text-white p-5 rounded-2xl border-4 border-blue-300 font-black cursor-pointer text-center shadow-lg transform scale-105 relative today-pulse";
+            d.innerHTML = `${m} <br> <span class="text-[10px] text-blue-100">(الشهر الحالي)</span>`;
         } else {
-            monthCard.classList.add('future');
-            monthCard.innerHTML = `
-                <div class="text-3xl mb-2">📅</div>
-                <h3 class="text-xl font-bold">${month}</h3>
-            `;
+            d.className = "bg-white p-5 rounded-2xl border-2 font-bold cursor-pointer text-center hover:bg-blue-50 transition text-slate-700 border-slate-100";
+            d.innerText = m; 
         }
-        
-        monthCard.onclick = () => {
-            mName = month;
-            openChoiceScreen();
+
+        d.onclick = () => { 
+            mName = m; 
+            monthsScreen.classList.add('hidden');
+            choiceScreen.classList.remove('hidden');
+        }; 
+        monthsGrid.appendChild(d);
+    });
+}
+async function openDays() {
+    daysScreen.classList.remove('hidden');
+    document.getElementById('currentMonthTitle').innerText = `أيام شهر ${mName} - ${sName}`;
+    
+    // إنشاء زر الرجوع ديناميكيًا
+    const backButton = document.createElement('button');
+    
+    if (currentLoginType === 'parent') {
+        // لأولياء الأمور: الرجوع للشهور مباشرة
+        backButton.onclick = () => {
+            daysScreen.classList.add('hidden');
+            monthsScreen.classList.remove('hidden');
         };
-        
-        monthsGrid.appendChild(monthCard);
-    });
-}
-
-function createMonthsScreenHTML() {
-    return `
-        <div class="max-w-4xl mx-auto py-8 px-4">
-            <button onclick="goBackToStudents()" class="mb-8 text-blue-600 font-bold float-right bg-blue-50 px-4 py-2 rounded-xl">
-                ← رجوع للأطفال
-            </button>
-            
-            <h2 class="text-3xl font-black mb-10 text-blue-600 text-center">${sName}</h2>
-            <p class="text-slate-500 text-center mb-10">اختر الشهر المراد عرضه</p>
-            
-            <div id="monthsGrid" class="grid grid-cols-3 md:grid-cols-4 gap-4"></div>
-        </div>
-    `;
-}
-
-// ===================== شاشة الاختيار =====================
-function openChoiceScreen() {
-    hideAllScreens();
-    createOrShowScreen('choiceScreen', createChoiceScreenHTML);
-}
-
-function createChoiceScreenHTML() {
-    return `
-        <div class="max-w-4xl mx-auto py-8 px-4">
-            <button onclick="goBackToMonths()" class="mb-10 text-blue-600 font-bold float-right bg-blue-50 px-4 py-2 rounded-xl">
-                ← رجوع للشهور
-            </button>
-            
-            <h2 class="text-3xl font-black mb-6 text-slate-800 text-center">${sName} - ${mName}</h2>
-            <p class="text-slate-500 text-center mb-10">اختر ما تريد القيام به</p>
-            
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-8 px-4">
-                <div onclick="openSubjectsMenu()" class="bg-white p-12 shadow-2xl rounded-[3rem] border-t-8 border-orange-400 cursor-pointer hover:scale-105 transition">
-                    <div class="text-6xl mb-4">📋</div>
-                    <h3 class="text-2xl font-black text-orange-500">المواد التعليمية</h3>
-                    <p class="text-slate-500 mt-2">إضافة وتعديل الأهداف</p>
-                </div>
-                
-                <div onclick="openDaysScreen()" class="bg-white p-12 shadow-2xl rounded-[3rem] border-t-8 border-blue-500 cursor-pointer hover:scale-105 transition">
-                    <div class="text-6xl mb-4">📊</div>
-                    <h3 class="text-2xl font-black text-blue-600">التقارير اليومية</h3>
-                    <p class="text-slate-500 mt-2">المتابعة اليومية</p>
-                </div>
-                
-                <div onclick="openScheduleScreen()" class="bg-white p-12 shadow-2xl rounded-[3rem] border-t-8 border-emerald-500 cursor-pointer hover:scale-105 transition">
-                    <div class="text-6xl mb-4">📅</div>
-                    <h3 class="text-2xl font-black text-emerald-600">الجدول اليومي</h3>
-                    <p class="text-slate-500 mt-2">الروتين اليومي</p>
-                </div>
-            </div>
-        </div>
-    `;
-}
-
-// ===================== المواد التعليمية =====================
-function openSubjectsMenu() {
-    hideAllScreens();
-    createOrShowScreen('subjectsMenu', createSubjectsMenuHTML);
-    
-    // إذا كان ولي أمر، نفتح عرض القراءة فقط
-    if (sessionStorage.getItem('loginType') === 'parent') {
-        openParentSubjectsView();
-        return;
-    }
-}
-
-function createSubjectsMenuHTML() {
-    const subjects = [
-        { name: 'اللغة العربية', color: '#ef4444', icon: '📖' },
-        { name: 'English', color: '#3b82f6', icon: '🔤' },
-        { name: 'Math', color: '#10b981', icon: '🔢' },
-        { name: 'التربية الدينية', color: '#f59e0b', icon: '🌙' },
-        { name: 'Montessori', color: '#8b5cf6', icon: '🧩' },
-        { name: 'قرآن إضافي', color: '#047857', icon: '🕌' },
-        { name: 'مناسبات', color: '#db2777', icon: '🎉' },
-        { name: 'تنمية المهارات', color: '#6366f1', icon: '🎨' }
-    ];
-    
-    let subjectsHTML = '';
-    subjects.forEach(subject => {
-        subjectsHTML += `
-            <div onclick="openGoalEntry('${subject.name}', '${subject.color}', '${subject.icon}')" 
-                 class="subject-card" style="background: ${subject.color}">
-                <div class="text-4xl mb-3">${subject.icon}</div>
-                <h3 class="text-xl font-bold">${subject.name}</h3>
-            </div>
-        `;
-    });
-    
-    return `
-        <div class="max-w-4xl mx-auto py-8 px-4">
-            <button onclick="goBackToChoice()" class="mb-8 text-blue-600 font-bold float-right bg-blue-50 px-4 py-2 rounded-xl">
-                ← رجوع
-            </button>
-            
-            <h2 class="text-3xl font-black mb-10 text-slate-800 text-center">المواد التعليمية</h2>
-            <p class="text-slate-500 text-center mb-10">${sName} - ${mName}</p>
-            
-            <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
-                ${subjectsHTML}
-            </div>
-            
-            ${sessionStorage.getItem('loginType') === 'admin' ? `
-            <div class="mt-10 text-center">
-                <button onclick="exportMonthlyPlan()" class="bg-slate-800 text-white px-8 py-4 rounded-2xl font-bold hover:bg-black transition">
-                    📄 تصدير الخطة الشهرية
-                </button>
-            </div>
-            ` : ''}
-        </div>
-    `;
-}
-
-// ===================== إدخال الأهداف =====================
-function openGoalEntry(subject, color, icon) {
-    currentSub = subject;
-    hideAllScreens();
-    createOrShowScreen('goalEntryScreen', createGoalEntryScreenHTML(subject, color, icon));
-    
-    // تعيين اللون والخلفية
-    const header = document.getElementById('entryHeader');
-    if (header) header.style.background = color;
-    
-    // تحميل الأهداف الموجودة
-    loadGoals();
-}
-
-function createGoalEntryScreenHTML(subject, color, icon) {
-    const isParent = sessionStorage.getItem('loginType') === 'parent';
-    
-    return `
-        <div class="max-w-2xl mx-auto py-8 px-4">
-            <button onclick="goBackToSubjects()" class="mb-8 text-white font-bold float-right px-4 py-2 rounded-xl" style="background: ${color}">
-                ← رجوع
-            </button>
-            
-            <div id="entryHeader" class="p-8 rounded-[2rem] text-white text-center mb-8 shadow-xl" style="background: ${color}">
-                <div class="text-4xl mb-4">${icon}</div>
-                <h2 id="entryTitle" class="text-2xl font-black">${subject}</h2>
-                <p class="opacity-90">${sName} - ${mName}</p>
-            </div>
-            
-            <div id="goalsContainer" class="mb-8">
-                <div id="noGoalsMessage" class="p-10 bg-slate-50 rounded-[2rem] border-2 border-dashed border-slate-200 text-slate-400 font-bold text-center">
-                    <div class="text-4xl mb-4">📝</div>
-                    لا توجد أهداف مضافة حالياً
-                </div>
-                <div id="goalsListContainer" class="space-y-4"></div>
-            </div>
-            
-            ${!isParent ? `
-            <button onclick="showGoalForm()" class="w-full p-5 bg-blue-600 text-white rounded-2xl font-bold shadow-lg hover:bg-blue-700 transition mb-6">
-                + إضافة هدف جديد
-            </button>
-            
-            <div id="goalInputForm" class="hidden p-6 bg-white border-2 border-blue-500 rounded-[2rem] shadow-2xl">
-                <h3 class="text-lg font-black text-blue-600 mb-4 text-center">تفاصيل الهدف الجديد</h3>
-                
-                <input type="text" id="goalName" placeholder="اسم الهدف أو النشاط" class="input-style">
-                
-                ${subject !== 'مناسبات' ? `
-                <div class="grid grid-cols-2 gap-4 mt-4">
-                    <div>
-                        <label class="block text-right text-sm font-bold text-slate-500 mb-2">نسبة الإنجاز:</label>
-                        <select id="goalScore" class="input-style">
-                            ${Array.from({length: 11}, (_, i) => i * 10)
-                                .map(n => `<option value="${n}">${n}%</option>`).join('')}
-                        </select>
-                    </div>
-                    <div>
-                        <label class="block text-right text-sm font-bold text-slate-500 mb-2">مستوى المساعدة:</label>
-                        <select id="helpLevel" class="input-style">
-                            <option value="بدون مساعدة">بدون مساعدة</option>
-                            <option value="مساعدة بسيطة">مساعدة بسيطة</option>
-                            <option value="مساعدة كبيرة">مساعدة كبيرة</option>
-                        </select>
-                    </div>
-                </div>
-                ` : ''}
-                
-                <div class="flex gap-2 mt-6">
-                    <button onclick="saveGoal()" class="flex-1 p-4 bg-emerald-500 text-white rounded-xl font-bold">حفظ ✅</button>
-                    <button onclick="hideGoalForm()" class="flex-1 p-4 bg-slate-100 text-slate-500 rounded-xl font-bold">إلغاء</button>
-                </div>
-            </div>
-            ` : ''}
-        </div>
-    `;
-}
-
-function loadGoals() {
-    const container = document.getElementById('goalsListContainer');
-    const msg = document.getElementById('noGoalsMessage');
-    if (!container || !msg) return;
-    
-    db.ref(`MonthlyPlans/${sId}/${mName}/${currentSub}`).on('value', snapshot => {
-        container.innerHTML = "";
-        const data = snapshot.val();
-        
-        if (!data) {
-            msg.classList.remove('hidden');
-            return;
-        }
-        
-        msg.classList.add('hidden');
-        const isParent = sessionStorage.getItem('loginType') === 'parent';
-        
-        Object.entries(data).forEach(([key, goal]) => {
-            const div = document.createElement('div');
-            div.className = "bg-white p-4 rounded-2xl shadow-sm border-r-4 flex justify-between items-center";
-            div.style.borderRightColor = currentSub === 'مناسبات' ? '#db2777' : '#3b82f6';
-            
-            let goalInfo = `<div><span class="font-bold text-slate-700">${goal.name}</span>`;
-            if (currentSub !== 'مناسبات' && goal.score && goal.help) {
-                goalInfo += `<br><span class="text-xs text-blue-500 font-bold">${goal.score} - ${goal.help}</span>`;
-            }
-            goalInfo += `</div>`;
-            
-            let actionButtons = '';
-            if (!isParent) {
-                actionButtons = `
-                    <div class="flex gap-2">
-                        <button onclick="editGoal('${key}', '${goal.name}', '${goal.score || ''}', '${goal.help || ''}')" 
-                                class="text-blue-500 text-sm font-bold px-3 py-1 bg-blue-50 rounded-lg">
-                            تعديل
-                        </button>
-                        <button onclick="deleteGoal('${key}')" 
-                                class="text-red-500 text-sm font-bold px-3 py-1 bg-red-50 rounded-lg">
-                            حذف
-                        </button>
-                    </div>
-                `;
-            }
-            
-            div.innerHTML = `${actionButtons}${goalInfo}`;
-            container.appendChild(div);
-        });
-    });
-}
-
-function showGoalForm() {
-    document.getElementById('goalInputForm').classList.remove('hidden');
-}
-
-function hideGoalForm() {
-    document.getElementById('goalInputForm').classList.add('hidden');
-    document.getElementById('goalName').value = "";
-}
-
-function saveGoal() {
-    const name = document.getElementById('goalName').value.trim();
-    if (!name) {
-        showToast("الرجاء إدخال اسم الهدف", "error");
-        return;
-    }
-    
-    let goalData = {
-        name: name,
-        timestamp: new Date().getTime()
-    };
-    
-    if (currentSub !== 'مناسبات') {
-        goalData.score = document.getElementById('goalScore').value + "%";
-        goalData.help = document.getElementById('helpLevel').value;
-    }
-    
-    let ref;
-    if (editingGoalId) {
-        ref = db.ref(`MonthlyPlans/${sId}/${mName}/${currentSub}/${editingGoalId}`);
     } else {
-        ref = db.ref(`MonthlyPlans/${sId}/${mName}/${currentSub}`).push();
+        // للمعلمين والإدارة: الرجوع لشاشة الاختيار
+        backButton.onclick = () => {
+            daysScreen.classList.add('hidden');
+            choiceScreen.classList.remove('hidden');
+        };
     }
     
-    ref.set(goalData)
-    .then(() => {
-        showToast(editingGoalId ? "تم تحديث الهدف ✨" : "تم إضافة الهدف بنجاح ✅");
-        editingGoalId = null;
-        hideGoalForm();
-        document.getElementById('goalName').value = "";
-    })
-    .catch(error => {
-        showToast("حدث خطأ أثناء الحفظ", "error");
-        console.error(error);
-    });
-}
-
-function editGoal(id, name, score, help) {
-    editingGoalId = id;
-    showGoalForm();
-    document.getElementById('goalName').value = name;
+    backButton.className = "mb-8 text-blue-600 font-bold float-right";
+    backButton.innerHTML = "? رجوع";
     
-    if (currentSub !== 'مناسبات') {
-        if (score) document.getElementById('goalScore').value = score.replace('%', '');
-        if (help) document.getElementById('helpLevel').value = help;
-    }
-}
-
-function deleteGoal(id) {
-    if (!confirm("هل أنت متأكد من حذف هذا الهدف؟")) return;
+    // إزالة أي زر رجوع قديم
+    const oldButton = daysScreen.querySelector('button');
+    if (oldButton) oldButton.remove();
     
-    db.ref(`MonthlyPlans/${sId}/${mName}/${currentSub}/${id}`).remove()
-    .then(() => {
-        showToast("تم حذف الهدف بنجاح 🗑️");
-    })
-    .catch(error => {
-        showToast("حدث خطأ أثناء الحذف", "error");
-    });
-}
-
-// ===================== التقارير اليومية =====================
-function openDaysScreen() {
-    hideAllScreens();
-    createOrShowScreen('daysScreen', createDaysScreenHTML);
-    loadDays();
-}
-
-function createDaysScreenHTML() {
-    return `
-        <div class="max-w-4xl mx-auto py-8 px-4">
-            <button onclick="goBackToChoice()" class="mb-8 text-blue-600 font-bold float-right bg-blue-50 px-4 py-2 rounded-xl">
-                ← رجوع
-            </button>
-            
-            <h2 class="text-3xl font-black mb-6 text-slate-800 text-center">${sName} - ${mName}</h2>
-            <p class="text-slate-500 text-center mb-10">اختر اليوم لعرض أو إضافة التقرير</p>
-            
-            <div id="daysGrid" class="grid grid-cols-5 md:grid-cols-7 gap-3"></div>
-        </div>
-    `;
-}
-
-function loadDays() {
-    const daysGrid = document.getElementById('daysGrid');
-    if (!daysGrid) return;
+    // إضافة زر الرجوع الجديد في بداية الصفحة
+    daysScreen.insertBefore(backButton, daysScreen.firstChild);
     
+    // باقي الكود كما هو...
     daysGrid.innerHTML = "";
     
     const now = new Date();
     const currentYear = now.getFullYear();
     const currentMonthIdx = now.getMonth();
     const currentDay = now.getDate();
+
+    const year = 2026; 
     const monthIdx = monthsArr.indexOf(mName);
-    
-    // جلب التقارير الموجودة
-    db.ref(`DailyReports/${sId}`).once('value').then(snap => {
-        const reportsData = snap.val() || {};
-        
-        for (let day = 1; day <= 31; day++) {
-            const dateCheck = new Date(currentYear, monthIdx, day);
-            if (dateCheck.getMonth() !== monthIdx) break;
-            
-            const dayOfWeek = dateCheck.getDay();
-            if (dayOfWeek === 5 || dayOfWeek === 6) continue; // تخطي الجمعة والسبت
-            
-            const reportDate = `${currentYear}-${(monthIdx + 1).toString().padStart(2, '0')}-${day.toString().padStart(2, '0')}`;
-            const hasReport = reportsData[reportDate] !== undefined;
-            const isToday = (currentYear === currentYear && monthIdx === currentMonthIdx && day === currentDay);
-            const isPast = (dateCheck < new Date(currentYear, currentMonthIdx, currentDay));
-            
-            const dayCard = document.createElement('div');
-            dayCard.className = "day-card";
-            
-            if (isToday) {
-                dayCard.classList.add('today');
-                dayCard.innerHTML = `${day}<br><span class="text-xs">اليوم</span>`;
-            } else if (hasReport) {
-                dayCard.classList.add('has-report');
-                dayCard.innerHTML = `${day}<br><span class="text-xs">✅</span>`;
-            } else if (isPast) {
-                dayCard.classList.add('no-report');
-                dayCard.innerHTML = `${day}<br><span class="text-xs">⚠️</span>`;
-            } else {
-                dayCard.classList.add('future');
-                dayCard.textContent = day;
-            }
-            
-            dayCard.onclick = () => {
-                selectedDay = day;
-                if (sessionStorage.getItem('loginType') === 'parent') {
-                    openParentDailyReport();
-                } else {
-                    openFollowUpScreen();
-                }
-            };
-            
-            daysGrid.appendChild(dayCard);
+
+    const reportsSnap = await db.ref(`DailyReports/${sId}`).once('value');
+    const reportsData = reportsSnap.val() || {};
+
+    for (let i = 1; i <= 31; i++) {
+        let dateCheck = new Date(year, monthIdx, i);
+        if (dateCheck.getMonth() !== monthIdx) break;
+
+        let dayOfWeek = dateCheck.getDay(); 
+        if (dayOfWeek === 5 || dayOfWeek === 6) continue;
+
+        const d = document.createElement('div');
+        const reportDate = `${year}-${(monthIdx + 1).toString().padStart(2, '0')}-${i.toString().padStart(2, '0')}`;
+        const hasReport = reportsData[reportDate] !== undefined;
+
+        const isPast = (dateCheck < new Date(currentYear, currentMonthIdx, currentDay));
+        const isToday = (year === currentYear && monthIdx === currentMonthIdx && i === currentDay);
+
+        if (isToday) {
+            d.className = "p-4 rounded-xl border-4 border-yellow-400 font-black cursor-pointer text-center bg-yellow-100 text-yellow-900 scale-110 shadow-xl z-10 today-pulse";
+            d.innerHTML = `${i} <br> <span class="text-[10px]">اليوم</span>`;
+        } else if (hasReport) {
+            d.className = "p-4 rounded-xl border-2 border-emerald-200 font-bold cursor-pointer text-center bg-emerald-50 text-emerald-700 hover:bg-emerald-600 hover:text-white transition shadow-sm";
+            d.innerHTML = `${i} <br> <span class="text-[10px]">? تقرير متاح</span>`;
+        } else if (isPast) {
+            d.className = "p-4 rounded-xl border-2 border-red-200 font-bold cursor-pointer text-center bg-red-50 text-red-600 hover:bg-red-600 hover:text-white transition shadow-sm";
+            d.innerHTML = `${i} <br> <span class="text-[10px]">?? لا يوجد تقرير</span>`;
+        } else {
+            d.className = "p-4 rounded-xl border-2 border-slate-100 font-bold cursor-pointer text-center bg-white text-slate-400 hover:border-blue-400 transition";
+            d.innerText = i;
         }
+
+        d.onclick = () => {
+            selectedDay = i;
+            daysScreen.classList.add('hidden');
+            
+            if (currentLoginType === 'parent') {
+                openParentDailyReportView();
+            } else {
+                openFollowUp();
+            }
+        };
+        daysGrid.appendChild(d);
+    }
+}
+function openFollowUpMenu(){ 
+    choiceScreen.classList.add('hidden'); 
+    
+    // إذا كان ولي أمر، نفتح مباشرة على عرض التقارير
+    if (currentLoginType === 'parent') {
+        openDays(); // فتح التقويم مباشرة (للقراءة فقط)
+    } else {
+        openDays(); // للمعلمين والإدارة: فتح التقويم للاختيار
+    }
+}
+// --- 1. إدارة المدرسين ---
+function openTeachersSection(){ 
+    dashboard.classList.add('hidden'); 
+    document.getElementById('teachersSection').classList.remove('hidden'); 
+    loadTeachers(); 
+}
+
+function addTeacher() {
+    const n = document.getElementById('newTeacherName').value.trim(); 
+    const s = document.getElementById('teacherSubject').value.trim();
+    const p = document.getElementById('teacherPass').value.trim();
+
+    if (n && s && p) {
+        db.ref('Teachers').push({ name: n, subject: s, password: p })
+        .then(() => {
+            document.getElementById('newTeacherName').value = "";
+            document.getElementById('teacherSubject').value = "";
+            document.getElementById('teacherPass').value = "";
+            alert("تم إضافة المعلمة بنجاح ?");
+        });
+    } else { alert("برجاء ملء جميع البيانات"); }
+}
+
+function loadTeachers(){
+    db.ref('Teachers').on('value', snap => {
+        const list = document.getElementById('teachersList');
+        list.innerHTML = "";
+        snap.forEach(t => {
+            const data = t.val();
+            list.innerHTML += `
+                <div class="bg-white p-4 rounded-xl shadow-sm border-r-4 border-emerald-500 flex justify-between items-center mb-2">
+                    <div>
+                        <p class="font-bold">${data.name}</p>
+                        <p class="text-xs text-slate-500">${data.subject}</p>
+                        <p class="text-xs font-bold text-emerald-600">Pass: ${data.password}</p>
+                    </div>
+                    <button onclick="db.ref('Teachers/${t.key}').remove()" class="text-red-500 font-bold">حذف</button>
+                </div>`;
+        });
     });
 }
 
-// ===================== المتابعة اليومية =====================
-function openFollowUpScreen() {
-    hideAllScreens();
-    createOrShowScreen('followUpScreen', createFollowUpScreenHTML);
-    loadFollowUpData();
+// --- 2. إدارة أولياء الأمور ---
+function openParentsSection(){ 
+    dashboard.classList.add('hidden'); 
+    document.getElementById('parentsSection').classList.remove('hidden'); 
+    loadParents();
+    fillStudentsSelect(); 
 }
 
-function createFollowUpScreenHTML() {
-    const isParent = sessionStorage.getItem('loginType') === 'parent';
-    
-    return `
-        <div class="max-w-2xl mx-auto py-8 px-4">
-            <button onclick="goBackToDays()" class="mb-8 text-blue-600 font-bold float-right bg-blue-50 px-4 py-2 rounded-xl">
-                ← رجوع للأيام
-            </button>
-            
-            <div class="bg-white rounded-[2.5rem] shadow-xl p-6 border-t-8 border-blue-600">
-                <h2 class="text-2xl font-black text-center mb-2 text-blue-600">تقرير يوم ${selectedDay} ${mName}</h2>
-                <p id="reportDateDisplay" class="text-center text-slate-400 font-bold mb-6 text-sm">${sName}</p>
-                
-                <div class="follow-up-box">
-                    <h3 class="section-title text-purple-600">🎭 الحالة المزاجية</h3>
-                    <div class="flex justify-around items-center py-4">
-                        <div onclick="setMood('happy', this)" class="mood-btn">🤩</div>
-                        <div onclick="setMood('angry', this)" class="mood-btn">😡</div>
-                        <div onclick="setMood('sad', this)" class="mood-btn">😢</div>
-                        <div onclick="setMood('naughty', this)" class="mood-btn">🤪</div>
-                    </div>
-                </div>
 
-                <div class="follow-up-box">
-                    <h3 class="section-title text-sky-600">😴 القيلولة</h3>
-                    <div class="grid grid-cols-2 gap-4">
-                        <input type="time" id="nap_from" class="input-style" ${isParent ? 'disabled' : ''}>
-                        <input type="time" id="nap_to" class="input-style" ${isParent ? 'disabled' : ''}>
-                    </div>
-                </div>
 
-                <div class="follow-up-box">
-                    <h3 class="section-title text-blue-500">🚽 الحمام</h3>
-                    <select id="potty_status" class="input-style" ${isParent ? 'disabled' : ''}>
-                        <option value="نظيف">نظيف</option>
-                        <option value="تغيير حفاض">تغيير حفاض</option>
-                        <option value="نجاح في الحمام">نجاح في الحمام</option>
-                    </select>
-                </div>
 
-                <div class="follow-up-box">
-                    <h3 class="section-title text-pink-600">🎯 الأنشطة</h3>
-                    <div id="activitiesGrid" class="grid grid-cols-2 gap-2 text-sm"></div>
-                </div>
 
-                <div class="follow-up-box">
-                    <h3 class="section-title text-orange-500">📝 ملاحظات</h3>
-                    <textarea id="daily_notes" placeholder="اكتب ملاحظاتك هنا..." 
-                              class="input-style h-24 resize-none p-4 text-right border" ${isParent ? 'disabled' : ''}></textarea>
-                </div>
-
-                ${!isParent ? `
-                <button onclick="saveDailyReport()" class="w-full p-6 bg-blue-600 text-white rounded-3xl font-bold shadow-lg hover:bg-blue-700 transition mt-6">
-                    حفظ التقرير ✅
-                </button>
-                ` : ''}
-            </div>
-        </div>
-    `;
+// --- 3. الخطة التعليمية ---
+function openPlanMenu(){ 
+    choiceScreen.classList.add('hidden'); 
+    document.getElementById('subjectsMenu').classList.remove('hidden'); 
 }
-
-function loadFollowUpData() {
-    const year = 2026;
-    const monthIdx = monthsArr.indexOf(mName);
-    const reportDate = `${year}-${(monthIdx + 1).toString().padStart(2, '0')}-${selectedDay.toString().padStart(2, '0')}`;
+function openGoalEntry(subject, color, icon) {
+    // 1. تحديد المادة الحالية
+    currentSubject = subject;
     
-    // إنشاء شبكة الأنشطة
-    const activitiesGrid = document.getElementById('activitiesGrid');
-    if (activitiesGrid) {
-        activitiesGrid.innerHTML = activitiesList.map(act => `
-            <label class="activity-check">
-                <span>${act}</span>
-                <input type="checkbox" class="activity-checkbox" value="${act}" 
-                       ${sessionStorage.getItem('loginType') === 'parent' ? 'disabled' : ''}>
-            </label>
-        `).join('');
+    // 2. تحديث العنوان واللون في صفحة الإدخال
+    const titleEl = document.getElementById('entryTitle');
+    const headerEl = document.getElementById('entryHeader');
+    
+    if (titleEl && headerEl) {
+        titleEl.innerText = `${icon} إضافة: ${subject}`;
+        headerEl.style.backgroundColor = color; // تغيير لون الهيدر حسب المادة
     }
+
+    // 3. إخفاء أو إظهار خانات التقييم (المساعدة والدرجة)
+    const scoreFields = document.getElementById('scoreFieldsContainer');
+    if (scoreFields) {
+        if (subject === 'مناسبات') {
+            scoreFields.style.display = 'none'; // اخفيها في المناسبات
+        } else {
+            scoreFields.style.display = 'block'; // اظهرها في باقي المواد
+        }
+    }
+
+    // 4. تصفير الخانات عشان تكون فاضية للإدخال الجديد
+    document.getElementById('goalName').value = "";
+    if (document.getElementById('goalScore')) {
+        document.getElementById('goalScore').value = "";
+    }
+
+    // 5. إخفاء قائمة المواد وإظهار شاشة الإدخال
+    // تأكد إن الأسماء دي (subjectsMenu) و (goalEntryScreen) هي اللي موجودة في الـ HTML
+    document.getElementById('subjectsMenu').classList.add('hidden');
+    document.getElementById('goalEntryScreen').classList.remove('hidden');
+
+    // 6. تحميل الأهداف اللي انضافت قبل كدة للمادة دي (لو عندك دالة بتعمل كدة)
+    if (typeof loadGoals === "function") {
+        loadGoals(); 
+    }
+}
+function addNewGoalRow(data = null) {
+    if (currentLoginType === 'parent' && data === null) return;
+    const isParent = (currentLoginType === 'parent'); // فحص نوع المستخدم
+    const d = document.createElement('div');
+    d.className = "goal-card shadow-sm p-3 bg-slate-50 rounded-lg mb-2";
     
-    // جلب بيانات التقرير إن وجدت
-    db.ref(`DailyReports/${sId}/${reportDate}`).once('value').then(snap => {
-        const data = snap.val() || {};
+    // أضفنا خاصية disabled لكل حقل بناءً على نوع المستخدم
+    d.innerHTML = `
+        <input class="goal-name w-full p-2 mb-2 rounded border" 
+               placeholder="اسم الهدف" value="${data ? data.name : ''}" 
+               ${isParent ? 'disabled' : ''}> 
+        <div class="flex gap-2">
+            <select class="goal-help w-1/2 p-2 border rounded text-xs" ${isParent ? 'disabled' : ''}>
+                <option ${data?.help == 'بدون مساعدة' ? 'selected' : ''}>بدون مساعدة</option>
+                <option ${data?.help == 'مساعدة بسيطة' ? 'selected' : ''}>مساعدة بسيطة</option>
+                <option ${data?.help == 'مساعدة كبيرة' ? 'selected' : ''}>مساعدة كبيرة</option>
+            </select>
+            <select class="goal-score w-1/2 p-2 border rounded text-xs" ${isParent ? 'disabled' : ''}>
+                <option ${data?.score == '0%' ? 'selected' : ''}>0%</option>
+                <option ${data?.score == '50%' ? 'selected' : ''}>50%</option>
+                <option ${data?.score == '100%' ? 'selected' : ''}>100%</option>
+            </select>
+        </div>
+        ${!isParent ? '<button onclick="this.parentElement.remove()" class="text-red-400 text-xs mt-2 underline">حذف السطر</button>' : ''}`;
+    
+    document.getElementById('goalsListContainer').appendChild(d);
+}
+function trashStudent(id, name) {
+    if (confirm(`نقل ${name} للسلة؟`)) {
+        db.ref('Students/' + id).once('value', s => {
+            db.ref('TrashBin/Students/' + id).set(s.val()).then(() => {
+                db.ref('Students/' + id).remove();
+            });
+        });
+    }
+}
+
+function openTrash() {
+    studentsSection.classList.add('hidden');
+    document.getElementById('trashScreen').classList.remove('hidden');
+    const list = document.getElementById('trashStudentsList');
+    
+    db.ref('TrashBin/Students').on('value', snap => {
+        list.innerHTML = "";
+        snap.forEach(c => {
+            list.innerHTML += `
+                <div class="bg-white p-4 rounded-xl flex justify-between border mb-2">
+                    <span>${c.val().name}</span>
+                    <button onclick="restoreStudent('${c.key}')" class="text-blue-600 font-bold">استعادة</button>
+                </div>`;
+        });
+    });
+}
+
+function restoreStudent(id) {
+    db.ref('TrashBin/Students/' + id).once('value', s => {
+        db.ref('Students/' + id).set(s.val()).then(() => {
+            db.ref('TrashBin/Students/' + id).remove();
+            alert("تمت الاستعادة بنجاح");
+        });
+    });
+}
+
+function addStudent() {
+    const n = document.getElementById('newStudentName').value.trim();
+    if (n) {
+        db.ref('Students').push({ name: n }).then(() => {
+            document.getElementById('newStudentName').value = "";
+        });
+    }
+}
+// دالة لفتح/إغلاق مستطيل الإضافة
+function toggleGoalForm(show) {
+    const form = document.getElementById('goalInputForm');
+    const addBtn = document.getElementById('showAddFormBtn');
+    
+    if (show) {
+        form.classList.remove('hidden');
+        addBtn.classList.add('hidden');
+    } else {
+        form.classList.add('hidden');
+        addBtn.classList.remove('hidden');
+        // تصفير الخانات عند الإغلاق
+        document.getElementById('goalName').value = "";
+    }
+}
+
+// تعديل دالة فتح المادة
+function openGoalEntry(subject, color, icon) {
+    currentSubject = subject;
+    
+    const titleEl = document.getElementById('entryTitle');
+    const headerEl = document.getElementById('entryHeader');
+    const scoreFields = document.getElementById('scoreFieldsContainer');
+
+    if (titleEl && headerEl) {
+        titleEl.innerText = `${icon} ${subject}`;
+        headerEl.style.backgroundColor = color;
+    }
+
+    // إخفاء التقييمات لو المادة مناسبات
+    if (scoreFields) {
+        scoreFields.style.display = (subject === 'مناسبات') ? 'none' : 'block';
+    }
+
+    toggleGoalForm(false); // تأكد أن النموذج مخفي في البداية
+    
+    // إخفاء القائمة وإظهار شاشة المادة
+    document.getElementById('subjectsMenu').classList.add('hidden');
+    document.getElementById('goalEntryScreen').classList.remove('hidden');
+
+    loadGoals(); // دالة لعرض الأهداف الموجودة حالياً
+}
+
+// دالة عرض الأهداف مع رسالة "لا توجد أهداف"
+function loadGoals() {
+    const container = document.getElementById('goalsListContainer');
+    const msg = document.getElementById('noGoalsMessage');
+    
+    db.ref(`MonthlyPlans/${sId}/${mName}/${currentSubject}`).on('value', snapshot => {
+        const data = snapshot.val();
+        container.innerHTML = "";
         
-        // تعبئة الحقول
-        if (data.nap_from) document.getElementById('nap_from').value = data.nap_from;
-        if (data.nap_to) document.getElementById('nap_to').value = data.nap_to;
-        if (data.potty_status) document.getElementById('potty_status').value = data.potty_status;
-        if (data.notes) document.getElementById('daily_notes').value = data.notes;
-        if (data.mood) setMood(data.mood);
-        
-        // تعبئة الأنشطة
-        if (data.activities) {
-            data.activities.forEach(activity => {
-                const checkbox = document.querySelector(`.activity-checkbox[value="${activity}"]`);
-                if (checkbox) checkbox.checked = true;
+        if (!data) {
+            msg.classList.remove('hidden');
+        } else {
+            msg.classList.add('hidden');
+            Object.entries(data).forEach(([key, goal]) => {
+                const div = document.createElement('div');
+                div.className = "p-4 bg-white border-r-4 rounded-xl shadow-sm text-right mb-2 flex justify-between items-center";
+                div.style.borderColor = (currentSubject === 'مناسبات') ? '#db2777' : '#3b82f6';
+                
+                let info = `<div><span class="font-bold text-slate-700">${goal.name}</span>`;
+                if(currentSubject !== 'مناسبات') {
+                    info += `<br><span class="text-xs text-blue-500 font-bold">${goal.score} - ${goal.help}</span>`;
+                }
+                info += `</div>`;
+
+                div.innerHTML = `
+                    <div class="flex gap-3">
+                        <button onclick="editGoal('${key}', '${goal.name}', '${goal.score}', '${goal.help}')" class="text-blue-500 text-sm font-bold">تعديل ??</button>
+                        <button onclick="deleteGoal('${key}')" class="text-red-400 text-sm">حذف ???</button>
+                    </div>
+                    ${info}
+                `;
+                container.appendChild(div);
             });
         }
     });
 }
-
-function setMood(mood, element) {
-    if (sessionStorage.getItem('loginType') === 'parent') return;
-    
-    selectedMood = mood;
-    document.querySelectorAll('.mood-btn').forEach(btn => btn.classList.remove('active'));
-    if (element) element.classList.add('active');
-}
-
-function saveDailyReport() {
-    const year = 2026;
-    const monthIdx = monthsArr.indexOf(mName);
-    const reportDate = `${year}-${(monthIdx + 1).toString().padStart(2, '0')}-${selectedDay.toString().padStart(2, '0')}`;
-    
-    // جمع الأنشطة المختارة
-    const selectedActivities = [];
-    document.querySelectorAll('.activity-checkbox:checked').forEach(cb => {
-        selectedActivities.push(cb.value);
-    });
-    
-    const reportData = {
-        mood: selectedMood,
-        nap_from: document.getElementById('nap_from').value,
-        nap_to: document.getElementById('nap_to').value,
-        potty_status: document.getElementById('potty_status').value,
-        activities: selectedActivities,
-        notes: document.getElementById('daily_notes').value,
-        timestamp: new Date().getTime(),
-        studentName: sName,
-        month: mName,
-        day: selectedDay
-    };
-    
-    db.ref(`DailyReports/${sId}/${reportDate}`).update(reportData)
-    .then(() => {
-        showToast("تم حفظ التقرير اليومي بنجاح ✅");
-        openDaysScreen();
-    })
-    .catch(error => {
-        showToast("حدث خطأ أثناء حفظ التقرير", "error");
-        console.error(error);
-    });
-}
-
-// ===================== دوال التنقل =====================
-function hideAllScreens() {
-    document.querySelectorAll('.admin-page').forEach(el => el.classList.add('hidden'));
-}
-
-function createOrShowScreen(screenId, htmlGenerator) {
-    let screen = document.getElementById(screenId);
-    
-    if (!screen) {
-        screen = document.createElement('div');
-        screen.id = screenId;
-        screen.className = 'admin-page hidden';
-        screen.innerHTML = htmlGenerator();
-        document.body.appendChild(screen);
-    } else {
-        screen.innerHTML = htmlGenerator();
-    }
-    
-    screen.classList.remove('hidden');
-}
-
-function goBackToDashboard() {
-    hideAllScreens();
-    dashboard.classList.remove('hidden');
-}
-
-function goBackToStudents() {
-    hideAllScreens();
-    openStudentsSection();
-}
-
-function goBackToMonths() {
-    hideAllScreens();
-    openMonths();
-}
-
-function goBackToChoice() {
-    hideAllScreens();
-    openChoiceScreen();
-}
-
-function goBackToSubjects() {
-    hideAllScreens();
-    openSubjectsMenu();
-}
-
-function goBackToDays() {
-    hideAllScreens();
-    openDaysScreen();
-}
-
-// ===================== دوال إضافية =====================
 function searchStudent() {
     const query = document.getElementById('studentSearchInput').value.toLowerCase();
-    const cards = document.querySelectorAll('#studentsList > div');
-    
+    const cards = studentsList.querySelectorAll('div');
     cards.forEach(card => {
-        const name = card.textContent.toLowerCase();
+        const name = card.innerText.toLowerCase();
         card.style.display = name.includes(query) ? "block" : "none";
     });
 }
 
-function trashStudent(id, name) {
-    if (!confirm(`هل تريد نقل ${name} إلى السلة؟`)) return;
+function saveGoal() {
+    const name = document.getElementById('goalName').value;
+    const score = document.getElementById('goalScore').value;
+    const help = document.getElementById('helpLevel').value;
+
+    if (!name) {
+        showToast("اكتب اسم الهدف!", "error");
+        return;
+    }
+
+    let finalData = {
+        name: name,
+        timestamp: new Date().getTime()
+    };
+
+    if (currentSubject !== 'مناسبات') {
+        finalData.score = score + "%";
+        finalData.help = help;
+    }
+
+    // تحديد مسار الحفظ (إما ID جديد أو الـ ID اللي بنعدله)
+    let ref;
+    if (editingGoalId) {
+        // لو بنعدل
+        ref = db.ref(`MonthlyPlans/${sId}/${mName}/${currentSubject}/${editingGoalId}`);
+    } else {
+        // لو إضافة جديدة
+        ref = db.ref(`MonthlyPlans/${sId}/${mName}/${currentSubject}`).push();
+    }
+
+    ref.set(finalData)
+    .then(() => {
+        showToast(editingGoalId ? "تم التحديث بنجاح ?" : "تم الحفظ بنجاع ?");
+        resetGoalForm(); // دالة لتصفير الفورم
+    })
+    .catch(e => showToast("خطأ في الاتصال", "error"));
+}
+
+// دالة لتصفير الفورم ورجوع الزرار لأصله
+function resetGoalForm() {
+    editingGoalId = null;
+    toggleGoalForm(false);
+    document.getElementById('goalName').value = "";
     
-    db.ref('Students/' + id).once('value')
-        .then(snap => {
-            const data = snap.val();
-            data.deletedAt = new Date().getTime();
-            return db.ref('TrashBin/Students/' + id).set(data);
+    const saveBtn = document.querySelector('#goalInputForm button');
+    if (saveBtn) {
+        saveBtn.innerText = "حفظ ?";
+        saveBtn.className = "flex-1 p-4 bg-emerald-500 text-white rounded-xl font-black";
+    }
+}
+function deleteGoal(goalId) {
+    if (confirm("هل أنت متأكد من حذف هذا الهدف؟")) {
+        db.ref(`MonthlyPlans/${sId}/${mName}/${currentSubject}/${goalId}`).remove()
+        .then(() => {
+            showToast("تم الحذف بنجاح ???");
         })
-        .then(() => db.ref('Students/' + id).remove())
-        .then(() => showToast("تم نقل الطفل إلى السلة"))
-        .catch(error => {
-            showToast("حدث خطأ أثناء النقل", "error");
-            console.error(error);
+        .catch((error) => {
+            showToast("حدث خطأ أثناء الحذف", "error");
         });
+    }
 }
+function openFollowUp() {
+    choiceScreen.classList.add('hidden');
+    followUpScreen.classList.remove('hidden');
+    
+    // قائمة الأنشطة من التقرير الورقي
+    const activitiesList = ["Montessori", "Garden", "Colouring", "Art", "Swimming", "Puzzle", "Moral Values", "Songs", "Etiquette", "Circle Time", "Dancing", "P.E"];
+    const grid = document.getElementById('activitiesGrid');
+    
+    // رسم شبكة الأنشطة
+    grid.innerHTML = activitiesList.map(act => `
+        <label class="flex items-center justify-between bg-slate-50 p-2 rounded-lg border border-pink-100">
+            <span>${act}</span>
+            <input type="checkbox" class="activity-checkbox w-4 h-4" value="${act}">
+        </label>
+    `).join('');
 
-function openTrash() {
-    showToast("واجهة السلة قيد التطوير", "info");
+    const year = 2026;
+    const monthIdx = (monthsArr.indexOf(mName) + 1).toString().padStart(2, '0');
+    const reportDate = `${year}-${monthIdx}-${selectedDay.toString().padStart(2, '0')}`;
+    
+    document.getElementById('reportDateDisplay').innerText = `يوم ${selectedDay} / ${monthIdx} / ${year}`;
+
+    db.ref(`DailyReports/${sId}/${reportDate}`).once('value', snap => {
+        const data = snap.val() || {};
+        const isParent = (currentLoginType === 'parent');
+
+        // تحميل القيلولة والحمام والملاحظات
+        document.getElementById('nap_from').value = data.nap_from || "";
+        document.getElementById('nap_to').value = data.nap_to || "";
+        document.getElementById('potty_urine').checked = data.potty_urine || false;
+        document.getElementById('potty_stool').checked = data.potty_stool || false;
+        document.getElementById('daily_notes').value = data.notes || "";
+
+        // تحميل الأنشطة المختارة
+        const savedActivities = data.activities || [];
+        document.querySelectorAll('.activity-checkbox').forEach(cb => {
+            cb.checked = savedActivities.includes(cb.value);
+            cb.disabled = isParent;
+        });
+
+        // قفل الحقول لو المستخدم ولي أمر
+        document.getElementById('nap_from').disabled = isParent;
+        document.getElementById('nap_to').disabled = isParent;
+        document.getElementById('potty_urine').disabled = isParent;
+        document.getElementById('potty_stool').disabled = isParent;
+        document.getElementById('daily_notes').disabled = isParent;
+        document.getElementById('saveDailyBtn').style.display = isParent ? 'none' : 'block';
+
+        // ضبط الحالة المزاجية
+        selectedMood = data.mood || "";
+        document.querySelectorAll('.mood-btn').forEach(btn => {
+            btn.classList.remove('active');
+            if(selectedMood && btn.getAttribute('onclick').includes(selectedMood)) btn.classList.add('active');
+        });
+    });
 }
-
-function exportMonthlyPlan() {
-    showToast("جاري تحضير التقرير الشهري...", "info");
-    // يمكن إضافة دالة التصدير هنا
+function setMood(mood, el) {
+    if (currentLoginType === 'parent') return; 
+    selectedMood = mood;
+    // حذف active من كل الأزرار
+    document.querySelectorAll('.mood-btn').forEach(btn => btn.classList.remove('active'));
+    // إضافة active للعنصر الذي تم الضغط عليه مباشرة
+    el.classList.add('active'); 
 }
+function saveDailyReport() {
+    const year = 2026;
+    const monthIdx = (monthsArr.indexOf(mName) + 1).toString().padStart(2, '0');
+    const reportDate = `${year}-${monthIdx}-${selectedDay.toString().padStart(2, '0')}`;
 
-function openScheduleScreen() {
-    showToast("الجدول اليومي قيد التطوير", "info");
+    // تجميع الأنشطة المختارة في Array
+    const selectedActivities = [];
+    document.querySelectorAll('.activity-checkbox:checked').forEach(cb => {
+        selectedActivities.push(cb.value);
+    });
+
+    const reportData = {
+        mood: selectedMood,
+        nap_from: document.getElementById('nap_from').value,
+        nap_to: document.getElementById('nap_to').value,
+        potty_urine: document.getElementById('potty_urine').checked,
+        potty_stool: document.getElementById('potty_stool').checked,
+        activities: selectedActivities,
+        notes: document.getElementById('daily_notes').value
+    };
+
+    db.ref(`DailyReports/${sId}/${reportDate}`).update(reportData).then(() => {
+        showToast("تم حفظ تقرير يوم " + selectedDay + " بنجاح ?");
+        followUpScreen.classList.add('hidden');
+        daysScreen.classList.remove('hidden');
+        openDays(); // لتحديث لون اليوم في التقويم لـ "أخضر"
+    });
 }
+async function exportMonthlyPlanPDF() {
+    showToast("جاري تحضير تقرير Many Circles... ?");
 
-function openParentDailyReport() {
-    showToast("عرض التقرير اليومي لأولياء الأمور", "info");
-    // يمكن إضافة واجهة عرض للآباء
+    try {
+        const snapshot = await db.ref(`MonthlyPlans/${sId}/${mName}`).once('value');
+        const planData = snapshot.val();
+
+        if (!planData) {
+            showToast("لا توجد خطة مسجلة!", "error");
+            return;
+        }
+
+        // إنشاء حاوية التقرير المؤقتة لتصويرها
+        const element = document.createElement('div');
+        element.style.width = '700px';
+        element.style.padding = '30px';
+        element.style.backgroundColor = 'white';
+        element.style.position = 'absolute';
+        element.style.top = '0';
+        element.style.left = '-2000px'; 
+        element.setAttribute('dir', 'rtl');
+
+        const subjectStyles = {
+            'اللغة العربية': '#ef4444', 'English': '#3b82f6', 'Math': '#10b981',
+            'التربية الدينية': '#f59e0b', 'Montessori': '#8b5cf6', 'قرآن إضافي': '#047857',
+            'مناسبات': '#db2777', 'تنمية المهارات': '#6366f1'
+        };
+
+        let subjectsHTML = "";
+        for (const [subject, goals] of Object.entries(planData)) {
+            const color = subjectStyles[subject] || '#444';
+            const cleanGoals = Array.isArray(goals) ? goals : Object.values(goals);
+            
+            // معالجة الأسطر لكل مادة مع شرط "المناسبات"
+            let goalsRows = cleanGoals.map(g => {
+                if (!g.name) return "";
+                
+                // إذا كانت المادة "مناسبات" تظهر فقط اسم المناسبة بدون مربعات الدرجات
+                if (subject === 'مناسبات') {
+                    return `
+                        <div style="padding:12px; border-bottom:1px solid #eee; font-family: Arial; text-align:right;">
+                            <span style="font-weight:bold; color:#333; font-size:17px;">• ${g.name}</span>
+                        </div>`;
+                } 
+                
+                // باقي المواد تظهر بالتنسيق الكامل (اسم الهدف + المساعدة + الدرجة)
+                return `
+                    <div style="display:flex; justify-content:space-between; padding:12px; border-bottom:1px solid #eee; font-family: Arial; align-items:center;">
+                        <span style="font-weight:bold; color:#333; font-size:16px;">• ${g.name}</span>
+                        <div style="display:flex; gap:10px; align-items:center;">
+                            <span style="background:#f8fafc; color:${color}; padding:2px 8px; border-radius:5px; font-weight:bold; font-size:13px; border:1px solid ${color}30;">${g.help}</span>
+                            <span style="background:${color}; color:white; padding:2px 12px; border-radius:5px; font-weight:bold; font-size:13px;">${g.score}</span>
+                        </div>
+                    </div>`;
+            }).join('');
+
+            subjectsHTML += `
+                <div style="margin-bottom:25px; border:2px solid ${color}; border-radius:15px; overflow:hidden; background: white; page-break-inside: avoid;">
+                    <div style="background:${color}; color:white; padding:12px; font-weight:bold; text-align:center; font-size:20px;">${subject}</div>
+                    <div>${goalsRows}</div>
+                </div>`;
+        }
+
+        element.innerHTML = `
+            <div style="text-align:center; border-bottom:4px solid #1e40af; padding-bottom:20px; margin-bottom:25px; font-family: Arial;">
+                <h1 style="color:#1e40af; font-size:42px; margin:0; letter-spacing:1px;">Many Circles</h1>
+                <p style="font-size:20px; color:#64748b; margin:5px 0;">تقرير حصاد الأنشطة والمهارات - شهر ${mName}</p>
+                <div style="display:inline-block; border:2px solid #e2e8f0; padding:10px 40px; border-radius:20px; margin-top:15px; background:#f8fafc;">
+                    <span style="font-size:26px; font-weight:bold; color:#1e293b;">البطل: ${sName} ?</span>
+                </div>
+                <p style="color:#0369a1; font-weight:bold; margin-top:20px; font-size:18px;">?? "فخورين جداً بتطورك يا بطل.. استمر في التألق!" ??</p>
+            </div>
+            ${subjectsHTML}
+            <div style="text-align:center; color:#94a3b8; font-size:14px; margin-top:30px; border-top:1px solid #f1f5f9; padding-top:10px;">
+                صنع بكل حب في فريق Many Circles ??
+            </div>
+        `;
+
+        document.body.appendChild(element);
+
+        // انتظار بسيط لضمان تحميل المتصفح للتنسيقات
+        await new Promise(resolve => setTimeout(resolve, 800));
+
+        const canvas = await html2canvas(element, {
+            scale: 2,
+            useCORS: true,
+            backgroundColor: "#ffffff"
+        });
+
+        const imgData = canvas.toDataURL('image/jpeg', 1.0);
+        const { jsPDF } = window.jspdf;
+        const pdf = new jsPDF('p', 'mm', 'a4');
+
+        const imgWidth = 210; 
+        const pageHeight = 295; 
+        const imgHeight = (canvas.height * imgWidth) / canvas.width;
+        let heightLeft = imgHeight;
+        let position = 0;
+
+        // إضافة الصفحة الأولى والصفحات التالية تلقائياً
+        pdf.addImage(imgData, 'JPEG', 0, position, imgWidth, imgHeight);
+        heightLeft -= pageHeight;
+
+        while (heightLeft >= 0) {
+            position = heightLeft - imgHeight;
+            pdf.addPage();
+            pdf.addImage(imgData, 'JPEG', 0, position, imgWidth, imgHeight);
+            heightLeft -= pageHeight;
+        }
+
+        pdf.save(`ManyCircles_Report_${sName}.pdf`);
+        document.body.removeChild(element);
+        showToast("تم تحميل التقرير بنجاح! ?");
+
+    } catch (e) {
+        console.error("PDF Export Error:", e);
+        showToast("عذراً، حدث خطأ في استخراج الملف", "error");
+    }
 }
-
-function openParentSubjectsView() {
-    showToast("عرض المواد التعليمية للآباء", "info");
-    // يمكن إضافة واجهة عرض للآباء
-}
-
-// ===================== نظام الإشعارات =====================
 function showToast(message, type = 'success') {
     const container = document.getElementById('toastContainer');
     const toast = document.createElement('div');
     
-    const bg = type === 'success' ? 'bg-emerald-600' : 
-               type === 'error' ? 'bg-red-600' : 
-               type === 'info' ? 'bg-blue-600' : 'bg-slate-600';
-    
-    const icon = type === 'success' ? '✅' : 
-                 type === 'error' ? '⚠️' : 
-                 type === 'info' ? 'ℹ️' : '💡';
-    
+    // تحديد الألوان بناءً على النوع
+    const bg = type === 'success' ? 'bg-emerald-600' : 'bg-red-600';
+    const icon = type === 'success' ? '?' : '??';
+
     toast.className = `${bg} text-white px-6 py-4 rounded-2xl shadow-2xl toast flex items-center font-bold`;
-    toast.innerHTML = `<span class="text-xl">${icon}</span> <span>${message}</span>`;
-    
+    toast.innerHTML = `<span>${icon}</span> <span>${message}</span>`;
+
     container.appendChild(toast);
-    
+
+    // إخفاء الإشعار بعد 3 ثوانٍ
     setTimeout(() => {
         toast.classList.add('toast-fade-out');
         setTimeout(() => toast.remove(), 500);
     }, 3000);
 }
+let editingGoalId = null; // متغير لحفظ ID الهدف اللي بنعدله حالياً
 
-// ===================== تسجيل الخروج =====================
-function logout() {
-    sessionStorage.clear();
-    hideAllScreens();
-    mainScreen.classList.remove('hidden');
-    showToast("تم تسجيل الخروج بنجاح");
+function editGoal(id, name, score, help) {
+    editingGoalId = id; // حفظ الـ ID
+    
+    // 1. فتح مستطيل الإدخال
+    toggleGoalForm(true);
+    
+    // 2. تعبئة الخانات بالبيانات القديمة
+    document.getElementById('goalName').value = name;
+    
+    if (currentSubject !== 'مناسبات') {
+        // تنظيف النسبة المئوية من الرمز % قبل وضعها في السيلكت
+        let cleanScore = score ? score.replace('%', '') : "0";
+        document.getElementById('goalScore').value = cleanScore;
+        document.getElementById('helpLevel').value = help;
+    }
+
+    // 3. تغيير نص زر الحفظ ليصبح "تحديث"
+    const saveBtn = document.querySelector('#goalInputForm button[onclick="saveGoal()"]');
+    if (saveBtn) {
+        saveBtn.innerText = "تحديث الهدف ??";
+        saveBtn.classList.replace('bg-emerald-500', 'bg-blue-600');
+    }
+}
+// أضف هذه الدالة في قسم الدوال (Functions)
+function openDailySchedule() {
+    // إخفاء شاشة الاختيار
+    choiceScreen.classList.add('hidden');
+    
+    // تحديد التنسيق بناءً على نوع المستخدم
+    const isParent = (currentLoginType === 'parent');
+    
+    if (isParent) {
+        // لو ولي الأمر: عرض جدول خاص للقراءة فقط
+        showParentDailySchedule();
+    } else {
+        // لو معلمة أو إدارة: فتح الأيام للاختيار (الوضع الحالي)
+        openDays();
+    }
 }
 
-// ===================== تهيئة الصفحة =====================
-document.addEventListener('DOMContentLoaded', function() {
-    // التحقق من وجود جلسة سابقة
-    const loginType = sessionStorage.getItem('loginType');
-    if (loginType) {
-        mainScreen.classList.add('hidden');
+// دالة لعرض الجدول اليومي لأولياء الأمور
+function showParentDailySchedule() {
+    // هنا يمكنك بناء واجهة عرض الجدول اليومي
+    // في الوقت الحالي سأعرض رسالة مع أزرار للمحتوى
+    const html = `
+        <div class="admin-page bg-slate-100 text-center p-6">
+            <button onclick="location.reload()" class="text-blue-600 font-bold float-right mb-6">? رجوع</button>
+            
+            <div class="bg-white rounded-[2.5rem] shadow-xl p-8 max-w-4xl mx-auto">
+                <h2 class="text-3xl font-black text-emerald-600 mb-6">الجدول اليومي لـ ${sName}</h2>
+                <p class="text-slate-500 mb-8">شهر ${mName} - يمكنك متابعة الأنشطة اليومية لطفلك</p>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+                    <div onclick="openPlanMenu()" class="bg-emerald-50 p-6 rounded-2xl border-2 border-emerald-200 cursor-pointer">
+                        <div class="text-4xl mb-3">??</div>
+                        <h4 class="font-bold text-emerald-700">عرض البرنامج الشهري</h4>
+                        <p class="text-sm text-slate-500 mt-2">الأنشطة والأهداف المخطط لها</p>
+                    </div>
+                    
+                    <div onclick="openDays()" class="bg-blue-50 p-6 rounded-2xl border-2 border-blue-200 cursor-pointer">
+                        <div class="text-4xl mb-3">??</div>
+                        <h4 class="font-bold text-blue-700">عرض التقارير اليومية</h4>
+                        <p class="text-sm text-slate-500 mt-2">متابعة الحالة اليومية لطفلك</p>
+                    </div>
+                </div>
+                
+                <div class="bg-slate-50 p-6 rounded-2xl text-right">
+                    <h4 class="font-bold text-slate-700 mb-3">?? ملاحظة:</h4>
+                    <p class="text-slate-600">كـ ولي أمر، يمكنك فقط <span class="font-bold text-blue-600">قراءة</span> محتوى البرنامج والتقارير ولا يمكنك التعديل عليها.</p>
+                </div>
+            </div>
+        </div>
+    `;
+    
+    // إنشاء عنصر جديد وعرضه
+    const tempDiv = document.createElement('div');
+    tempDiv.innerHTML = html;
+    document.body.appendChild(tempDiv.firstElementChild);
+}
+function openParentDailyReportView() {
+    const year = 2026;
+    const monthIdx = (monthsArr.indexOf(mName) + 1).toString().padStart(2, '0');
+    const reportDate = `${year}-${monthIdx}-${selectedDay.toString().padStart(2, '0')}`;
+    
+    db.ref(`DailyReports/${sId}/${reportDate}`).once('value', snap => {
+        const data = snap.val() || {};
         
-        if (loginType === 'admin') {
-            const adminUser = sessionStorage.getItem('adminUser');
-            dashboard.classList.remove('hidden');
-            document.getElementById('adminName').textContent = adminUser;
-        } else {
-            openStudentsSection();
+        const html = `
+            <div class="admin-page bg-slate-100 p-6" id="parentReportView">
+                <button onclick="document.getElementById('parentReportView').remove(); daysScreen.classList.remove('hidden')" 
+                        class="text-blue-600 font-bold mb-6 float-right">? رجوع للأيام</button>
+                
+                <div class="bg-white rounded-[2.5rem] shadow-xl p-8 max-w-2xl mx-auto">
+                    <div class="text-center mb-8">
+                        <h2 class="text-2xl font-black text-blue-600">تقرير يوم ${selectedDay}/${monthIdx}/${year}</h2>
+                        <p class="text-slate-400">${sName}</p>
+                    </div>
+                    
+                    <div class="space-y-6">
+                        ${data.mood ? `
+                        <div class="bg-slate-50 p-4 rounded-xl">
+                            <h3 class="font-bold text-slate-700 mb-2">الحالة المزاجية:</h3>
+                            <div class="text-4xl">${getMoodEmoji(data.mood)}</div>
+                        </div>` : ''}
+                        
+                        ${data.nap_from || data.nap_to ? `
+                        <div class="bg-slate-50 p-4 rounded-xl">
+                            <h3 class="font-bold text-slate-700 mb-2">القيلولة:</h3>
+                            <p>${data.nap_from || '--'} إلى ${data.nap_to || '--'}</p>
+                        </div>` : ''}
+                        
+                        ${data.activities && data.activities.length > 0 ? `
+                        <div class="bg-slate-50 p-4 rounded-xl">
+                            <h3 class="font-bold text-slate-700 mb-2">الأنشطة:</h3>
+                            <div class="flex flex-wrap gap-2">
+                                ${data.activities.map(act => `<span class="bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-sm">${act}</span>`).join('')}
+                            </div>
+                        </div>` : ''}
+                        
+                        ${data.notes ? `
+                        <div class="bg-slate-50 p-4 rounded-xl">
+                            <h3 class="font-bold text-slate-700 mb-2">ملاحظات المعلمة:</h3>
+                            <p class="text-slate-600">${data.notes}</p>
+                        </div>` : ''}
+                        
+                        ${!data.mood && !data.notes && (!data.activities || data.activities.length === 0) ? `
+                        <div class="text-center p-8 text-slate-400">
+                            <div class="text-5xl mb-4">??</div>
+                            <p class="font-bold">لا يوجد تقرير لهذا اليوم بعد</p>
+                            <p class="text-sm mt-2">سيتم إضافة التقرير من قبل المعلمة قريباً</p>
+                        </div>` : ''}
+                    </div>
+                </div>
+            </div>
+        `;
+        
+        const tempDiv = document.createElement('div');
+        tempDiv.innerHTML = html;
+        document.body.appendChild(tempDiv.firstElementChild);
+    });
+}
+// دالة مساعدة للحصول على الإيموجي المناسب
+function getMoodEmoji(mood) {
+    const emojis = {
+        'happy': '??',
+        'angry': '??', 
+        'sad': '??',
+        'naughty': '??'
+    };
+    return emojis[mood] || '??';
+}
+async function exportDailyReportPDF() {
+    showToast("جاري تحضير التقرير اليومي... ?");
+
+    try {
+        const year = 2026;
+        const monthIdx = (monthsArr.indexOf(mName) + 1).toString().padStart(2, '0');
+        const reportDate = `${year}-${monthIdx}-${selectedDay.toString().padStart(2, '0')}`;
+        
+        // جلب بيانات التقرير من Firebase
+        const reportSnapshot = await db.ref(`DailyReports/${sId}/${reportDate}`).once('value');
+        const reportData = reportSnapshot.val() || {};
+        
+        // إنشاء حاوية التقرير المؤقتة لتصويرها
+        const element = document.createElement('div');
+        element.style.width = '700px';
+        element.style.padding = '30px';
+        element.style.backgroundColor = 'white';
+        element.style.position = 'absolute';
+        element.style.top = '0';
+        element.style.left = '-2000px';
+        element.setAttribute('dir', 'rtl');
+
+        // تحديد إيموجي الحالة المزاجية
+        const moodEmojis = {
+            'happy': '??',
+            'angry': '??',
+            'sad': '??',
+            'naughty': '??'
+        };
+        
+        // بناء محتوى التقرير
+        let reportContent = `
+            <div style="text-align:center; border-bottom:4px solid #1e40af; padding-bottom:20px; margin-bottom:25px;">
+                <h1 style="color:#1e40af; font-size:36px; margin:0; font-family: 'Cairo', sans-serif;">Many Circles</h1>
+                <p style="font-size:18px; color:#64748b; margin:5px 0; font-family: 'Cairo', sans-serif;">تقرير يومي - ${selectedDay} ${mName} ${year}</p>
+                <div style="display:inline-block; border:2px solid #e2e8f0; padding:8px 30px; border-radius:15px; margin-top:10px; background:#f8fafc;">
+                    <span style="font-size:22px; font-weight:bold; color:#1e293b; font-family: 'Cairo', sans-serif;">${sName} ?</span>
+                </div>
+            </div>
+            
+            <div style="margin-bottom:20px;">
+                <h3 style="color:#4f46e5; border-right:4px solid #4f46e5; padding-right:10px; font-family: 'Cairo', sans-serif;">?? الحالة المزاجية</h3>
+                <div style="text-align:center; padding:15px; background:#f8fafc; border-radius:10px; margin-top:10px;">
+                    <span style="font-size:50px;">${reportData.mood ? moodEmojis[reportData.mood] : '??'}</span>
+                    <p style="color:#64748b; font-weight:bold; margin-top:5px; font-family: 'Cairo', sans-serif;">
+                        ${reportData.mood ? getMoodText(reportData.mood) : 'لم يتم تحديد'}
+                    </p>
+                </div>
+            </div>
+            
+            <div style="margin-bottom:20px;">
+                <h3 style="color:#0ea5e9; border-right:4px solid #0ea5e9; padding-right:10px; font-family: 'Cairo', sans-serif;">?? القيلولة</h3>
+                <div style="display:flex; gap:15px; padding:15px; background:#f0f9ff; border-radius:10px; margin-top:10px; justify-content:center;">
+                    <div style="text-align:center;">
+                        <div style="font-size:12px; color:#64748b; margin-bottom:5px;">من</div>
+                        <div style="font-weight:bold; color:#0369a1; font-size:18px;">${reportData.nap_from || '--:--'}</div>
+                    </div>
+                    <div style="align-self:center; color:#94a3b8;">→</div>
+                    <div style="text-align:center;">
+                        <div style="font-size:12px; color:#64748b; margin-bottom:5px;">إلى</div>
+                        <div style="font-weight:bold; color:#0369a1; font-size:18px;">${reportData.nap_to || '--:--'}</div>
+                    </div>
+                </div>
+            </div>`;
+
+        // إضافة قسم العناية
+        if (reportData.potty_status) {
+            const pottyColors = {
+                'Clean': '#10b981',
+                'Diaper Change': '#f59e0b',
+                'Success': '#3b82f6'
+            };
+            
+            reportContent += `
+                <div style="margin-bottom:20px;">
+                    <h3 style="color:#3b82f6; border-right:4px solid #3b82f6; padding-right:10px; font-family: 'Cairo', sans-serif;">?? العناية</h3>
+                    <div style="padding:15px; background:#eff6ff; border-radius:10px; margin-top:10px;">
+                        <div style="display:inline-block; padding:5px 15px; background:${pottyColors[reportData.potty_status] || '#64748b'}; color:white; border-radius:20px; font-weight:bold;">
+                            ${reportData.potty_status}
+                        </div>
+                    </div>
+                </div>`;
         }
+
+        // إضافة قسم الأنشطة
+        if (reportData.activities && reportData.activities.length > 0) {
+            reportContent += `
+                <div style="margin-bottom:20px;">
+                    <h3 style="color:#db2777; border-right:4px solid #db2777; padding-right:10px; font-family: 'Cairo', sans-serif;">?? الأنشطة</h3>
+                    <div style="padding:15px; background:#fdf2f8; border-radius:10px; margin-top:10px; display:flex; flex-wrap:wrap; gap:8px;">
+                        ${reportData.activities.map(activity => `
+                            <span style="background:#fce7f3; color:#db2777; padding:5px 12px; border-radius:15px; font-weight:bold; font-size:14px;">
+                                ${activity}
+                            </span>
+                        `).join('')}
+                    </div>
+                </div>`;
+        }
+
+        // إضافة قسم الملاحظات
+        if (reportData.notes) {
+            reportContent += `
+                <div style="margin-bottom:20px;">
+                    <h3 style="color:#f59e0b; border-right:4px solid #f59e0b; padding-right:10px; font-family: 'Cairo', sans-serif;">?? الملاحظات</h3>
+                    <div style="padding:15px; background:#fffbeb; border-radius:10px; margin-top:10px; border-right:3px solid #fbbf24;">
+                        <p style="color:#92400e; font-size:16px; line-height:1.6; text-align:right; margin:0;">
+                            ${reportData.notes}
+                        </p>
+                    </div>
+                </div>`;
+        }
+
+        // تذييل التقرير
+        reportContent += `
+            <div style="text-align:center; margin-top:40px; padding-top:20px; border-top:1px solid #e2e8f0;">
+                <div style="color:#94a3b8; font-size:14px; margin-bottom:10px; font-family: 'Cairo', sans-serif;">
+                    تم إنشاء التقرير بواسطة نظام Many Circles
+                </div>
+                <div style="display:flex; justify-content:center; gap:10px; margin-top:5px;">
+                    <span style="background:#3b82f6; color:white; padding:3px 10px; border-radius:10px; font-size:12px;">${sName}</span>
+                    <span style="background:#10b981; color:white; padding:3px 10px; border-radius:10px; font-size:12px;">${selectedDay} ${mName}</span>
+                    <span style="background:#8b5cf6; color:white; padding:3px 10px; border-radius:10px; font-size:12px;">${year}</span>
+                </div>
+                <p style="color:#64748b; font-size:12px; margin-top:15px;">
+                    ?? صنع بكل حب في فريق Many Circles
+                </p>
+            </div>`;
+
+        element.innerHTML = reportContent;
+        document.body.appendChild(element);
+
+        // انتظار لضمان تحميل التنسيقات
+        await new Promise(resolve => setTimeout(resolve, 800));
+
+        // تحويل HTML إلى Canvas ثم إلى PDF
+        const canvas = await html2canvas(element, {
+            scale: 2,
+            useCORS: true,
+            backgroundColor: "#ffffff",
+            logging: false
+        });
+
+        const imgData = canvas.toDataURL('image/jpeg', 1.0);
+        const { jsPDF } = window.jspdf;
+        const pdf = new jsPDF('p', 'mm', 'a4');
+
+        const imgWidth = 210;
+        const pageHeight = 295;
+        const imgHeight = (canvas.height * imgWidth) / canvas.width;
+        let heightLeft = imgHeight;
+        let position = 0;
+
+        // إضافة الصفحة الأولى
+        pdf.addImage(imgData, 'JPEG', 0, position, imgWidth, imgHeight);
+        heightLeft -= pageHeight;
+
+        // إضافة صفحات إضافية إذا كان المحتوى طويلاً
+        while (heightLeft >= 0) {
+            position = heightLeft - imgHeight;
+            pdf.addPage();
+            pdf.addImage(imgData, 'JPEG', 0, position, imgWidth, imgHeight);
+            heightLeft -= pageHeight;
+        }
+
+        // حفظ الملف
+        pdf.save(`ManyCircles_Daily_${sName}_${selectedDay}_${mName}.pdf`);
+        
+        // تنظيف العنصر المؤقت
+        document.body.removeChild(element);
+        
+        showToast("تم تحميل التقرير اليومي بنجاح! ?");
+
+    } catch (error) {
+        console.error("خطأ في تصدير التقرير:", error);
+        showToast("عذراً، حدث خطأ في إنشاء التقرير", "error");
     }
-});
+}
+
+// دالة مساعدة لتحويل الحالة المزاجية إلى نص عربي
+function getMoodText(mood) {
+    const moodTexts = {
+        'happy': 'سعيد ومبتهج',
+        'angry': 'غاضب أو متوتر',
+        'sad': 'حزين أو منزعج',
+        'naughty': 'مشاغب ونشيط'
+    };
+    return moodTexts[mood] || mood;
+}
 </script>
 </body>
 </html>
