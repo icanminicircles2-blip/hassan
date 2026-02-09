@@ -90,108 +90,125 @@
             background: #ef4444;
             border-radius: 50%;
         }
-        /* إضافة في الـ style */
-.month-report-btn {
-    background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
-    color: white;
-    font-weight: bold;
-    padding: 1rem 2rem;
-    border-radius: 1rem;
-    border: none;
-    cursor: pointer;
-    transition: all 0.3s;
-    box-shadow: 0 4px 15px rgba(79, 70, 229, 0.3);
-}
+        .month-report-btn {
+            background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
+            color: white;
+            font-weight: bold;
+            padding: 1rem 2rem;
+            border-radius: 1rem;
+            border: none;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 4px 15px rgba(79, 70, 229, 0.3);
+        }
 
-.month-report-btn:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 6px 20px rgba(79, 70, 229, 0.4);
-}
+        .month-report-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(79, 70, 229, 0.4);
+        }
 
-.month-report-btn:active {
-    transform: translateY(0);
-}
-/* أضف في الـ style */
-.backup-btn {
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-}
+        .month-report-btn:active {
+            transform: translateY(0);
+        }
+        .backup-btn {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
 
-.backup-btn:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
-}
+        .backup-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+        }
 
-.file-drop-zone {
-    border: 3px dashed #a78bfa;
-    background: linear-gradient(135deg, #f5f3ff 0%, #ede9fe 100%);
-    transition: all 0.3s;
-}
+        .file-drop-zone {
+            border: 3px dashed #a78bfa;
+            background: linear-gradient(135deg, #f5f3ff 0%, #ede9fe 100%);
+            transition: all 0.3s;
+        }
 
-.file-drop-zone:hover {
-    border-color: #8b5cf6;
-    background: linear-gradient(135deg, #ede9fe 0%, #ddd6fe 100%);
-}
+        .file-drop-zone:hover {
+            border-color: #8b5cf6;
+            background: linear-gradient(135deg, #ede9fe 0%, #ddd6fe 100%);
+        }
 
-.file-drop-zone.dragover {
-    border-color: #7c3aed;
-    background: linear-gradient(135deg, #ddd6fe 0%, #c4b5fd 100%);
-    transform: scale(1.02);
-}
-/* أضف في الـ style */
-.trash-empty-btn {
-    background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
-    color: white;
-    font-weight: bold;
-    padding: 1.5rem 2rem;
-    border-radius: 1.5rem;
-    border: none;
-    cursor: pointer;
-    transition: all 0.3s;
-    box-shadow: 0 4px 15px rgba(239, 68, 68, 0.3);
-    width: 100%;
-}
+        .file-drop-zone.dragover {
+            border-color: #7c3aed;
+            background: linear-gradient(135deg, #ddd6fe 0%, #c4b5fd 100%);
+            transform: scale(1.02);
+        }
+        .trash-empty-btn {
+            background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+            color: white;
+            font-weight: bold;
+            padding: 1.5rem 2rem;
+            border-radius: 1.5rem;
+            border: none;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 4px 15px rgba(239, 68, 68, 0.3);
+            width: 100%;
+        }
 
-.trash-empty-btn:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 6px 20px rgba(239, 68, 68, 0.4);
-    background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%);
-}
+        .trash-empty-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(239, 68, 68, 0.4);
+            background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%);
+        }
 
-.trash-empty-btn:active {
-    transform: translateY(0);
-}
+        .trash-empty-btn:active {
+            transform: translateY(0);
+        }
 
-.trash-empty-btn:disabled {
-    opacity: 0.5;
-    cursor: not-allowed;
-    transform: none;
-}
+        .trash-empty-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
 
-.trash-item {
-    transition: all 0.3s;
-    animation: slideInRight 0.5s ease-out;
-}
+        .trash-item {
+            transition: all 0.3s;
+            animation: slideInRight 0.5s ease-out;
+        }
 
-@keyframes slideInRight {
-    from {
-        transform: translateX(30px);
-        opacity: 0;
-    }
-    to {
-        transform: translateX(0);
-        opacity: 1;
-    }
-}
+        @keyframes slideInRight {
+            from {
+                transform: translateX(30px);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
 
-.empty-trash-animation {
-    animation: pulseRed 2s infinite;
-}
+        .empty-trash-animation {
+            animation: pulseRed 2s infinite;
+        }
 
-@keyframes pulseRed {
-    0% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.7); }
-    70% { box-shadow: 0 0 0 10px rgba(239, 68, 68, 0); }
-    100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); }
-}
+        @keyframes pulseRed {
+            0% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.7); }
+            70% { box-shadow: 0 0 0 10px rgba(239, 68, 68, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); }
+        }
+        
+        /* أنماط إضافية للنسخ الجماعي */
+        .child-select-item:hover {
+            transform: translateX(-5px);
+            transition: all 0.3s;
+        }
+        
+        .modal-backdrop {
+            background: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(5px);
+        }
+        
+        .subject-checkbox:checked {
+            background-color: #8b5cf6;
+            border-color: #8b5cf6;
+        }
+        
+        .copy-progress-bar {
+            transition: width 0.5s ease-in-out;
+        }
     </style>
 </head>
 <body>
@@ -253,8 +270,6 @@
             <span class="text-sm opacity-80">تحميل من ملف JSON</span>
         </button>
     </div>
-</div>
-    <button onclick="location.reload()" class="mt-12 text-red-500 font-bold underline">🚪 تسجيل خروج</button>
 </div>
     <button onclick="location.reload()" class="mt-12 text-red-500 font-bold underline">🚪 تسجيل خروج</button>
 </div>
@@ -322,7 +337,18 @@
 <!-- المواد التعليمية -->
 <div id="subjectsMenu" class="admin-page hidden text-center">
     <button onclick="subjectsMenu.classList.add('hidden'); choiceScreen.classList.remove('hidden')" class="mb-8 text-blue-600 font-bold float-right">◀️ رجوع</button>
-    <h2 class="text-3xl font-black mb-10 text-orange-500">📚 المواد التعليمية والأنشطة</h2>
+    
+    <!-- العنوان مع زر النسخ الجماعي -->
+    <div class="flex flex-col md:flex-row justify-between items-center mb-10 px-4 max-w-2xl mx-auto gap-4">
+        <h2 class="text-3xl font-black text-orange-500">📚 المواد التعليمية والأنشطة</h2>
+        
+        <!-- زر النسخ لمجموعة -->
+        <button onclick="openCopyProgramMenu()" 
+                class="p-5 bg-gradient-to-r from-purple-500 to-pink-600 text-white rounded-2xl font-bold shadow-xl hover:scale-105 transition flex items-center justify-center gap-3">
+            <span class="text-2xl">📋➡️👥</span>
+            <span>نسخ للمجموعة</span>
+        </button>
+    </div>
     
     <div class="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-2xl mx-auto px-4">
         <div onclick="openGoalEntry('اللغة العربية','#ef4444','📖')" class="p-8 bg-red-500 text-white rounded-[2rem] font-black text-xl shadow-lg cursor-pointer hover:scale-105 transition">📖 اللغة العربية</div>
@@ -337,7 +363,8 @@
         <div onclick="openGoalEntry('تنمية المهارات','#6366f1','💡')" class="p-8 bg-indigo-500 text-white rounded-[2rem] font-black text-xl shadow-lg cursor-pointer hover:scale-105 transition">💡 تنمية المهارات</div>
     </div>
     
-    <div class="max-w-2xl mx-auto mt-10 px-4">
+    <div class="max-w-2xl mx-auto mt-10 px-4 space-y-4">
+        <!-- زر تصدير تقرير الخطة الشهرية -->
         <button onclick="exportMonthlyPlanPDF()" class="w-full p-6 bg-slate-800 text-white rounded-[2rem] font-black text-xl shadow-xl hover:bg-black transition-all active:scale-95">
             📄 تصدير تقرير الخطة الشهرية
         </button>
@@ -404,7 +431,6 @@
 </div>
 
 <!-- الأيام -->
-<!-- في ملف HTML، بعد زر الرجوع في شاشة الأيام -->
 <div id="daysScreen" class="admin-page hidden text-center">
     <div class="max-w-4xl mx-auto pt-10">
         <button onclick="daysScreen.classList.add('hidden'); choiceScreen.classList.remove('hidden')" class="mb-8 text-blue-600 font-bold float-right">◀️ رجوع</button>
@@ -421,6 +447,7 @@
         <div id="daysGrid" class="grid grid-cols-5 md:grid-cols-7 gap-3 px-4"></div>
     </div>
 </div>
+
 <!-- Follow Up -->
 <div id="followUpScreen" class="admin-page hidden overflow-y-auto bg-slate-50">
     <div class="max-w-2xl mx-auto pb-20 p-4">
@@ -482,7 +509,6 @@
 </div>
 
 <!-- السلة -->
-<!-- شاشة السلة المعدلة -->
 <div id="trashScreen" class="admin-page hidden bg-slate-50 text-center">
     <div class="max-w-2xl mx-auto p-4">
         <button onclick="document.getElementById('trashScreen').classList.add('hidden'); document.getElementById('studentsSection').classList.remove('hidden')" class="font-bold text-blue-600 mb-8 block text-right">🏠 عودة</button>
@@ -572,6 +598,12 @@
         </div>
     </div>
 </div>
+
+<!-- نافذة نسخ البرنامج لمجموعة أطفال -->
+<div id="copyProgramModal" class="fixed inset-0 bg-black bg-opacity-70 z-[2000] hidden flex items-center justify-center p-4">
+    <!-- المحتوى سيتم إنشاؤه ديناميكياً -->
+</div>
+
 <!-- بعد نافذة الكاميرا، قبل </body> -->
 <div id="restoreMenu" class="admin-page hidden">
     <div class="max-w-2xl mx-auto p-4">
@@ -619,6 +651,7 @@
         </div>
     </div>
 </div>
+
 <script>
 // Firebase Setup
 const firebaseConfig = {
@@ -662,7 +695,7 @@ let currentLoginType = "";
 let editingGoalId = null;
 let cameraStream = null;
 
-// دالة showLogin
+// ==================== دالة showLogin ====================
 function showLogin(type) {
     currentLoginType = type; 
     mainScreen.classList.add('hidden');
@@ -679,7 +712,7 @@ function showLogin(type) {
     }
 }
 
-// دالة دخول الإدارة
+// ==================== دالة دخول الإدارة ====================
 function adminLogin() {
     const user = loginName.value.trim();
     const pass = loginPass.value.trim();
@@ -691,7 +724,7 @@ function adminLogin() {
     }
 }
 
-// دالة دخول المعلمات
+// ==================== دالة دخول المعلمات ====================
 function teacherLogin() {
     const user = loginName.value.trim();
     const pass = loginPass.value.trim();
@@ -710,7 +743,7 @@ function teacherLogin() {
     });
 }
 
-// دالة فتح قسم الأطفال
+// ==================== دالة فتح قسم الأطفال ====================
 function openStudentsSection() {
     dashboard.classList.add('hidden');
     studentsSection.classList.remove('hidden');
@@ -731,7 +764,7 @@ function openStudentsSection() {
     }
 }
 
-// دالة تحميل الأطفال
+// ==================== دالة تحميل الأطفال ====================
 function loadStudents() {
     db.ref('Students').on('value', snap => {
         studentsList.innerHTML = "";
@@ -751,7 +784,7 @@ function loadStudents() {
     });
 }
 
-// دالة فتح الشهور
+// ==================== دالة فتح الشهور ====================
 function openMonths(){
     studentsSection.classList.add('hidden'); 
     monthsScreen.classList.remove('hidden');
@@ -781,7 +814,7 @@ function openMonths(){
     });
 }
 
-// دالة فتح الأيام
+// ==================== دالة فتح الأيام ====================
 function openDays() {
     daysScreen.classList.remove('hidden');
     document.getElementById('currentMonthTitle').innerText = `أيام شهر ${mName} - ${sName}`;
@@ -854,19 +887,19 @@ function openDays() {
     });
 }
 
-// دالة فتح Follow Up
+// ==================== دالة فتح Follow Up ====================
 function openFollowUpMenu(){ 
     choiceScreen.classList.add('hidden'); 
     openDays();
 }
 
-// دالة فتح البرنامج الشهري
+// ==================== دالة فتح البرنامج الشهري ====================
 function openPlanMenu(){ 
     choiceScreen.classList.add('hidden'); 
     document.getElementById('subjectsMenu').classList.remove('hidden'); 
 }
 
-// دالة فتح الصور اليومية
+// ==================== دالة فتح الصور اليومية ====================
 function openDailyCameraDirect() {
     choiceScreen.classList.add('hidden');
     document.getElementById('dailyCameraSimple').classList.remove('hidden');
@@ -880,7 +913,7 @@ function openDailyCameraDirect() {
     loadTodayPhotos();
 }
 
-// دالة تحميل صور اليوم
+// ==================== دالة تحميل صور اليوم ====================
 async function loadTodayPhotos() {
     const today = new Date();
     const year = today.getFullYear();
@@ -933,7 +966,7 @@ async function loadTodayPhotos() {
     }
 }
 
-// دالة فتح الكاميرا الذكية (تعمل على جميع الأجهزة)
+// ==================== دالة فتح الكاميرا الذكية ====================
 async function openCamera() {
     document.getElementById('cameraModal').classList.remove('hidden');
     
@@ -946,7 +979,7 @@ async function openCamera() {
         // نحاول الكاميرا الخلفية أولاً (للموبايل)
         const constraints = {
             video: {
-                facingMode: { ideal: 'environment' }, // كاميرا خلفية للموبايل
+                facingMode: { ideal: 'environment' },
                 width: { ideal: 1280 },
                 height: { ideal: 720 }
             },
@@ -958,7 +991,7 @@ async function openCamera() {
             cameraStream = await navigator.mediaDevices.getUserMedia(constraints);
         } catch (error) {
             // نجرب أي كاميرا متاحة
-            constraints.video.facingMode = { ideal: 'user' }; // كاميرا أمامية
+            constraints.video.facingMode = { ideal: 'user' };
             cameraStream = await navigator.mediaDevices.getUserMedia(constraints);
         }
         
@@ -1003,7 +1036,7 @@ async function openCamera() {
     }
 }
 
-// دالة التقاط صورة
+// ==================== دالة التقاط صورة ====================
 function takePhoto() {
     const video = document.getElementById('simpleCamera');
     const canvas = document.createElement('canvas');
@@ -1017,7 +1050,7 @@ function takePhoto() {
     saveSimplePhoto(photoUrl);
 }
 
-// دالة حفظ الصورة
+// ==================== دالة حفظ الصورة ====================
 async function saveSimplePhoto(photoUrl) {
     const today = new Date();
     const year = today.getFullYear();
@@ -1045,7 +1078,7 @@ async function saveSimplePhoto(photoUrl) {
     }
 }
 
-// دالة حذف صورة
+// ==================== دالة حذف صورة ====================
 function deleteSimplePhoto(date, photoId) {
     if (currentLoginType !== 'admin') {
         showToast("هذا الإجراء مسموح للإدارة فقط", "error");
@@ -1064,7 +1097,7 @@ function deleteSimplePhoto(date, photoId) {
     }
 }
 
-// دالة إغلاق نافذة الكاميرا
+// ==================== دالة إغلاق نافذة الكاميرا ====================
 function closeCameraModal() {
     document.getElementById('cameraModal').classList.add('hidden');
     
@@ -1074,20 +1107,20 @@ function closeCameraModal() {
     }
 }
 
-// دالة إغلاق شاشة الصور
+// ==================== دالة إغلاق شاشة الصور ====================
 function closeSimpleCamera() {
     document.getElementById('dailyCameraSimple').classList.add('hidden');
     choiceScreen.classList.remove('hidden');
 }
 
-// دالة فتح قسم المعلمات
+// ==================== دالة فتح قسم المعلمات ====================
 function openTeachersSection(){ 
     dashboard.classList.add('hidden'); 
     document.getElementById('teachersSection').classList.remove('hidden'); 
     loadTeachers(); 
 }
 
-// دالة إضافة معلمة
+// ==================== دالة إضافة معلمة ====================
 function addTeacher() {
     const n = document.getElementById('newTeacherName').value.trim(); 
     const s = document.getElementById('teacherSubject').value.trim();
@@ -1106,7 +1139,7 @@ function addTeacher() {
     }
 }
 
-// دالة تحميل المعلمات
+// ==================== دالة تحميل المعلمات ====================
 function loadTeachers(){
     db.ref('Teachers').on('value', snap => {
         const list = document.getElementById('teachersList');
@@ -1126,7 +1159,7 @@ function loadTeachers(){
     });
 }
 
-// دالة نقل طفل للسلة
+// ==================== دالة نقل طفل للسلة ====================
 function trashStudent(id, name) {
     if (confirm(`نقل ${name} للسلة؟`)) {
         db.ref('Students/' + id).once('value', s => {
@@ -1137,7 +1170,7 @@ function trashStudent(id, name) {
     }
 }
 
-// دالة فتح السلة
+// ==================== دالة فتح السلة ====================
 function openTrash() {
     studentsSection.classList.add('hidden');
     document.getElementById('trashScreen').classList.remove('hidden');
@@ -1155,7 +1188,7 @@ function openTrash() {
     });
 }
 
-// دالة استعادة طفل
+// ==================== دالة استعادة طفل ====================
 function restoreStudent(id) {
     db.ref('TrashBin/Students/' + id).once('value', s => {
         db.ref('Students/' + id).set(s.val()).then(() => {
@@ -1165,7 +1198,7 @@ function restoreStudent(id) {
     });
 }
 
-// دالة إضافة طفل
+// ==================== دالة إضافة طفل ====================
 function addStudent() {
     const n = document.getElementById('newStudentName').value.trim();
     if (n) {
@@ -1175,7 +1208,7 @@ function addStudent() {
     }
 }
 
-// دالة فتح إدخال هدف
+// ==================== دالة فتح إدخال هدف ====================
 function openGoalEntry(subject, color, icon) {
     currentSubject = subject;
     
@@ -1200,7 +1233,7 @@ function openGoalEntry(subject, color, icon) {
     loadGoals();
 }
 
-// دالة تحميل الأهداف
+// ==================== دالة تحميل الأهداف ====================
 function loadGoals() {
     const container = document.getElementById('goalsListContainer');
     const msg = document.getElementById('noGoalsMessage');
@@ -1237,7 +1270,7 @@ function loadGoals() {
     });
 }
 
-// دالة البحث عن طفل
+// ==================== دالة البحث عن طفل ====================
 function searchStudent() {
     const query = document.getElementById('studentSearchInput').value.toLowerCase();
     const cards = studentsList.querySelectorAll('div');
@@ -1247,7 +1280,7 @@ function searchStudent() {
     });
 }
 
-// دالة حفظ الهدف
+// ==================== دالة حفظ الهدف ====================
 function saveGoal() {
     const name = document.getElementById('goalName').value;
     const score = document.getElementById('goalScore').value;
@@ -1283,7 +1316,7 @@ function saveGoal() {
     .catch(e => showToast("خطأ في الاتصال", "error"));
 }
 
-// دالة إعادة تعيين نموذج الهدف
+// ==================== دالة إعادة تعيين نموذج الهدف ====================
 function resetGoalForm() {
     editingGoalId = null;
     toggleGoalForm(false);
@@ -1296,7 +1329,7 @@ function resetGoalForm() {
     }
 }
 
-// دالة حذف الهدف
+// ==================== دالة حذف الهدف ====================
 function deleteGoal(goalId) {
     if (confirm("هل أنت متأكد من حذف هذا الهدف؟")) {
         db.ref(`MonthlyPlans/${sId}/${mName}/${currentSubject}/${goalId}`).remove()
@@ -1309,7 +1342,7 @@ function deleteGoal(goalId) {
     }
 }
 
-// دالة تعديل الهدف
+// ==================== دالة تعديل الهدف ====================
 function editGoal(id, name, score, help) {
     editingGoalId = id;
     
@@ -1330,7 +1363,7 @@ function editGoal(id, name, score, help) {
     }
 }
 
-// دالة فتح Follow Up
+// ==================== دالة فتح Follow Up ====================
 function openFollowUp() {
     choiceScreen.classList.add('hidden');
     followUpScreen.classList.remove('hidden');
@@ -1372,14 +1405,14 @@ function openFollowUp() {
     });
 }
 
-// دالة تعيين المزاج
+// ==================== دالة تعيين المزاج ====================
 function setMood(mood, el) {
     selectedMood = mood;
     document.querySelectorAll('.mood-btn').forEach(btn => btn.classList.remove('active'));
     el.classList.add('active'); 
 }
 
-// دالة حفظ التقرير اليومي
+// ==================== دالة حفظ التقرير اليومي ====================
 function saveDailyReport() {
     const year = 2026;
     const monthIdx = (monthsArr.indexOf(mName) + 1).toString().padStart(2, '0');
@@ -1407,7 +1440,7 @@ function saveDailyReport() {
     });
 }
 
-// دالة تصدير PDF للخطة الشهرية
+// ==================== دالة تصدير PDF للخطة الشهرية ====================
 async function exportMonthlyPlanPDF() {
     showToast("جاري تحضير تقرير Many Circles... ⏳");
 
@@ -1522,7 +1555,7 @@ async function exportMonthlyPlanPDF() {
     }
 }
 
-// دالة تصدير PDF للتقرير اليومي
+// ==================== دالة تصدير PDF للتقرير اليومي ====================
 async function exportDailyReportPDF() {
     showToast("جاري تحضير التقرير اليومي... ⏳");
 
@@ -1695,7 +1728,7 @@ async function exportDailyReportPDF() {
     }
 }
 
-// دالة showToast
+// ==================== دالة showToast ====================
 function showToast(message, type = 'success') {
     const container = document.getElementById('toastContainer');
     const toast = document.createElement('div');
@@ -1714,7 +1747,7 @@ function showToast(message, type = 'success') {
     }, 3000);
 }
 
-// دالة toggleGoalForm
+// ==================== دالة toggleGoalForm ====================
 function toggleGoalForm(show) {
     const form = document.getElementById('goalInputForm');
     const addBtn = document.getElementById('showAddFormBtn');
@@ -1728,7 +1761,8 @@ function toggleGoalForm(show) {
         document.getElementById('goalName').value = "";
     }
 }
-// دالة تصدير تقرير الشهر كاملاً
+
+// ==================== دالة تصدير تقرير الشهر كاملاً ====================
 async function exportMonthReportPDF() {
     showToast("جاري تجميع تقارير شهر " + mName + "... ⏳");
 
@@ -1848,7 +1882,7 @@ async function exportMonthReportPDF() {
         if (Object.keys(activitiesCount).length > 0) {
             const sortedActivities = Object.entries(activitiesCount)
                 .sort((a, b) => b[1] - a[1])
-                .slice(0, 5); // أول 5 أنشطة
+                .slice(0, 5);
             
             reportContent += `
                 <div style="margin-bottom:30px; background:#ecfdf5; border:2px solid #10b981; border-radius:15px; padding:20px;">
@@ -2040,7 +2074,7 @@ async function exportMonthReportPDF() {
     }
 }
 
-// دالة مساعدة للحصول على اسم الحالة المزاجية بالعربي
+// ==================== دالة مساعدة للحصول على اسم الحالة المزاجية بالعربي ====================
 function getMoodArabic(mood) {
     const moods = {
         'happy': 'سعيد ومبتهج',
@@ -2051,7 +2085,7 @@ function getMoodArabic(mood) {
     return moods[mood] || 'لم يتم التحديد';
 }
 
-// دالة للحصول على ملخص الأداء
+// ==================== دالة للحصول على ملخص الأداء ====================
 function getPerformanceSummary(happyDays, totalDays) {
     const percentage = Math.round((happyDays / totalDays) * 100);
     
@@ -2065,6 +2099,7 @@ function getPerformanceSummary(happyDays, totalDays) {
         return `يحتاج إلى تحسين! ${percentage}% من الأيام كانت سعيدة 🤔`;
     }
 }
+
 // ==================== النسخ الاحتياطي PDF ====================
 async function createPDFBackup() {
     showToast("جاري إنشاء نسخة احتياطية PDF... ⏳");
@@ -2173,7 +2208,6 @@ async function createPDFBackup() {
 }
 
 // ==================== النسخ الاحتياطي JSON ====================
-// دالة نسخ احتياطي JSON محسنة
 async function createJSONBackup() {
     showToast("جاري إنشاء نسخة احتياطية شاملة... ⏳");
     
@@ -2230,8 +2264,8 @@ async function createJSONBackup() {
         showToast("حدث خطأ أثناء إنشاء النسخة الاحتياطية", "error");
     }
 }
+
 // ==================== جمع جميع البيانات ====================
-// دالة جمع البيانات المحسنة
 async function getAllBackupData() {
     try {
         // جلب البيانات من جميع الأقسام
@@ -2291,7 +2325,8 @@ async function getAllBackupData() {
         throw error;
     }
 }
-// دالة مساعدة لتحويل البيانات
+
+// ==================== دالة مساعدة لتحويل البيانات ====================
 function formatData(snapshot) {
     const data = snapshot.val();
     if (!data) return {};
@@ -2305,7 +2340,7 @@ function formatData(snapshot) {
     return result;
 }
 
-// دالة حساب عدد السجلات
+// ==================== دالة حساب عدد السجلات ====================
 function countAllRecords(data) {
     if (!data) return 0;
     
@@ -2582,7 +2617,8 @@ function validateBackupFile(data) {
     
     return true;
 }
-// دالة مسح السلة بالكامل
+
+// ==================== دالة مسح السلة بالكامل ====================
 async function emptyTrash() {
     // تأكيد من المستخدم
     if (!confirm("⚠️ **تحذير شديد:**\n\n" +
@@ -2645,7 +2681,7 @@ async function emptyTrash() {
     }
 }
 
-// دالة تحديث عرض السلة
+// ==================== دالة تحديث عرض السلة ====================
 function updateTrashDisplay() {
     db.ref('TrashBin/Students').once('value').then(snap => {
         const trashList = document.getElementById('trashStudentsList');
@@ -2678,26 +2714,413 @@ function updateTrashDisplay() {
     });
 }
 
-// تعديل دالة فتح السلة
-function openTrash() {
-    studentsSection.classList.add('hidden');
-    document.getElementById('trashScreen').classList.remove('hidden');
-    
-    // تحديث عرض السلة
-    updateTrashDisplay();
+// ==================== خاصية نسخ البرنامج لمجموعة أطفال ====================
+
+let allProgramChildren = [];
+let selectedProgramChildren = new Set();
+
+// فتح نافذة نسخ البرنامج
+async function openCopyProgramMenu() {
+    try {
+        // تحميل قائمة الأطفال أولاً
+        await loadProgramChildren();
+        
+        // إنشاء النافذة المودال
+        createProgramCopyModal();
+        
+        // إظهار النافذة
+        document.getElementById('copyProgramModal').classList.remove('hidden');
+        
+    } catch (error) {
+        console.error('خطأ في فتح نافذة النسخ:', error);
+        showToast('حدث خطأ في فتح نافذة النسخ', 'error');
+    }
 }
 
-// تعديل دالة استعادة الطفل لتحديث العرض
-function restoreStudent(id) {
-    if (confirm("هل تريد استعادة هذا الطفل؟")) {
-        db.ref('TrashBin/Students/' + id).once('value', s => {
-            db.ref('Students/' + id).set(s.val()).then(() => {
-                db.ref('TrashBin/Students/' + id).remove();
-                showToast("تمت الاستعادة بنجاح 🔄");
-                updateTrashDisplay(); // تحديث العرض
+// تحميل الأطفال للبرنامج
+async function loadProgramChildren() {
+    try {
+        const snapshot = await db.ref('Students').once('value');
+        allProgramChildren = [];
+        
+        snapshot.forEach(child => {
+            if (child.key === sId) return; // استبعاد الطفل الحالي
+            
+            allProgramChildren.push({
+                id: child.key,
+                name: child.val().name
             });
         });
+        
+    } catch (error) {
+        console.error('خطأ في تحميل الأطفال:', error);
+        showToast('حدث خطأ في تحميل قائمة الأطفال', 'error');
     }
+}
+
+// إنشاء نافذة النسخ
+async function createProgramCopyModal() {
+    // إذا كانت النافذة موجودة، احذفها أولاً
+    const existingModal = document.getElementById('copyProgramModal');
+    if (existingModal) {
+        existingModal.remove();
+    }
+    
+    // جلب بيانات البرنامج الحالي
+    const programSnapshot = await db.ref(`MonthlyPlans/${sId}/${mName}`).once('value');
+    const programData = programSnapshot.val() || {};
+    const subjectsCount = Object.keys(programData).length;
+    
+    const modalHTML = `
+    <div id="copyProgramModal" class="fixed inset-0 bg-black bg-opacity-70 z-[2000] flex items-center justify-center p-4">
+        <div class="bg-white rounded-[2.5rem] w-full max-w-2xl max-h-[90vh] overflow-y-auto">
+            <div class="p-6">
+                <!-- الرأس -->
+                <div class="flex justify-between items-center mb-6">
+                    <h3 class="text-2xl font-black text-purple-600">📋 نسخ البرنامج الشهري</h3>
+                    <button onclick="closeCopyProgramMenu()" class="text-red-500 text-2xl hover:text-red-700">×</button>
+                </div>
+                
+                <!-- معلومات البرنامج الحالي -->
+                <div class="bg-purple-50 p-4 rounded-xl mb-6">
+                    <p class="font-bold text-purple-700 mb-2">البرنامج الحالي:</p>
+                    <p>👶 الطفل: <span class="font-bold">${sName}</span></p>
+                    <p>📅 الشهر: <span class="font-bold">${mName}</span></p>
+                    <p>📚 عدد المواد: <span id="programSubjectsCount" class="font-bold">${subjectsCount} مادة</span></p>
+                </div>
+                
+                <!-- اختيار الأطفال -->
+                <div class="mb-6">
+                    <h4 class="font-bold text-lg mb-4 text-slate-700">👥 اختر الأطفال لتطبيق البرنامج عليهم:</h4>
+                    
+                    <!-- شريط البحث -->
+                    <input type="text" id="programChildSearch" placeholder="🔍 ابحث عن طفل..." 
+                           class="w-full p-3 rounded-xl border-2 border-purple-100 mb-4 outline-none focus:border-purple-300"
+                           onkeyup="searchProgramChildren()">
+                    
+                    <!-- قائمة الأطفال -->
+                    <div id="programChildrenList" class="space-y-2 max-h-60 overflow-y-auto p-2 border rounded-xl">
+                        <!-- سيتم تحميل الأطفال هنا -->
+                    </div>
+                    
+                    <!-- عدادات -->
+                    <div class="flex justify-between mt-4 text-sm text-slate-500">
+                        <span>عدد الأطفال المختارين: <span id="programSelectedCount" class="font-bold text-purple-600">0</span></span>
+                        <span>عدد الأطفال الكلي: <span id="programTotalCount" class="font-bold text-slate-600">${allProgramChildren.length}</span></span>
+                    </div>
+                </div>
+                
+                <!-- خيارات النسخ -->
+                <div class="bg-slate-50 p-4 rounded-xl mb-6">
+                    <h4 class="font-bold text-lg mb-3 text-slate-700">📚 اختيار المواد:</h4>
+                    
+                    <div id="programSubjectsList" class="space-y-2">
+                        <!-- ستضاف المواد هنا -->
+                    </div>
+                    
+                    <div class="mt-4">
+                        <button onclick="selectAllProgramSubjects()" class="text-sm bg-blue-100 text-blue-600 px-3 py-1 rounded-lg mr-2">اختيار الكل</button>
+                        <button onclick="deselectAllProgramSubjects()" class="text-sm bg-slate-100 text-slate-600 px-3 py-1 rounded-lg">إلغاء الكل</button>
+                    </div>
+                </div>
+                
+                <!-- أزرار التحكم -->
+                <div class="flex gap-4">
+                    <button onclick="copyProgramToSelectedChildren()" 
+                            class="flex-1 p-5 bg-gradient-to-r from-green-500 to-emerald-600 text-white rounded-xl font-bold shadow-lg hover:scale-105 transition flex items-center justify-center gap-3">
+                        <span class="text-2xl">✅</span>
+                        <span>نسخ البرنامج</span>
+                    </button>
+                    
+                    <button onclick="selectAllProgramChildren()" 
+                            class="px-6 py-5 bg-gradient-to-r from-blue-500 to-cyan-600 text-white rounded-xl font-bold shadow-lg hover:scale-105 transition">
+                        👥 كل الأطفال
+                    </button>
+                </div>
+                
+                <!-- تقدم النسخ -->
+                <div id="programCopyProgress" class="hidden mt-6">
+                    <div class="flex justify-between mb-2">
+                        <span class="font-bold text-slate-700">جاري نسخ البرنامج...</span>
+                        <span id="programProgressPercentage" class="font-bold text-purple-600">0%</span>
+                    </div>
+                    <div class="w-full bg-slate-200 rounded-full h-3">
+                        <div id="programProgressBar" class="bg-gradient-to-r from-green-400 to-emerald-500 h-3 rounded-full w-0 transition-all duration-300"></div>
+                    </div>
+                    <p id="currentProgramStatus" class="text-sm text-slate-500 mt-2 text-center"></p>
+                </div>
+            </div>
+        </div>
+    </div>
+    `;
+    
+    document.body.insertAdjacentHTML('beforeend', modalHTML);
+    
+    // تحميل المواد وقائمة الأطفال
+    loadProgramSubjects(programData);
+    renderProgramChildrenList();
+}
+
+// تحميل المواد الحالية
+function loadProgramSubjects(programData) {
+    const container = document.getElementById('programSubjectsList');
+    
+    container.innerHTML = '';
+    
+    if (Object.keys(programData).length === 0) {
+        container.innerHTML = '<p class="text-center text-slate-500 p-4">لا توجد مواد في البرنامج الحالي</p>';
+        return;
+    }
+    
+    Object.keys(programData).forEach(subject => {
+        const goalsCount = Object.keys(programData[subject]).length;
+        container.innerHTML += `
+            <label class="flex items-center gap-3 p-3 hover:bg-white rounded-lg cursor-pointer border border-slate-200">
+                <input type="checkbox" checked class="program-subject-checkbox w-5 h-5" value="${subject}">
+                <div class="flex-1">
+                    <span class="font-bold text-slate-700">${subject}</span>
+                    <p class="text-xs text-slate-500">${goalsCount} هدف</p>
+                </div>
+            </label>
+        `;
+    });
+}
+
+// عرض قائمة الأطفال
+function renderProgramChildrenList() {
+    const container = document.getElementById('programChildrenList');
+    container.innerHTML = '';
+    
+    if (allProgramChildren.length === 0) {
+        container.innerHTML = '<p class="text-center text-slate-500 p-4">لا توجد أطفال آخرين في النظام</p>';
+        return;
+    }
+    
+    allProgramChildren.forEach(child => {
+        container.innerHTML += `
+            <div class="program-child-item p-3 border rounded-lg hover:bg-purple-50 transition cursor-pointer flex justify-between items-center" 
+                 data-child-id="${child.id}"
+                 onclick="toggleProgramChildSelection('${child.id}')">
+                <div class="flex items-center gap-3">
+                    <div class="program-child-checkbox w-5 h-5 border-2 border-purple-300 rounded flex items-center justify-center">
+                        <span class="text-purple-600 hidden">✓</span>
+                    </div>
+                    <span class="font-bold">${child.name}</span>
+                </div>
+                <span class="text-sm text-slate-400">👶</span>
+            </div>
+        `;
+    });
+    
+    updateProgramSelectionCount();
+}
+
+// البحث عن الأطفال
+function searchProgramChildren() {
+    const searchTerm = document.getElementById('programChildSearch').value.toLowerCase();
+    const items = document.querySelectorAll('.program-child-item');
+    
+    let foundCount = 0;
+    items.forEach(item => {
+        const childName = item.querySelector('span').textContent.toLowerCase();
+        if (childName.includes(searchTerm)) {
+            item.style.display = 'flex';
+            foundCount++;
+        } else {
+            item.style.display = 'none';
+        }
+    });
+    
+    if (foundCount === 0 && searchTerm) {
+        document.getElementById('programChildrenList').innerHTML += `
+            <p class="text-center text-slate-500 p-4">لا توجد نتائج لـ "${searchTerm}"</p>
+        `;
+    }
+}
+
+// تبديل اختيار طفل
+function toggleProgramChildSelection(childId) {
+    const checkbox = document.querySelector(`[data-child-id="${childId}"] .program-child-checkbox span`);
+    
+    if (selectedProgramChildren.has(childId)) {
+        selectedProgramChildren.delete(childId);
+        checkbox.classList.add('hidden');
+        checkbox.parentElement.classList.remove('bg-purple-500', 'border-purple-500');
+        checkbox.parentElement.classList.add('border-purple-300');
+    } else {
+        selectedProgramChildren.add(childId);
+        checkbox.classList.remove('hidden');
+        checkbox.parentElement.classList.add('bg-purple-500', 'border-purple-500');
+        checkbox.parentElement.classList.remove('border-purple-300');
+    }
+    
+    updateProgramSelectionCount();
+}
+
+// تحديث العداد
+function updateProgramSelectionCount() {
+    document.getElementById('programSelectedCount').textContent = selectedProgramChildren.size;
+}
+
+// اختيار كل الأطفال
+function selectAllProgramChildren() {
+    selectedProgramChildren.clear();
+    
+    allProgramChildren.forEach(child => {
+        selectedProgramChildren.add(child.id);
+    });
+    
+    document.querySelectorAll('.program-child-item').forEach(item => {
+        const checkbox = item.querySelector('.program-child-checkbox span');
+        checkbox.classList.remove('hidden');
+        checkbox.parentElement.classList.add('bg-purple-500', 'border-purple-500');
+        checkbox.parentElement.classList.remove('border-purple-300');
+    });
+    
+    updateProgramSelectionCount();
+}
+
+// اختيار كل المواد
+function selectAllProgramSubjects() {
+    document.querySelectorAll('.program-subject-checkbox').forEach(checkbox => {
+        checkbox.checked = true;
+    });
+}
+
+// إلغاء اختيار كل المواد
+function deselectAllProgramSubjects() {
+    document.querySelectorAll('.program-subject-checkbox').forEach(checkbox => {
+        checkbox.checked = false;
+    });
+}
+
+// إغلاق النافذة
+function closeCopyProgramMenu() {
+    const modal = document.getElementById('copyProgramModal');
+    if (modal) {
+        modal.classList.add('hidden');
+    }
+    selectedProgramChildren.clear();
+}
+
+// نسخ البرنامج للأطفال المختارين
+async function copyProgramToSelectedChildren() {
+    if (selectedProgramChildren.size === 0) {
+        showToast('لم تختر أي أطفال!', 'error');
+        return;
+    }
+    
+    // جمع المواد المختارة
+    const selectedSubjects = [];
+    document.querySelectorAll('.program-subject-checkbox:checked').forEach(checkbox => {
+        selectedSubjects.push(checkbox.value);
+    });
+    
+    if (selectedSubjects.length === 0) {
+        showToast('لم تختر أي مواد!', 'error');
+        return;
+    }
+    
+    // تأكيد العملية
+    if (!confirm(`هل أنت متأكد من نسخ ${selectedSubjects.length} مادة لـ ${selectedProgramChildren.size} طفل؟`)) {
+        return;
+    }
+    
+    // جلب بيانات البرنامج الحالي
+    const currentProgram = await db.ref(`MonthlyPlans/${sId}/${mName}`).once('value');
+    const programData = currentProgram.val() || {};
+    
+    // تصفية المواد المختارة فقط
+    const filteredProgram = {};
+    selectedSubjects.forEach(subject => {
+        if (programData[subject]) {
+            filteredProgram[subject] = programData[subject];
+        }
+    });
+    
+    if (Object.keys(filteredProgram).length === 0) {
+        showToast('لا توجد بيانات للنسخ!', 'error');
+        return;
+    }
+    
+    // إظهار شريط التقدم
+    const progressDiv = document.getElementById('programCopyProgress');
+    const progressBar = document.getElementById('programProgressBar');
+    const progressPercent = document.getElementById('programProgressPercentage');
+    const statusText = document.getElementById('currentProgramStatus');
+    
+    progressDiv.classList.remove('hidden');
+    
+    // النسخ لكل طفل
+    const childrenArray = Array.from(selectedProgramChildren);
+    let completed = 0;
+    let errorCount = 0;
+    
+    for (const childId of childrenArray) {
+        try {
+            // تحديث الحالة
+            const childName = allProgramChildren.find(c => c.id === childId)?.name || 'غير معروف';
+            statusText.textContent = `جاري نسخ البرنامج لـ ${childName}...`;
+            
+            // إنشاء البيانات المنسوخة
+            const copiedProgram = {
+                ...filteredProgram,
+                _metadata: {
+                    copiedFrom: sId,
+                    copiedFromName: sName,
+                    copiedDate: new Date().toISOString(),
+                    copiedBy: currentLoginType,
+                    originalMonth: mName
+                }
+            };
+            
+            // حفظ لكل طفل (دون الكتابة فوق البيانات الموجودة)
+            const childRef = db.ref(`MonthlyPlans/${childId}/${mName}`);
+            const childSnapshot = await childRef.once('value');
+            const existingData = childSnapshot.val() || {};
+            
+            // دمج البيانات الجديدة مع القديمة (بدون الكتابة فوق البيانات الموجودة)
+            const mergedData = { ...existingData };
+            Object.keys(copiedProgram).forEach(subject => {
+                if (!mergedData[subject]) {
+                    mergedData[subject] = copiedProgram[subject];
+                } else {
+                    // دمج الأهداف داخل المادة
+                    const existingGoals = mergedData[subject];
+                    const newGoals = copiedProgram[subject];
+                    mergedData[subject] = { ...existingGoals, ...newGoals };
+                }
+            });
+            
+            await childRef.set(mergedData);
+            
+            completed++;
+            
+            // تحديث شريط التقدم
+            const percentage = Math.round((completed / childrenArray.length) * 100);
+            progressBar.style.width = `${percentage}%`;
+            progressPercent.textContent = `${percentage}%`;
+            
+        } catch (error) {
+            console.error(`خطأ في نسخ البرنامج للطفل ${childId}:`, error);
+            errorCount++;
+        }
+    }
+    
+    // إكمال العملية
+    if (errorCount > 0) {
+        statusText.textContent = `✅ تم النسخ مع ${errorCount} أخطاء`;
+        showToast(`✅ تم نسخ البرنامج لـ ${completed} طفل (${errorCount} أخطاء)`);
+    } else {
+        statusText.textContent = '✅ تم النسخ بنجاح!';
+        showToast(`✅ تم نسخ البرنامج لـ ${completed} طفل بنجاح!`);
+    }
+    
+    setTimeout(() => {
+        closeCopyProgramMenu();
+        progressDiv.classList.add('hidden');
+        progressBar.style.width = '0%';
+    }, 2000);
 }
 </script>
 </body>
